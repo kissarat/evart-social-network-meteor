@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import ListView from './widget'
 
 export class UserRow extends Component {
   render() {
@@ -12,28 +13,9 @@ export class UserRow extends Component {
   }
 }
 
-export class UserList extends Component {
-  componentWillMount() {
-    this.subscibe()
-    this.setState({
-      order: {
-        id: 1
-      }
-    })
-  }
-
-  subscibe(state = {}) {
-    if (this.subscription) {
-      this.subscription.stop()
-    }
-    this.subscription = new PgSubscription('user', state)
-    this.subscription.addEventListener('updated', () => this.setState(state))
-  }
-
-  componentWillUnmount() {
-    this.subscription.stop()
-  }
-
+export class UserList extends ListView {
+  subscribtionName = 'user'
+  
   sort = (e) => {
     const th = e.target
     const c = th.innerHTML
@@ -61,7 +43,6 @@ export class UserList extends Component {
       }
       return <th onClick={this.sort} key={c} className={order}>{c}</th>
     })
-    console.log(columns)
     const rows = (this.subscription || []).map(u =>
       <UserRow key={u.id}
                id={u.id}

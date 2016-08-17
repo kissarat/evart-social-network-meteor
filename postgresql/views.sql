@@ -1,57 +1,65 @@
 CREATE OR REPLACE VIEW member AS
   SELECT
-    "from" AS chat,
-    "to"   AS member
+    "from",
+    "to",
+    r.type AS relation_type,
+    b.type AS blog_type
   FROM relation r
-    JOIN blog b ON r."from" = b.id
-  WHERE b.type = 'chat';
+    JOIN blog b ON r."from" = b.id;
+
+CREATE OR REPLACE VIEW message_view AS
+  WITH m AS (
+    SELECT
+      m.id,
+      r."to"   AS recipient,
+      m."from" AS peer,
+      b.name,
+      b.avatar,
+      m.text
+    FROM "message" m
+      JOIN blog b ON m."from" = b.id
+      LEFT JOIN member r ON m."to" = r."from"
+    WHERE r.blog_type = 'chat'
+    UNION ALL
+    SELECT
+      m.id,
+      m."to"   AS recipient,
+      m."from" AS peer,
+      b.name,
+      b.avatar,
+      m.text
+    FROM "message" m
+      JOIN blog b ON m."from" = b.id
+    UNION ALL
+    SELECT
+      m.id,
+      m."from" AS recipient,
+      m."to"   AS peer,
+      b.name,
+      b.avatar,
+      m.text
+    FROM "message" m
+      JOIN blog b ON m."to" = b.id
+  )
+  SELECT * FROM m GROUP BY id, recipient, peer, name, avatar, text;
 
 CREATE OR REPLACE VIEW "last" AS
   SELECT
-    "from",
-    "to",
-    max(id) AS "message"
-  FROM "message"
-  WHERE file IS NULL
-  GROUP BY "from", "to";
-
-CREATE OR REPLACE VIEW excess AS
-  SELECT
-    "last".message AS "message",
-    member.chat    AS peer,
-    member.member  AS recipient
-  FROM "last"
-    JOIN member ON "last"."to" = member.chat
-  UNION
-  SELECT
-    "last".message       AS "message",
-    CASE WHEN u.id <> "last"."from"
-      THEN "last"."from"
-    ELSE "last"."to" END AS peer,
-    CASE WHEN u.id = "last"."from"
-      THEN "last"."from"
-    ELSE "last"."to" END AS recipient
-  FROM "blog" u
-    JOIN "last" ON (u.id <> "last"."from" AND u.id = "last"."to") OR (u.id <> "last"."to" AND u.id = "last"."from")
-  WHERE u.type = 'user';
+    max(id) AS id,
+    peer,
+    recipient
+  FROM message_view
+  GROUP BY peer, recipient;
 
 CREATE OR REPLACE VIEW recipient AS
-  WITH grouped AS (
-      SELECT
-        max("message") AS "message",
-        peer,
-        recipient
-      FROM excess
-      GROUP BY peer, recipient
-  )
   SELECT
-    g.peer   AS id,
+    l.peer   AS id,
     m.id     AS message_id,
     b.name   AS peer_name,
     b.avatar AS peer_avatar,
     b.type,
     m."text",
-    g.recipient
-  FROM grouped g
-    JOIN "message" m ON g.message = m.id
-    JOIN blog b ON g.peer = b.id;
+    l.recipient
+  FROM "last" l
+    JOIN "message" m ON l.id = m.id
+    JOIN blog b ON l.peer = b.id;

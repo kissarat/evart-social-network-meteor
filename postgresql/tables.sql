@@ -1,8 +1,25 @@
+CREATE TYPE file_type AS ENUM ('image', 'audio', 'video', 'text', 'archive', 'application');
+
+CREATE TABLE file (
+  id    BIGINT PRIMARY KEY,
+  name  VARCHAR(250),
+  type  file_type,
+  mime  VARCHAR(40),
+  url   VARCHAR(250),
+  data  VARCHAR(15000),
+  time  TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  thumb VARCHAR(50)
+);
+
+CREATE TYPE blog_type AS ENUM ('user', 'group', 'chat');
+
 CREATE TABLE blog (
   id     SERIAL PRIMARY KEY,
-  domain VARCHAR(24),
+  domain VARCHAR(24) UNIQUE,
   name   VARCHAR(128),
-  time   TIMESTAMP    NOT NULL DEFAULT current_timestamp
+  type   blog_type NOT NULL,
+  avatar BIGINT REFERENCES file (id),
+  time   TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
 CREATE TYPE relation_type AS ENUM ('follow', 'manage', 'deny');
@@ -12,7 +29,8 @@ CREATE TABLE relation (
   "from" INT REFERENCES blog (id),
   "to"   INT REFERENCES blog (id),
   type   relation_type NOT NULL DEFAULT 'follow',
-  time   TIMESTAMP
+  time   TIMESTAMP,
+  UNIQUE ("from", "to")
 );
 
 CREATE TABLE "user" (
@@ -22,27 +40,30 @@ CREATE TABLE "user" (
 
 CREATE TYPE file_type AS ENUM ('image', 'video', 'audio', 'file');
 
-CREATE TABLE file (
-  id   BIGSERIAL PRIMARY KEY,
-  name VARCHAR(256),
-  type VARCHAR(64),
-  mime VARCHAR(64),
-  url  VARCHAR(256),
-  data TEXT
-);
+-- CREATE TYPE message_type AS ENUM ('dialog', 'chat', 'wall', 'child');
 
-CREATE TABLE message (
-  id     BIGSERIAL PRIMARY KEY,
-  parent BIGINT REFERENCES message (id),
+CREATE TABLE "message" (
+  id     BIGINT PRIMARY KEY,
+  --   type message_type NOT NULL,
   file   BIGINT REFERENCES file (id),
   "from" INT REFERENCES blog (id),
   "to"   INT REFERENCES blog (id),
-  "text" TEXT      NOT NULL,
-  time   TIMESTAMP NOT NULL DEFAULT current_timestamp
+  "text" VARCHAR(8000) NOT NULL
 );
+
+CREATE TABLE "note" (
+  parent INT REFERENCES blog (id)
+)
+  INHERITS (message);
+
+CREATE TABLE "comment" (
+  parent INT REFERENCES message (id)
+)
+  INHERITS (message);
 
 CREATE TABLE attachment (
   number  SMALLINT NOT NULL DEFAULT 0,
   message BIGINT REFERENCES message (id),
-  file    BIGINT REFERENCES message (id)
+  file    BIGINT REFERENCES message (id),
+  UNIQUE (message, file)
 );

@@ -1,0 +1,20 @@
+{
+  "name": "evart",
+  "private": true,
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "babel-plugin-transform-class-properties": "^6.11.5",
+    "knex": "^0.11.10",
+    "meteor-node-stubs": "~0.2.0",
+    "pg": "^6.1.0",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
+    "react-router": "^2.6.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^6.1.2",
+    "eslint": "^3.3.1"
+  }
+}

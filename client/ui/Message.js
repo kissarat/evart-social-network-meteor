@@ -4,7 +4,7 @@ import {Subscriber} from './widget'
 class Message extends Component {
   render() {
     return (
-      <div key={this.props.id}>
+      <div key={this.props.id} className="message">
         <div>
           <img src={this.props.avatar}/>
           <div className="name">{this.props.name}</div>
@@ -17,28 +17,61 @@ class Message extends Component {
 
 export class Dialog extends Subscriber {
   componentWillMount() {
-    this.subscibe('message', {
+    this.subscribe('message', {
       recipient: +localStorage.recipient,
       peer: +this.props.id
     })
   }
 
+  send = (e) => {
+    if ('Enter' === e.key) {
+      Meteor.call('message.create', {
+          from: +localStorage.recipient,
+          to: +this.props.id,
+          text: this.draft()
+        },
+        (err, res) => {
+          if (err) {
+            console.error(err)
+          }
+          else {
+            localStorage.removeItem(`dialog_${this.props.id}_draft`)
+          }
+        })
+    }
+    else {
+      this.draft(e.target.value)
+    }
+  }
+
+  draft(value) {
+    const key = `dialog_${this.props.id}_draft`
+    if (value) {
+      localStorage[key] = value
+    }
+    else {
+      return localStorage[key] || ''
+    }
+  }
+
   render() {
     const messages = this.getSubscrition('message').map(m =>
       <Message key={m.id}
+               className="message"
                id={m.id}
                name={m.name}
                text={m.text}
       />
     )
     return (
-      <div>
+      <div className="dialog">
         <div>
           <div>{this.props.name}</div>
         </div>
         <div>{messages}</div>
-        <div>
-        </div>
+        <form>
+          <textarea onKeyDown={this.send}/>
+        </form>
       </div>
     )
   }
@@ -46,13 +79,13 @@ export class Dialog extends Subscriber {
 
 export class Messenger extends Subscriber {
   componentWillMount() {
-    this.subscibe('messenger', {
+    this.subscribe('messenger', {
       recipient: +localStorage.recipient
     })
   }
 
   open = (e) => {
-    this.subscibe('blog', {
+    this.subscribe('blog', {
       id: e.target.id
     })
   }
@@ -70,7 +103,7 @@ export class Messenger extends Subscriber {
       />
     )
     return (
-      <div>
+      <div className="messenger">
         <div>{peers}</div>
         <div>{dialogs}</div>
       </div>

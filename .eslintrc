@@ -53,7 +53,6 @@
     "object-shorthand": 0,           // http://eslint.org/docs/rules/object-shorthand
     "prefer-const": 2,               // http://eslint.org/docs/rules/prefer-const
     "prefer-spread": 2,              // http://eslint.org/docs/rules/prefer-spread
-    "prefer-template": 2,            // http://eslint.org/docs/rules/prefer-template
     "require-yield": 2,              // http://eslint.org/docs/rules/require-yield
 
     /**
@@ -141,7 +140,6 @@
     "radix": 2,                      // http://eslint.org/docs/rules/radix
     "vars-on-top": 0,                // http://eslint.org/docs/rules/vars-on-top
     "wrap-iife": [2, "any"],         // http://eslint.org/docs/rules/wrap-iife
-    "yoda": 2,                       // http://eslint.org/docs/rules/yoda
 
     /**
      * Style

@@ -8,40 +8,38 @@ CREATE OR REPLACE VIEW member AS
     JOIN blog b ON r."from" = b.id;
 
 CREATE OR REPLACE VIEW message_view AS
-  WITH m AS (
+  WITH mm AS (
     SELECT
       m.id,
       r."to"   AS recipient,
       m."from" AS peer,
-      b.name,
-      b.avatar,
+      m."from",
       m.text
-    FROM "message" m
-      JOIN blog b ON m."from" = b.id
-      LEFT JOIN member r ON m."to" = r."from"
+    FROM "message" m JOIN member r ON m."to" = r."from"
     WHERE r.blog_type = 'chat'
     UNION ALL
     SELECT
       m.id,
       m."to"   AS recipient,
       m."from" AS peer,
-      b.name,
-      b.avatar,
+      m."from",
       m.text
     FROM "message" m
-      JOIN blog b ON m."from" = b.id
-    UNION ALL
+    UNION
     SELECT
       m.id,
       m."from" AS recipient,
       m."to"   AS peer,
-      b.name,
-      b.avatar,
+      m."from",
       m.text
     FROM "message" m
-      JOIN blog b ON m."to" = b.id
   )
-  SELECT * FROM m GROUP BY id, recipient, peer, name, avatar, text;
+  SELECT
+    mm.*,
+    b.name,
+    b.avatar
+  FROM mm
+    JOIN blog b ON mm."from" = b.id;
 
 CREATE OR REPLACE VIEW "last" AS
   SELECT
@@ -51,12 +49,12 @@ CREATE OR REPLACE VIEW "last" AS
   FROM message_view
   GROUP BY peer, recipient;
 
-CREATE OR REPLACE VIEW recipient AS
+CREATE OR REPLACE VIEW messenger AS
   SELECT
     l.peer   AS id,
-    m.id     AS message_id,
-    b.name   AS peer_name,
-    b.avatar AS peer_avatar,
+    m.id     AS message,
+    b.name   AS name,
+    b.avatar AS avatar,
     b.type,
     m."text",
     l.recipient

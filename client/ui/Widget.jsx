@@ -1,19 +1,29 @@
 import React, {Component} from 'react'
 
-export class ListView extends Component {
-  componentWillMount() {
-    this.subscibe()
+export class Subscriber extends Component {
+  subscibe(name, state = {}) {
+    this.unsubscibe(name)
+    this.subscription[name] = new PgSubscription(name, state)
+    this.subscription[name].addEventListener('updated', () => this.setState({
+      [name]: state
+    }))
   }
 
-  subscibe(state = {}) {
-    if (this.subscription) {
-      this.subscription.stop()
+  unsubscibe(name) {
+    const old = this.getSubscrition(name, false)
+    if (old) {
+      old.stop()
     }
-    this.subscription = new PgSubscription(this.subscriptionName, state)
-    this.subscription.addEventListener('updated', () => this.setState(state))
+  }
+
+  getSubscrition(name, defaultValue = []) {
+    if (!this.subscription) {
+      this.subscription = {}
+    }
+    return this.subscription[name] || defaultValue
   }
 
   componentWillUnmount() {
-    this.subscription.stop()
+    _.each(this.subscription, (subscription, name) => subscription.stop())
   }
 }

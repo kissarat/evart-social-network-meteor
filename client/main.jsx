@@ -2,8 +2,7 @@ import React from 'react'
 import {render} from 'react-dom'
 import {Meteor} from 'meteor/meteor'
 import {Router, Route, browserHistory} from 'react-router'
-import {UserList} from './ui/User'
-import {Dialog} from './ui/message'
+import {Dialog, Messenger} from './ui/message'
 
 const App = ({children, menu}) => (
   <div>
@@ -23,8 +22,8 @@ Meteor.startup(function() {
     <Router history={browserHistory}>
       <Route path='/' component={App}>
         <Route path='about' component={About}/>
-        <Route path='user' component={UserList}/>
-        <Route path='dialog/:peer' component={Dialog}/>
+        <Route path='messenger' component={Messenger}/>
+        <Route path='dialog/:peer' component={Messenger}/>
       </Route>
     </Router>
   , root)

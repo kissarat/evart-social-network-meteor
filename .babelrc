@@ -1,9 +1,6 @@
 {
-  "presets": [
-    "es2015"
-  ],
+  "presets": [],
   "plugins": [
-    "transform-async-to-generator",
     "transform-class-properties"
   ]
 }

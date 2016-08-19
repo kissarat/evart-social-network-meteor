@@ -15,7 +15,8 @@ CREATE OR REPLACE VIEW message_view AS
       m."from" AS peer,
       m."from",
       m.text
-    FROM "message" m JOIN member r ON m."to" = r."from"
+    FROM "message" m
+      JOIN member r ON m."to" = r."from"
     WHERE r.blog_type = 'chat'
     UNION ALL
     SELECT

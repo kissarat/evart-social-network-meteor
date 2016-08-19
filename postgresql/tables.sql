@@ -38,8 +38,6 @@ CREATE TABLE "user" (
 )
   INHERITS (blog);
 
-CREATE TYPE file_type AS ENUM ('image', 'video', 'audio', 'file');
-
 -- CREATE TYPE message_type AS ENUM ('dialog', 'chat', 'wall', 'child');
 
 CREATE TABLE "message" (

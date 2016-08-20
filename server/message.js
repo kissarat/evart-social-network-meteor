@@ -1,15 +1,15 @@
-import {query, timeId} from './query'
+import {query, timeId} from './db'
 
 Meteor.publish('message', function (params = {}) {
   return query('message_view', params)
     .orderBy('id', 'asc')
-    .run()
+    .cursor()
 })
 
 Meteor.publish('messenger', function (params = {}) {
   return query('messenger', params)
     .orderBy('message', 'desc')
-    .run()
+    .cursor()
 })
 
 Meteor.methods({
@@ -17,6 +17,6 @@ Meteor.methods({
     message.id = timeId()
     return query('message')
       .insert(message)
-      .modify()
+      .promise()
   }
 })

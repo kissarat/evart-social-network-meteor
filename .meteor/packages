@@ -12,3 +12,5 @@ standard-minifier-js@1.1.8
 tracker
 underscore
 webapp
+accounts-password
+accounts-ui

@@ -1,7 +1,7 @@
 CREATE TYPE file_type AS ENUM ('image', 'audio', 'video', 'text', 'archive', 'application');
 
 CREATE TABLE file (
-  id    BIGINT PRIMARY KEY,
+  id    BIGSERIAL PRIMARY KEY,
   name  VARCHAR(250),
   type  file_type,
   mime  VARCHAR(40),
@@ -25,18 +25,11 @@ CREATE TABLE blog (
 CREATE TYPE relation_type AS ENUM ('follow', 'manage', 'deny');
 
 CREATE TABLE relation (
-  number SMALLINT      NOT NULL DEFAULT 0,
   "from" INT REFERENCES blog (id),
   "to"   INT REFERENCES blog (id),
   type   relation_type NOT NULL DEFAULT 'follow',
-  time   TIMESTAMP,
   UNIQUE ("from", "to")
 );
-
-CREATE TABLE "user" (
-  password CHAR(60)
-)
-  INHERITS (blog);
 
 -- CREATE TYPE message_type AS ENUM ('dialog', 'chat', 'wall', 'child');
 

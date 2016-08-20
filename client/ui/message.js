@@ -18,18 +18,19 @@ class Message extends Component {
 export class Dialog extends Subscriber {
   componentWillMount() {
     this.subscribe('message', {
-      recipient: +localStorage.recipient,
+      recipient: +Meteor.user().id,
       peer: +this.props.id
     })
   }
 
   send = (e) => {
     if ('Enter' === e.key) {
-      Meteor.call('message.create', {
-          from: +localStorage.recipient,
-          to: +this.props.id,
-          text: this.draft()
-        },
+      const data = {
+        from: +Meteor.user().id,
+        to: +this.props.id,
+        text: this.draft()
+      }
+      Meteor.call('message.create', data,
         (err, res) => {
           if (err) {
             console.error(err)
@@ -80,7 +81,7 @@ export class Dialog extends Subscriber {
 export class Messenger extends Subscriber {
   componentWillMount() {
     this.subscribe('messenger', {
-      recipient: +localStorage.recipient
+      recipient: +Meteor.user().id
     })
   }
 

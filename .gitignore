@@ -1,4 +1,5 @@
 .idea/
-node_modules/
 .meteor/local/
 .utilities/generate/data
+.vagrant/
+node_modules/

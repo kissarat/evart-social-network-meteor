@@ -1,0 +1,19 @@
+DROP VIEW IF EXISTS "wall";
+DROP VIEW IF EXISTS "message_attitude_recipient";
+DROP VIEW IF EXISTS "message_attitude";
+DROP VIEW IF EXISTS "messenger";
+DROP VIEW IF EXISTS "last";
+DROP VIEW IF EXISTS "message_view";
+DROP VIEW IF EXISTS "member";
+
+DROP TABLE IF EXISTS "attachment";
+DROP TABLE IF EXISTS "attitude";
+DROP TYPE IF EXISTS "attitude_type";
+DROP TABLE IF EXISTS "message";
+DROP TYPE IF EXISTS "message_type";
+DROP TABLE IF EXISTS "relation";
+DROP TYPE IF EXISTS "relation_type";
+DROP TABLE IF EXISTS "blog";
+DROP TYPE IF EXISTS "blog_type";
+DROP TABLE IF EXISTS "file";
+DROP TYPE IF EXISTS "file_type";

@@ -1,4 +1,5 @@
 DROP VIEW IF EXISTS "wall";
+DROP VIEW IF EXISTS "comments_count";
 DROP VIEW IF EXISTS "message_attitude_recipient";
 DROP VIEW IF EXISTS "message_attitude";
 DROP VIEW IF EXISTS "messenger";

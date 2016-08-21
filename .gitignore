@@ -1,6 +1,9 @@
 .idea/
 .meteor/local/
-.utilities/generate/sql
 .utilities/generate/json
+.utilities/generate/sql
 .vagrant/
+client/
+local.js
 node_modules/
+

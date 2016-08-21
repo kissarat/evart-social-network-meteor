@@ -1,20 +1,17 @@
-const faker = require('faker/locale/ru')
-const _ = require('underscore')
-const minTime = new Date('2016-01-01').getTime() * 1000 * 1000
-const maxTime = new Date().getTime() * 1000 * 1000
-const lines = []
+const _ = require('./common')
+const blogs = require('./json/blog')
+const dialogs = []
+const userIds = _.pluck(blogs.filter(blog => 'user' === blog.type), 'id')
 for (let i = 0; i < 5000; i++) {
-  const sql = [
-    _.random(minTime, maxTime),
-    'dialog',
-    _.random(1, 15),
-    _.random(1, 15),
-    faker.lorem.sentence()
-  ]
-    .map(s => 'string' === typeof s ? `'${s}'` : s)
-    .join(',\t')
-  lines.push(`\t(${sql})`)
+  dialogs.push({
+    id: _.random(_.minTime, _.maxTime),
+    type: 'dialog',
+    from: _.sample(userIds),
+    to: _.sample(userIds),
+    text: _.faker.lorem.sentence()
+  })
 }
-var sql = lines.join(',\n')
-sql = `INSERT INTO "message" (id, "type", "from", "to", text) VALUES\n${sql};\n\n`
-require('fs').writeFileSync(__dirname + '/data/dialog.sql', sql)
+_.saveSQL('dialog', [{
+  table: 'message',
+  objects: dialogs
+}])

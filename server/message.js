@@ -1,8 +1,13 @@
 import {query, timeId} from './db'
 
 Meteor.publish('message', function (params = {}) {
-  return query('message_view', params)
-    .orderBy('id', 'asc')
+  if (_.isEmpty(params.order)) {
+    params.order = {id: -1}
+  }
+  const table = params.type
+  params.recipient = parseInt(this.userId, 36)
+  delete params.type
+  return query(table, params)
     .cursor()
 })
 

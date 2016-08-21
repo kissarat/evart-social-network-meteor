@@ -4,7 +4,7 @@ DROP VIEW IF EXISTS "message_attitude_recipient";
 DROP VIEW IF EXISTS "message_attitude";
 DROP VIEW IF EXISTS "messenger";
 DROP VIEW IF EXISTS "last";
-DROP VIEW IF EXISTS "message_view";
+DROP VIEW IF EXISTS "dialog";
 DROP VIEW IF EXISTS "member";
 
 DROP TABLE IF EXISTS "attachment";

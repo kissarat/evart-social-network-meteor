@@ -1,5 +1,6 @@
 .idea/
 .meteor/local/
-.utilities/generate/data
+.utilities/generate/sql
+.utilities/generate/json
 .vagrant/
 node_modules/

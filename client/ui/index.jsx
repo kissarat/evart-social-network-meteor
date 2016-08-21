@@ -1,6 +1,6 @@
 import React from 'react'
 import {Route} from 'react-router'
-import {Messenger} from './message'
+import {MessageRoute} from './message'
 import {AdminRoute} from './admin/index'
 import {AuthRoute} from './auth'
 
@@ -14,9 +14,10 @@ const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
 
 export const RootRoute =
-  <Route path='/' component={App}>
-    <Route path='messenger' component={Messenger}/>
-    <Route path='dialog/:peer' component={Messenger}/>
+  <Route path='/'>
+    <Route component={App}>
+      {MessageRoute}
+    </Route>
     <Route component={NoIndex}>
       {AuthRoute}
     </Route>

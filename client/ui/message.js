@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Subscriber} from './widget'
+import {Route} from 'react-router'
 
 class Message extends Component {
   render() {
@@ -17,19 +18,22 @@ class Message extends Component {
 
 export class Dialog extends Subscriber {
   componentWillMount() {
-    this.subscribe('message', {
-      recipient: +Meteor.user().id,
-      peer: +this.props.id
-    })
+    const params = {
+      type: this.props.type,
+      ['dialog' === this.props.type ? 'peer' : 'parent']: +this.props.id
+    }
+    this.subscribe('message', params)
   }
 
   send = (e) => {
     if ('Enter' === e.key) {
       const data = {
+        type: this.props.type,
         from: +Meteor.user().id,
-        to: +this.props.id,
+        ['dialog' === this.props.type ? 'to' : 'parent']: +this.props.id,
         text: this.draft()
       }
+      console.log(this.props)
       Meteor.call('message.create', data,
         (err, res) => {
           if (err) {
@@ -66,9 +70,6 @@ export class Dialog extends Subscriber {
     )
     return (
       <div className="dialog">
-        <div>
-          <div>{this.props.name}</div>
-        </div>
         <div>{messages}</div>
         <form>
           <textarea onKeyDown={this.send}/>
@@ -111,3 +112,16 @@ export class Messenger extends Subscriber {
     )
   }
 }
+
+export class Wall extends Subscriber {
+  render() {
+    return <Dialog id={+this.props.params.id} type='wall'/>
+  }
+}
+
+export const MessageRoute =
+  <Route>
+    <Route path='messenger' component={Messenger}/>,
+    <Route path='dialog/:peer' component={Messenger}/>,
+    <Route path='blog/:id' component={Wall}/>
+  </Route>

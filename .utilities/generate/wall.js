@@ -1,67 +1,52 @@
-const faker = require('faker/locale/ru')
-const _ = require('underscore')
-const minTime = new Date('2016-01-01').getTime() * 1000 * 1000
-const maxTime = new Date().getTime() * 1000 * 1000
-const child_ids = []
-const note_ids = []
-const lines = [
-  (function () {
-    const lines = []
-    for (let i = 0; i < 5000; i++) {
-      const node_id = _.random(minTime, maxTime)
-      note_ids.push(node_id)
-      const sql = [
-        node_id,
-        'wall',
-        _.random(1, 15),
-        _.random(1, 15),
-        faker.lorem.sentence()
-      ]
-        .map(s => 'string' === typeof s ? `'${s}'` : s)
-        .join(',\t')
-      lines.push(`\t(${sql})`)
-    }
-    var sql = lines.join(',\n')
-    return `INSERT INTO "message" (id, "type", "parent", "from", text) VALUES\n${sql};`
-  })(),
+const _ = require('./common')
+const blogs = require('./json/blog')
+const notes = []
+const userIds = _.pluck(blogs.filter(blog => 'user' === blog.type), 'id')
+const blogIds = _.pluck(blogs
+  .filter(blog => 'user' === blog.type || 'group' === blog.type), 'id')
+for (let i = 0; i < 5000; i++) {
+  notes.push({
+    id: _.random(_.minTime, _.maxTime),
+    type: 'wall',
+    from: _.sample(userIds),
+    parent: _.sample(blogIds),
+    text: _.faker.lorem.sentence()
+  })
+}
 
-  (function () {
-    const lines = []
-    for (let i = 0; i < 15000; i++) {
-      const id = _.random(minTime, maxTime)
-      child_ids.push(id)
-      const sql = [
-        id,
-        'child',
-        _.sample(note_ids),
-        _.random(1, 15),
-        faker.lorem.sentence()
-      ]
-        .map(s => 'string' === typeof s ? `'${s}'` : s)
-        .join(',\t')
-      lines.push(`\t(${sql})`)
-    }
-    var sql = lines.join(',\n')
-    return `INSERT INTO "message" (id, "type", "parent", "from", text) VALUES\n${sql};`
-  })(),
+const nodeIds = _.pluck(notes, 'id')
+const children = []
+for (let i = 0; i < 5000; i++) {
+  children.push({
+    id: _.random(_.minTime, _.maxTime),
+    type: 'child',
+    from: _.sample(userIds),
+    parent: _.sample(nodeIds),
+    text: _.faker.lorem.sentence()
+  })
+}
 
-  (function () {
-    const lines = []
-    note_ids.concat(child_ids).forEach(id => {
-      _.sample(_.range(1, 15), _.random(0, 10)).forEach(from => {
-        const sql = [
-          id,
-          from,
-          _.sample(['like', 'hate'])
-        ]
-          .map(s => 'string' === typeof s ? `'${s}'` : s)
-          .join(',\t')
-        lines.push(`\t(${sql})`)
-      })
-    })
-    var sql = lines.join(',\n')
-    return `INSERT INTO "attitude" ("message", "from", "type") VALUES\n${sql};`
-  })()
-]
+const ids = _.pluck(children, 'id').concat(nodeIds)
+const attitudes = []
+for (let i = 0; i < 15000; i++) {
+  attitudes.push({
+    from: _.sample(blogIds),
+    message: _.sample(ids),
+    type: _.sample(['like', 'hate'])
+  })
+}
 
-require('fs').writeFileSync(__dirname + '/data/wall.sql', lines.join('\n\n'))
+_.saveSQL('wall', [
+  {
+    table: 'message',
+    objects: notes
+  },
+  {
+    table: 'message',
+    objects: children
+  },
+  {
+    table: 'attitude',
+    objects: attitudes
+  }
+])

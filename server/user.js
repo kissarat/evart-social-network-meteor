@@ -1,8 +1,10 @@
+import {timeId} from './db'
+
 Accounts.onCreateUser(function (options, user) {
   if (!/^[\w\._\-]{4,23}$/.test(user.username)) {
     throw new Meteor.Error(403, 'User validation failed')
   }
-  user._id = user.username
+  user._id = timeId().toString(36)
   return user
 })
 
@@ -13,4 +15,3 @@ Meteor.methods({
   //     .single()
   // }
 })
-

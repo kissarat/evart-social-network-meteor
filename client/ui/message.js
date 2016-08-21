@@ -121,7 +121,7 @@ export class Wall extends Subscriber {
 
 export const MessageRoute =
   <Route>
-    <Route path='messenger' component={Messenger}/>,
-    <Route path='dialog/:peer' component={Messenger}/>,
+    <Route path='messenger' component={Messenger}/>
+    <Route path='dialog/:peer' component={Messenger}/>
     <Route path='blog/:id' component={Wall}/>
   </Route>

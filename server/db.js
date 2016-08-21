@@ -1,7 +1,7 @@
-import {Pool} from 'pg'
-
+const Pool = require('pg').Pool
+const _ = require('underscore')
 const _knex = require('knex')
-export const knex = _knex({
+const knex = _knex({
   client: 'pg'
 })
 
@@ -66,7 +66,7 @@ _.extend(_knex.Client.prototype.QueryBuilder.prototype, {
   }
 })
 
-export function sql(sql, bindings) {
+function sql(sql, bindings) {
   return new Promise((resolve, reject) => {
     pool.connect((err, client, done) => {
       if (err) {
@@ -88,7 +88,7 @@ export function sql(sql, bindings) {
   })
 }
 
-export function query(table, params = {}) {
+function query(table, params = {}) {
   const q = knex(table)
   q.where(_.pick(params, 'id', 'recipient', 'peer'))
   if (params.order) {
@@ -101,8 +101,15 @@ export function query(table, params = {}) {
 
 const start = Date.now() / 1000 - process.hrtime()[0]
 
-export function timeId(base) {
+function timeId(base) {
   let now = process.hrtime()
   now = (start + now[0]) * 1000 * 1000 * 1000 + now[1]
   return base ? now.toString(36) : now
+}
+
+module.exports = {
+  knex,
+  sql,
+  query,
+  timeId
 }

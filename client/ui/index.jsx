@@ -14,6 +14,8 @@ const App = ({children, menu}) =>
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
 
+const NotFound = () => <div>Page not found</div>
+
 export const RootRoute =
   <Route path='/'>
     <Route component={App}>
@@ -24,4 +26,5 @@ export const RootRoute =
       {AuthRoute}
     </Route>
     {AdminRoute}
+    <Route path="*" component={NotFound} />
   </Route>

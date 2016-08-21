@@ -6,6 +6,7 @@ const AWS = require('aws-sdk')
 const crypto = require('crypto')
 const MongoClient = require('mongodb').MongoClient
 const easyimage = require('easyimage')
+const db = require('./../server/db')
 
 function hash(string) {
   const h = crypto.createHash('sha256')
@@ -111,8 +112,33 @@ function upload(user, req, res) {
         params.Metadata.modified = modified.toUTCString()
       }
       s3.upload(params, function (err, data) {
-        res.writeHead(201, headers)
-        res.end(JSON.stringify(err || data))
+        function error(err) {
+          res.writeHead(500, headers)
+          res.end(JSON.stringify(err))
+        }
+
+        if (err) {
+          error(err)
+        }
+        else {
+          const fileType = constants.archives.indexOf(type) >= 0 ? 'archive' : type.split('/')[0]
+          db
+            .knex('file')
+            .insert({
+              id: parseInt(id, 36),
+              type: fileType,
+              name: filename,
+              mime: type,
+              thumb: `/static/thumb/${id}.jpg`
+            })
+            .promise()
+            .then(function () {
+              res.writeHead(201, headers)
+              data.type = fileType
+              res.end(JSON.stringify(data))
+            })
+            .catch(err)
+        }
       })
     })
   }

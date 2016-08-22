@@ -29,7 +29,37 @@ export class File extends Component {
   }
 }
 
+export class Oembed extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
+  onChange = (e) => {
+    Meteor.call('oembed.get', {url: e.target.value}, (err, res) => {
+      if (err) {
+        console.error(err)
+      }
+      else {
+        console.log(res)
+        this.setState(res)
+      }
+    })
+  }
+
+  render() {
+    return (
+    <form>
+      <div>
+        <input size='100' onChange={this.onChange}/>
+      </div>
+      <div dangerouslySetInnerHTML={{__html: this.state.html}}/>
+    </form>
+    )
+  }
+}
+
 export const FileRoute =
   <Route>
     <Route path='upload' component={File}/>
+    <Route path='oembed' component={Oembed}/>
   </Route>

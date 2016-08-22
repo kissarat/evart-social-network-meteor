@@ -1,18 +1,11 @@
 const http = require('http')
 const fs = require('fs')
 const config = require('../config')
+const common = require('./common')
 const constants = require('../client/data')
 const AWS = require('aws-sdk')
-const crypto = require('crypto')
-const MongoClient = require('mongodb').MongoClient
 const easyimage = require('easyimage')
 const db = require('./../server/db')
-
-function hash(string) {
-  const h = crypto.createHash('sha256')
-  h.update(string)
-  return h.digest('base64')
-}
 
 const s3 = new AWS.S3(config.aws)
 
@@ -31,10 +24,8 @@ const headers = {
   'access-control-allow-headers': 'authorization, content-type, last-modified'
 }
 
-var mongo
-
 function resizeImage(id, resize) {
-  const filename = '/tmp/' + id
+  const filename = config.file.temp + '/' + id
   let promise = easyimage.info(filename)
   if (resize) {
     promise = promise.then(function (info) {
@@ -63,6 +54,7 @@ function resizeImage(id, resize) {
         })
       })
   }
+
   return promise.then(function () {
     const options = {
       src: filename,
@@ -82,15 +74,18 @@ function upload(user, req, res) {
     res.writeHead(400, headers)
     return res.end()
   }
+
   if (!mime) {
     res.writeHead(415, headers)
     return res.end()
   }
+
   const contentLength = req.headers['content-length']
   if (!isNaN(contentLength) && contentLength > mime.size) {
     res.writeHead(413, headers)
     return res.end()
   }
+
   const id = timeId(36)
 
   function bucket(options) {
@@ -152,7 +147,7 @@ function upload(user, req, res) {
       res.writeHead(413, headers)
       return res.end(function () {
         if (willProcess) {
-          fs.unlink('/tmp/' + id)
+          fs.unlink(config.file.temp + '/' + id)
         }
       })
     }
@@ -163,7 +158,7 @@ function upload(user, req, res) {
   }
 
   if (willProcess) {
-    const filename = '/tmp/' + id
+    const filename = config.file.temp + '/' + id
     const tmp = fs.createWriteStream(filename)
     req.pipe(tmp)
     req.on('end', function () {
@@ -195,15 +190,20 @@ const server = http.createServer(function (req, res) {
       case 'POST':
         const token = /^Token\s+(.*)$/i.exec(req.headers.authorization)
         if (token) {
-          mongo.collection('users').findOne({'services.resume.loginTokens': {$elemMatch: {hashedToken: hash(token[1])}}}, function (err, user) {
-            if (user) {
-              upload(user, req, res)
-            }
-            else {
-              res.writeHead(403)
+          common.authenticate(token[1])
+            .then(function (user) {
+              if (user) {
+                upload(user, req, res)
+              }
+              else {
+                res.writeHead(403, headers)
+                res.end()
+              }
+            })
+            .catch(function (err) {
+              res.writeHead(500, headers)
               res.end()
-            }
-          })
+            })
         }
         else {
           res.writeHead(403)
@@ -219,13 +219,4 @@ const server = http.createServer(function (req, res) {
   }
 )
 
-MongoClient.connect(config.mongo, function (err, _mongo) {
-  if (err) {
-    console.error(err)
-    process.exit(1)
-  }
-  else {
-    mongo = _mongo
-    server.listen(9080)
-  }
-})
+server.listen(config.file.port, '0.0.0.0')

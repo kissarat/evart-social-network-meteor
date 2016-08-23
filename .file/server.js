@@ -2,12 +2,9 @@ const http = require('http')
 const fs = require('fs')
 const config = require('../config')
 const common = require('./common')
-const constants = require('../client/data')
-const AWS = require('aws-sdk')
 const easyimage = require('easyimage')
 const db = require('./../server/db')
-
-const s3 = new AWS.S3(config.aws)
+const ffprobe = require('node-ffprobe')
 
 const start = Date.now() / 1000 - process.hrtime()[0]
 
@@ -67,153 +64,167 @@ function resizeImage(id, resize) {
   })
 }
 
-function upload(user, req, res) {
-  const type = req.headers['content-type']
-  const mime = constants.mimes[type]
-  if (!/\w+\/.*/.test(req.headers['content-type'])) {
-    res.writeHead(400, headers)
-    return res.end()
-  }
-
-  if (!mime) {
-    res.writeHead(415, headers)
-    return res.end()
-  }
-
-  const contentLength = req.headers['content-length']
-  if (!isNaN(contentLength) && contentLength > mime.size) {
-    res.writeHead(413, headers)
-    return res.end()
-  }
-
-  const id = timeId(36)
-
-  function bucket(options) {
-    s3.createBucket(function () {
-      const filename = req.url.slice(1)
-
-      var params = {
-        Key: id,
-        Body: options.reader,
-        CacheControl: 'public',
-        ContentType: options.type,
-        Metadata: {
-          name: filename,
-          user: user._id
-        }
-      }
-      if ('last-modified' in req.headers) {
-        const modified = new Date(req.headers['last-modified'])
-        params.Metadata.modified = modified.toUTCString()
-      }
-      s3.upload(params, function (err, data) {
-        function error(err) {
-          res.writeHead(500, headers)
-          res.end(JSON.stringify(err))
-        }
-
-        if (err) {
-          error(err)
-        }
-        else {
-          const fileType = constants.archives.indexOf(type) >= 0 ? 'archive' : type.split('/')[0];
-          db
-            .knex('file')
-            .insert({
-              id: parseInt(id, 36),
-              type: fileType,
-              name: filename,
-              mime: type,
-              thumb: `/static/thumb/${id}.jpg`
-            })
-            .promise()
-            .then(function () {
-              res.writeHead(201, headers)
-              data.type = fileType
-              res.end(JSON.stringify(data))
-            })
-            .catch(err)
-        }
-      })
-    })
-  }
-
-  const resize = contentLength > config.image.resize.size
-  let size = 0
-  const willProcess = 0 === type.indexOf('image/')
-  req.on('data', function (chunk) {
-    size += chunk.length
-    if (size > mime.size) {
-      res.writeHead(413, headers)
-      return res.end(function () {
-        if (willProcess) {
-          fs.unlink(config.file.temp + '/' + id)
-        }
-      })
-    }
-  })
-
-  const options = {
-    type: willProcess ? 'image/jpeg' : req.headers['content-type']
-  }
-
-  if (willProcess) {
-    const filename = config.file.temp + '/' + id
-    const tmp = fs.createWriteStream(filename)
-    req.pipe(tmp)
-    req.on('end', function () {
-      resizeImage(id, resize)
-        .then(function () {
-          options.reader = fs.createReadStream(filename)
-          bucket(options)
-        })
-        .catch(function (err) {
-          console.error(err)
-          res.writeHead(500, headers)
-          res.end(JSON.stringify(err))
-        })
-    })
-  }
-  else {
-    options.reader = req
-    bucket(options);
-  }
-}
-
 const server = http.createServer(function (req, res) {
+    function answer(code, data) {
+      res.writeHead(code, headers)
+      if (data) {
+        if (code >= 400) {
+          console.error(code, data)
+        }
+        res.end(JSON.stringify(data))
+      }
+      else {
+        res.end()
+      }
+    }
+
+    function insert(file) {
+      file.id = parseInt(id, 36)
+      file.mime = req.mime.id
+      file.name = req.url.slice(1)
+      return db
+        .knex('file')
+        .insert(file)
+        .promise()
+        .then(function () {
+          return file
+        })
+    }
+
+    function process() {
+      const contentLength = req.headers['content-length']
+      if (!isNaN(contentLength) && contentLength > req.mime.size) {
+        return answer(413)
+      }
+
+      const id = timeId(36)
+
+      let size = 0
+      const isImage = 'image' === req.mime.type
+      req.on('data', function (chunk) {
+        size += chunk.length
+        if (size > req.mime.size) {
+          res.writeHead(413, headers)
+          return res.end(function () {
+            if (isImage) {
+              fs.unlink(config.file.temp + '/' + id)
+            }
+          })
+        }
+      })
+
+      const options = {
+        mime: req.mime.id,
+        userId: req.user.id
+      }
+
+      const file = {}
+      if (isImage) {
+        const filename = config.file.temp + '/' + id
+        const tmp = fs.createWriteStream(filename)
+        req.pipe(tmp)
+        req.on('end', function () {
+          resizeImage(id, resize)
+            .then(function () {
+              options.reader = fs.createReadStream(filename)
+              return common.upload(options)
+            })
+            .then(function () {
+              file.thumb = `/static/thumb/${id}.jpg`
+              return insert(file)
+            })
+            .then(function (file) {
+              answer(201, file)
+            })
+            .catch(function (err) {
+              answer(500, err)
+            })
+        })
+      }
+      else if ('audio' === req.mime.type) {
+        new Promise(function (resolve, reject) {
+          ffprobe(filename, function (err, probe) {
+            if (err) {
+              reject(err)
+            }
+            else {
+              resolve({
+                streams: probe.streams.map(function (stream) {
+                  return _.pick(stream, 'codec_name', 'codec_type', 'bit_rate', 'sample_rate')
+                }),
+                format: probe.format,
+                metadata: probe.metadata
+              })
+            }
+          })
+        })
+          .then(function (ffprobe) {
+            file.data = ffprobe
+            return insert(file)
+          })
+          .then(function () {
+            return db.sql('INSERT convert(file, size) VALUES ($1:BIGINT, $2:BIGINT)', [file.id, file.data.format.size])
+          })
+          .then(function () {
+            answer(202, file)
+          })
+          .catch(function (err) {
+            answer(500, err)
+          })
+      }
+      else {
+        options.reader = req
+        common.upload(options)
+          .then(function (data) {
+            answer(201, data)
+          })
+          .catch(function (err) {
+            answer(500, err)
+          })
+      }
+    }
+
     switch (req.method) {
       case 'OPTIONS':
-        res.writeHead(200, headers)
-        res.end()
+        answer(200)
         break
 
       case 'POST':
         const token = /^Token\s+(.*)$/i.exec(req.headers.authorization)
         if (token) {
-          common.authenticate(token[1])
+          common
+            .authenticate(token[1])
             .then(function (user) {
-              if (user) {
-                upload(user, req, res)
+              if (!req.headers['content-type']) {
+                answer(400)
+              }
+              else if (user) {
+                common.getMIME(req.headers['content-type'], function (mime) {
+                  if (mime && mime.enabled) {
+                    req.user = user
+                    req.mime = mime
+                    process()
+                  }
+                  else {
+                    answer(415)
+                  }
+                })
               }
               else {
-                res.writeHead(403, headers)
-                res.end()
+                answer(403)
               }
             })
             .catch(function (err) {
-              res.writeHead(500, headers)
-              res.end()
+              answer(500, err)
             })
         }
         else {
-          res.writeHead(403)
-          res.end()
+          answer(500)
         }
         break
 
       default:
-        res.writeHead(405)
-        res.end()
+        answer(405)
         break
     }
   }

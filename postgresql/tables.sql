@@ -1,26 +1,27 @@
 CREATE TYPE file_type AS ENUM ('image', 'audio', 'video', 'text', 'archive', 'application');
 
 CREATE TABLE mime (
-  id VARCHAR(80) NOT NULL PRIMARY KEY,
-  size BIGINT,
-  type file_type,
-  enabled BOOLEAN NOT NULL DEFAULT TRUE
+  id      VARCHAR(80) NOT NULL PRIMARY KEY,
+  size    BIGINT,
+  type    file_type,
+  enabled BOOLEAN     NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE file (
-  id    BIGINT PRIMARY KEY,
-  name  VARCHAR(250),
-  mime  VARCHAR(80) REFERENCES mime(id),
-  url   VARCHAR(250) UNIQUE,
-  data  VARCHAR(15000),
-  time  TIMESTAMP NOT NULL DEFAULT current_timestamp,
-  thumb VARCHAR(50)
+  id        BIGINT PRIMARY KEY,
+  name      VARCHAR(250),
+  mime      VARCHAR(80) REFERENCES mime (id),
+  url       VARCHAR(250) UNIQUE,
+  data      JSON,
+  time      TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  thumb     VARCHAR(50)
 );
 
 CREATE TABLE convert (
   id   BIGSERIAL PRIMARY KEY,
   file BIGINT NOT NULL UNIQUE REFERENCES file (id),
   pid  INT CHECK (pid > 0),
+  progress FLOAT4 NOT NULL DEFAULT 0,
   size BIGINT
 );
 

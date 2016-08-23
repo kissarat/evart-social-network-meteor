@@ -2,11 +2,6 @@ const merge = require('deepmerge')
 const local = require('./local')
 
 module.exports = merge({
-  mongo: 'mongodb://127.0.0.1:27017/evart',
-  file: {
-    port: 9080,
-    temp: '/tmp/evart'
-  },
   image: {
     resize: {
       width: 1920,
@@ -23,6 +18,18 @@ module.exports = merge({
   convert: {
     threads: 3,
     delay: 0,
+    audio: {
+      quality: 0,
+      codec: 'libfdk_aac',
+      sample_rate: 22050,
+      channels: 1
+    },
+    filters: [
+      {
+        filter: 'silencedetect',
+        options: {n: '-50dB', d: 5}
+      }
+    ]
   },
   postgresql: {
     retry: 100

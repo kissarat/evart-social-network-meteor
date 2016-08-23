@@ -4,5 +4,5 @@
 .utilities/generate/sql
 .vagrant/
 client/static/
-local.js
+local.js*
 node_modules/

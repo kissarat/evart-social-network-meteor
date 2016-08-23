@@ -63,7 +63,7 @@ CREATE OR REPLACE VIEW "last" AS
 CREATE OR REPLACE VIEW messenger AS
   SELECT
     l.peer AS id,
-    m.id   AS dialog,
+    m.id   AS message,
     b.name,
     b.avatar,
     b.type,
@@ -109,4 +109,13 @@ CREATE OR REPLACE VIEW "wall" AS
     c.comments
   FROM message_attitude_recipient a
     JOIN "message" m ON a.id = m.id
-    JOIN comments_count c ON m.id = c.id AND m.type = 'wall'
+    JOIN comments_count c ON m.id = c.id AND m.type = 'wall';
+
+CREATE OR REPLACE VIEW convert_file AS
+  SELECT
+    f.*,
+    c.size,
+    (c.size * power(random(), 2)) as priority
+  FROM file f
+    JOIN "convert" c ON f.id = c.file
+  WHERE c.pid IS NULL;

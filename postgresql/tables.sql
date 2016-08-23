@@ -1,14 +1,27 @@
 CREATE TYPE file_type AS ENUM ('image', 'audio', 'video', 'text', 'archive', 'application');
 
+CREATE TABLE mime (
+  id VARCHAR(80) NOT NULL PRIMARY KEY,
+  size BIGINT,
+  type file_type,
+  enabled BOOLEAN NOT NULL DEFAULT TRUE
+);
+
 CREATE TABLE file (
   id    BIGINT PRIMARY KEY,
   name  VARCHAR(250),
-  type  file_type,
-  mime  VARCHAR(40),
+  mime  VARCHAR(80) REFERENCES mime(id),
   url   VARCHAR(250) UNIQUE,
   data  VARCHAR(15000),
   time  TIMESTAMP NOT NULL DEFAULT current_timestamp,
   thumb VARCHAR(50)
+);
+
+CREATE TABLE convert (
+  id   BIGSERIAL PRIMARY KEY,
+  file BIGINT NOT NULL UNIQUE REFERENCES file (id),
+  pid  INT CHECK (pid > 0),
+  size BIGINT
 );
 
 CREATE TYPE blog_type AS ENUM ('user', 'group', 'chat');
@@ -38,17 +51,17 @@ CREATE TYPE message_type AS ENUM ('dialog', 'chat', 'wall', 'comment', 'child');
 
 CREATE TABLE "message" (
   id     BIGINT PRIMARY KEY,
-  "type" message_type             NOT NULL,
+  "type" message_type                 NOT NULL,
   "from" BIGINT REFERENCES blog (id)
   ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
   "to"   BIGINT REFERENCES blog (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
   parent BIGINT,
-  "text" VARCHAR(8000)            NOT NULL
+  "text" VARCHAR(8000)                NOT NULL
 );
 
 CREATE TABLE attachment (
-  number  SMALLINT NOT NULL DEFAULT 0,
+  number  SMALLINT                    NOT NULL DEFAULT 0,
   message BIGINT REFERENCES message (id)
   ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
   file    BIGINT REFERENCES message (id)

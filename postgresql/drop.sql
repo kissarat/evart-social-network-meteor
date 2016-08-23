@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS "convert_file";
 DROP VIEW IF EXISTS "wall";
 DROP VIEW IF EXISTS "comments_count";
 DROP VIEW IF EXISTS "message_attitude_recipient";
@@ -16,5 +17,7 @@ DROP TABLE IF EXISTS "relation";
 DROP TYPE IF EXISTS "relation_type";
 DROP TABLE IF EXISTS "blog";
 DROP TYPE IF EXISTS "blog_type";
+DROP TABLE IF EXISTS "convert";
 DROP TABLE IF EXISTS "file";
+DROP TABLE IF EXISTS "mime";
 DROP TYPE IF EXISTS "file_type";

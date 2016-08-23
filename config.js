@@ -19,5 +19,12 @@ module.exports = merge({
       height: 120,
       quality: 86
     }
+  },
+  convert: {
+    threads: 3,
+    delay: 0,
+  },
+  postgresql: {
+    retry: 100
   }
 }, local)

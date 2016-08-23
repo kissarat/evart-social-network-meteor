@@ -116,7 +116,7 @@ function upload(user, req, res) {
           error(err)
         }
         else {
-          const fileType = constants.archives.indexOf(type) >= 0 ? 'archive' : type.split('/')[0]
+          const fileType = constants.archives.indexOf(type) >= 0 ? 'archive' : type.split('/')[0];
           db
             .knex('file')
             .insert({

@@ -29,7 +29,7 @@ export class Dialog extends Subscriber {
     if ('Enter' === e.key) {
       const data = {
         type: this.props.type,
-        from: +Meteor.user().id,
+        from: +Meteor.userId(),
         ['dialog' === this.props.type ? 'to' : 'parent']: +this.props.id,
         text: this.draft()
       }
@@ -81,9 +81,7 @@ export class Dialog extends Subscriber {
 
 export class Messenger extends Subscriber {
   componentWillMount() {
-    this.subscribe('messenger', {
-      recipient: +Meteor.user().id
-    })
+    this.subscribe('messenger', {})
   }
 
   open = (e) => {

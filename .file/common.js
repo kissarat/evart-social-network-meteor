@@ -42,7 +42,6 @@ module.exports = {
             .findOne({'services.resume.loginTokens': {$elemMatch: {hashedToken: hash(token)}}}, cb)
         }
       })
-
     })
   }
 }

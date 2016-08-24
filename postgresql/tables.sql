@@ -8,21 +8,23 @@ CREATE TABLE mime (
 );
 
 CREATE TABLE file (
-  id        BIGINT PRIMARY KEY,
-  name      VARCHAR(250),
-  mime      VARCHAR(80) REFERENCES mime (id),
-  url       VARCHAR(250) UNIQUE,
-  data      JSON,
-  time      TIMESTAMP NOT NULL DEFAULT current_timestamp,
-  thumb     VARCHAR(50)
+  id    BIGINT PRIMARY KEY,
+  name  VARCHAR(250),
+  mime  VARCHAR(80) REFERENCES mime (id),
+  url   VARCHAR(250) UNIQUE,
+  hash  CHAR(32),
+  size  BIGINT,
+  data  JSON,
+  time  TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  thumb VARCHAR(50)
 );
 
 CREATE TABLE convert (
-  id   BIGSERIAL PRIMARY KEY,
-  file BIGINT NOT NULL UNIQUE REFERENCES file (id),
-  pid  INT CHECK (pid > 0),
+  id       BIGSERIAL PRIMARY KEY,
+  file     BIGINT NOT NULL UNIQUE REFERENCES file (id),
+  pid      INT CHECK (pid > 0),
   progress FLOAT4 NOT NULL DEFAULT 0,
-  size BIGINT
+  size     BIGINT
 );
 
 CREATE TYPE blog_type AS ENUM ('user', 'group', 'chat');

@@ -3,8 +3,10 @@ const fs = require('fs')
 const config = require('../config')
 const common = require('./common')
 const easyimage = require('easyimage')
-const db = require('./../server/db')
-const ffprobe = require('node-ffprobe')
+const db = require('../server/db')
+const _ = require('underscore')
+const crypto = require('crypto')
+const qs = require('querystring')
 
 const start = Date.now() / 1000 - process.hrtime()[0]
 
@@ -79,27 +81,46 @@ const server = http.createServer(function (req, res) {
     }
 
     function insert(file) {
-      file.id = parseInt(id, 36)
-      file.mime = req.mime.id
-      file.name = req.url.slice(1)
       return db
         .knex('file')
         .insert(file)
         .promise()
-        .then(function () {
-          return file
-        })
     }
 
     function process() {
-      const contentLength = req.headers['content-length']
+      let bucketResponse
+      const file = {
+        id: timeId(),
+        name: req.url.slice(1)
+      }
+      const id = file.id.toString(36)
+      const uploadOptions = {
+        Key: id,
+        ContentType: req.mime.id,
+        Metadata: {
+          user: req.user._id,
+          name: file.name
+        }
+      }
+
+      function success(code) {
+        if (uploadOptions.size) {
+          file.size = uploadOptions.size
+        }
+        if (bucketResponse.ETag && bucketResponse.Location) {
+          bucketResponse.ETag = bucketResponse.ETag.slice(1, -1)
+          bucketResponse.success = true
+        }
+        answer(code, _.defaults(file, bucketResponse))
+      }
+
+      const contentLength = +req.headers['content-length']
       if (!isNaN(contentLength) && contentLength > req.mime.size) {
         return answer(413)
       }
 
-      const id = timeId(36)
-
       let size = 0
+      const md5 = crypto.createHash('md5')
       const isImage = 'image' === req.mime.type
       req.on('data', function (chunk) {
         size += chunk.length
@@ -111,59 +132,58 @@ const server = http.createServer(function (req, res) {
             }
           })
         }
+        md5.update(chunk)
+      })
+      req.on('end', function () {
+        file.hash = md5.digest('hex')
       })
 
-      const options = {
-        mime: req.mime.id,
-        userId: req.user.id
-      }
-
-      const file = {}
+      const filename = config.file.temp + '/' + id
       if (isImage) {
-        const filename = config.file.temp + '/' + id
-        const tmp = fs.createWriteStream(filename)
-        req.pipe(tmp)
-        req.on('end', function () {
-          resizeImage(id, resize)
-            .then(function () {
-              options.reader = fs.createReadStream(filename)
-              return common.upload(options)
-            })
-            .then(function () {
-              file.thumb = `/static/thumb/${id}.jpg`
-              return insert(file)
-            })
-            .then(function (file) {
-              answer(201, file)
-            })
-            .catch(function (err) {
-              answer(500, err)
-            })
-        })
-      }
-      else if ('audio' === req.mime.type) {
-        new Promise(function (resolve, reject) {
-          ffprobe(filename, function (err, probe) {
-            if (err) {
-              reject(err)
-            }
-            else {
-              resolve({
-                streams: probe.streams.map(function (stream) {
-                  return _.pick(stream, 'codec_name', 'codec_type', 'bit_rate', 'sample_rate')
-                }),
-                format: probe.format,
-                metadata: probe.metadata
-              })
-            }
+        common.saveFile(req, filename)
+          .then(function () {
+            return resizeImage(id, size > config.image.resize.size)
           })
-        })
-          .then(function (ffprobe) {
-            file.data = ffprobe
+          .then(function () {
+            return common.fileStat(filename)
+          })
+          .then(function (stat) {
+            file.size = stat.size
+            uploadOptions.filename = filename
+            if (resize) {
+              file.mime = uploadOptions.ContentType = 'image/jpeg'
+            }
+            return common.upload(uploadOptions)
+          })
+          .then(function (data) {
+            bucketResponse = data
+            file.thumb = `/static/thumb/${id}.jpg`
             return insert(file)
           })
           .then(function () {
-            return db.sql('INSERT convert(file, size) VALUES ($1:BIGINT, $2:BIGINT)', [file.id, file.data.format.size])
+            success(201)
+          })
+          .catch(function (err) {
+            answer(500, err)
+          })
+      }
+      else if ('audio' === req.mime.type) {
+        common.saveFile(req, filename)
+          .then(function () {
+            return common.probe(filename)
+          })
+          .then(function (probe) {
+            file.data = probe
+            return insert(file)
+          })
+          .then(function () {
+            return db
+              .knex('convert')
+              .insert({
+                file: file.id,
+                size: file.data.format.size
+              })
+              .promise()
           })
           .then(function () {
             answer(202, file)
@@ -173,10 +193,12 @@ const server = http.createServer(function (req, res) {
           })
       }
       else {
-        options.reader = req
-        common.upload(options)
+        uploadOptions.Body = req
+        common.upload(uploadOptions)
           .then(function (data) {
-            answer(201, data)
+            bucketResponse = data
+            file.size = size
+            success(201)
           })
           .catch(function (err) {
             answer(500, err)
@@ -199,16 +221,20 @@ const server = http.createServer(function (req, res) {
                 answer(400)
               }
               else if (user) {
-                common.getMIME(req.headers['content-type'], function (mime) {
-                  if (mime && mime.enabled) {
-                    req.user = user
-                    req.mime = mime
-                    process()
-                  }
-                  else {
-                    answer(415)
-                  }
-                })
+                common.getMIME(req.headers['content-type'])
+                  .then(function (mime) {
+                    if (mime && mime.enabled) {
+                      req.user = user
+                      req.mime = mime
+                      process()
+                    }
+                    else {
+                      answer(415)
+                    }
+                  })
+                  .catch(function (err) {
+                    answer(500, err)
+                  })
               }
               else {
                 answer(403)

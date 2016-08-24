@@ -2,6 +2,9 @@ const merge = require('deepmerge')
 const local = require('./local')
 
 module.exports = merge({
+  file : {
+    port: 9080
+  },
   image: {
     resize: {
       width: 1920,

@@ -4,7 +4,9 @@ const crypto = require('crypto')
 const fs = require('fs')
 const AWS = require('aws-sdk')
 const stream = require('stream')
-const db = require('db')
+const db = require('../server/db')
+const ffprobe = require('node-ffprobe')
+const _ = require('underscore')
 
 const s3 = new AWS.S3(config.aws)
 
@@ -54,25 +56,14 @@ module.exports = {
   upload: function (options) {
     return new Promise(function (resolve, reject) {
       s3.createBucket(function () {
-        var params = {
-          Key: id,
-          Body: options.reader,
-          CacheControl: 'public',
-          ContentType: options.mime,
-          Metadata: {
-            name: options.filename
-          }
+        _.defaults(options, {
+          CacheControl: 'public'
+        })
+        if (options.filename) {
+          options.Body = fs.createReadStream(options.filename)
+          delete options.filename
         }
-        if (options.userId) {
-          params.Metadata.user = options.userId
-        }
-        if (options.lastModified) {
-          if (!options.lastModified instanceof Date) {
-            options.lastModified = new Date(options.lastModified)
-          }
-          params.Metadata.modified = options.lastModified.toUTCString()
-        }
-        s3.upload(params, function (err, data) {
+        s3.upload(options, function (err, data) {
           if (err) {
             reject(err)
           }
@@ -85,6 +76,51 @@ module.exports = {
   },
 
   getMIME: function (name) {
-   return db.sql('SELECT * FROM mime WHERE id = $1', [name])
+   return db
+     .knex('mime')
+     .where({id: name})
+     .single()
+  },
+
+  fileStat: function (filename) {
+    return new Promise(function (resolve, reject) {
+      fs.stat(filename, function (err, stat) {
+        if (err) {
+          reject(err)
+        }
+        else {
+          resolve(stat)
+        }
+      })
+    })
+  },
+
+  saveFile: function (reader, filename) {
+    return new Promise(function (resolve, reject) {
+      const writer = fs.createWriteStream(filename)
+      reader.on('error', reject)
+      writer.on('error', reject)
+      reader.pipe(writer)
+      reader.on('end', resolve)
+    })
+  },
+
+  probe: function (filename) {
+    return new Promise(function (resolve, reject) {
+      ffprobe(filename, function (err, probe) {
+        if (err) {
+          reject(err)
+        }
+        else {
+          resolve({
+            streams: probe.streams.map(function (stream) {
+              return _.pick(stream, 'codec_name', 'codec_type', 'bit_rate', 'sample_rate')
+            }),
+            format: probe.format,
+            metadata: probe.metadata
+          })
+        }
+      })
+    })
   }
 }

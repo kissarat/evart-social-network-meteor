@@ -1,5 +1,6 @@
 const db = require('./../server/db')
 const config = require('./../config')
+const ffmpeg = require('fluent-ffmpeg')
 const _ = require('underscore')
 
 let count = 0
@@ -9,7 +10,45 @@ function error(err) {
   process.exit(1)
 }
 
-function convert() {
+function convert(file) {
+  function reportProgress(status) {
+    db
+      .knex('convert')
+      .where({file: fileId})
+      .update({
+        progress: status.percent,
+        processed: status.targetSize
+      })
+      .promise()
+  }
+
+  return new Promise(function (resolve, reject) {
+    const fileId = +file.id
+    const inputFilename = config.file.temp + '/' + fileId.toString(36)
+    const outputFilename = inputFilename + '-converted.m4a'
+    ffmpeg()
+      .addInput(inputFilename)
+      .noVideo()
+      .audioChannels(config.convert.audio.channels)
+      .audioCodec(config.convert.audio.codec)
+      .audioFilters(config.convert.audio.filters)
+      .audioFrequency(config.convert.audio.sample_rate)
+      .audioQuality(config.convert.audio.quality)
+      .on('error', reject)
+      .on('start', function (status) {
+        console.log(status)
+      })
+      .on('codecData', function (data) {
+        console.log(data)
+      })
+      .addOutput(outputFilename)
+      // .on('progress', reportProgress)
+      .on('end', resolve)
+      .run()
+  })
+}
+
+function processTask() {
   db.retrySQL(`
   START TRANSACTION ISOLATION LEVEL REPEATABLE READ;
   UPDATE convert c SET pid = ${process.pid} WHERE
@@ -18,21 +57,21 @@ function convert() {
   COMMIT`, null, [db.errors.SERIALIZATION_FAILURE, db.errors.IN_FAILED_SQL_TRANSACTION])
     .then(function (result) {
       if (result.rows.length > 0) {
-        console.log(result.rows[0])
-        return db.retrySQL('SELECT * FROM file WHERE id = $1::BIGINT', [result.rows[0].file], [db.errors.IN_FAILED_SQL_TRANSACTION])
+        const fileId = result.rows[0].file
+        db.retrySQL('SELECT * FROM file WHERE id = $1::BIGINT', [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
+          .then(function (result) {
+            return convert(result.rows[0])
+          })
+          .then(function () {
+            return db.retrySQL('DELETE FROM convert WHERE id = $1::BIGINT',
+              [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
+          })
+          .then(processTask)
+          .catch(error)
       }
       else {
         count--
       }
-    })
-    .then(function (file) {
-      if (file) {
-        return db.retrySQL('DELETE FROM convert WHERE id = $1::BIGINT',
-          [file.id], [db.errors.IN_FAILED_SQL_TRANSACTION])
-      }
-    })
-    .then(function () {
-      convert()
     })
     .catch(error)
 }
@@ -45,11 +84,11 @@ function listen() {
         const delta = config.convert.threads - count
         for (let i = 0; i < delta; i++) {
           count++
-          setTimeout(convert, i * config.convert.delay)
+          setTimeout(processTask, i * config.convert.delay)
         }
       }
     })
 }
 
-process.title = 'evart-convert'
+process.title = 'evart-processTask'
 listen()

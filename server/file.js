@@ -3,7 +3,13 @@ import request from 'request'
 import {escape} from 'querystring'
 
 Meteor.publish('file', function (params = {}) {
-  return query('file', params).cursor()
+  return query('file', params)
+    .cursor()
+})
+
+Meteor.publish('convert', function (params = {}) {
+  return knex('convert')
+    .cursor()
 })
 
 const videoServies = [

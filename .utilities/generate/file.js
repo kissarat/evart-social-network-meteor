@@ -27,7 +27,7 @@ _.saveSQL('file', [
     objects: files
   },
   {
-    table: 'convert',
+    table: 'processTask',
     objects: converts
   }
 ])

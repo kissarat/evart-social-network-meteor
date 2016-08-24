@@ -22,17 +22,17 @@ module.exports = merge({
     threads: 3,
     delay: 0,
     audio: {
-      quality: 0,
+      channels: 1,
       codec: 'libfdk_aac',
+      quality: 0,
       sample_rate: 22050,
-      channels: 1
-    },
-    filters: [
-      {
-        filter: 'silencedetect',
-        options: {n: '-50dB', d: 5}
-      }
-    ]
+      filters: [
+        {
+          filter: 'silencedetect',
+          options: {n: '-50dB', d: 5}
+        }
+      ]
+    }
   },
   postgresql: {
     retry: 100

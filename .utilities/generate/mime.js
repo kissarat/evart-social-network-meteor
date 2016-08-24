@@ -46,6 +46,7 @@ const mimes = {
   'application/zip': {size: 8388608, ext: ['zip']},
   'audio/midi': {size: 262144, ext: ['mid', 'midi', 'kar']},
   'audio/mpeg': {size: 16777216, ext: ['mp3']},
+  'audio/mp3': {size: 268435456, ext: ['mp3']},
   'audio/ogg': {size: 8388608, ext: ['ogg']},
   'audio/x-m4a': {size: 16777216, ext: ['m4a']},
   'audio/x-realaudio': {size: 2097152, ext: ['ra']},

@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS "convert_progress";
 DROP VIEW IF EXISTS "convert_file";
 DROP VIEW IF EXISTS "wall";
 DROP VIEW IF EXISTS "comments_count";

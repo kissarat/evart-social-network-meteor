@@ -1,8 +1,10 @@
 const Pool = require('pg').Pool
 const _ = require('underscore')
 const config = require('../config')
-const LivePg = require('pg-live-select')
 const _knex = require('knex')
+if (!this.Meteor) {
+  global.LivePg = require('pg-live-select')
+}
 const knex = _knex({
   client: 'pg'
 })
@@ -249,25 +251,30 @@ _knex.Client.prototype.QueryBuilder.prototype._toSQL
 _knex.Client.prototype.QueryBuilder.prototype.toSQL = function () {
   const q = this._toSQL()
   let i = 0
-  const raw = q.sql
+  let raw = q.sql
   q.sql = q.sql.replace(/\?/g, () => '$' + ++i)
   let j = 0
-  console.log(raw.replace(/\?/g, function () {
-    const value = q.bindings[j++]
-    return 'string' === typeof value ? `'${value}'` : value
-  }))
+  if (q.bindings instanceof Array && q.bindings.length > 0) {
+    raw = raw.replace(/\?/g, function () {
+      const value = q.bindings[j++]
+      return 'string' === typeof value ? `'${value}'` : value
+    })
+  }
+  console.log(raw)
   return q
 }
 
-function liveSQL(sql, bindings) {
+function liveSQL(rawSQL, bindings) {
   const liveDb = new LivePg('postgres://evart:evart@127.0.0.1/evart', 'channel')
-  return liveDb.select(sql, bindings)
+  return liveDb.select(rawSQL, bindings)
 }
 
 _.extend(_knex.Client.prototype.QueryBuilder.prototype, {
   cursor: function () {
     const q = this.toSQL()
-    return liveSQL(q.sql, q.bindings)
+    return q.bindings instanceof Array && q.bindings.length > 0
+      ? liveSQL(q.sql, q.bindings)
+      : liveSQL(q.sql)
   },
 
   promise: function () {

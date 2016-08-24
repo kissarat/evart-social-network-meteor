@@ -113,9 +113,21 @@ CREATE OR REPLACE VIEW "wall" AS
 
 CREATE OR REPLACE VIEW convert_file AS
   SELECT
-    f.*,
-    c.size,
+    f.id,
+    f.name,
+    f.mime,
+    f.data,
+    coalesce(c.size, f.size) as size,
     (c.size * power(random(), 2)) as priority
   FROM file f
     JOIN "convert" c ON f.id = c.file
   WHERE c.pid IS NULL;
+
+CREATE OR REPLACE VIEW convert_progress AS
+  SELECT
+    f.name,
+    f.size,
+    c.progress,
+    c.processed
+  FROM file f
+    JOIN "convert" c ON f.id = c.file;

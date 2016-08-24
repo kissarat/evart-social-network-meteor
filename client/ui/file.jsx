@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {Subscriber} from './widget'
 import {Route} from 'react-router'
 
 function upload(e) {
@@ -48,12 +49,39 @@ export class Oembed extends Component {
 
   render() {
     return (
-    <form>
-      <div>
-        <input size='100' onChange={this.onChange}/>
-      </div>
-      <div dangerouslySetInnerHTML={{__html: this.state.html}}/>
-    </form>
+      <form>
+        <div>
+          <input size='100' onChange={this.onChange}/>
+        </div>
+        <div dangerouslySetInnerHTML={{__html: this.state.html}}/>
+      </form>
+    )
+  }
+}
+
+export class Convert extends Subscriber {
+  componentWillMount() {
+    this.subscribe('convert')
+  }
+
+  render() {
+    const rows = this.getSubscrition('convert').map(function (c) {
+      const progress = Math.round(c.progress * 10)
+      return (
+        <tr key={c.id}>
+          <td>{c.name}</td>
+          <td>
+            <progress value={progress} max="1000"/>
+          </td>
+          <td>{c.processed}</td>
+          <td>{c.size}</td>
+        </tr>
+      )
+    })
+    return (
+      <table>
+        <tbody>{rows}</tbody>
+      </table>
     )
   }
 }
@@ -62,4 +90,5 @@ export const FileRoute =
   <Route>
     <Route path='upload' component={File}/>
     <Route path='oembed' component={Oembed}/>
+    <Route path='convert' component={Convert}/>
   </Route>

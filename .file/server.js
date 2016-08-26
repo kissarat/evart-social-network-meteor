@@ -128,7 +128,7 @@ const server = http.createServer(function (req, res) {
           res.writeHead(413, headers)
           return res.end(function () {
             if (isImage) {
-              fs.unlink(config.file.temp + '/' + id)
+              common.remove(id)
             }
           })
         }

@@ -122,5 +122,18 @@ module.exports = {
         }
       })
     })
+  },
+
+  remove: function (id) {
+    return new Promise(function (resolve, reject) {
+      fs.unlink(config.file.temp + '/' + id, function (err, res) {
+        if (err) {
+          reject(err)
+        }
+        else {
+          resolve(res)
+        }
+      })
+    })
   }
 }

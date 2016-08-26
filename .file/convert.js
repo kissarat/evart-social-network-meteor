@@ -1,7 +1,8 @@
-const db = require('./../server/db')
-const config = require('./../config')
-const ffmpeg = require('fluent-ffmpeg')
 const _ = require('underscore')
+const common = require('./common')
+const config = require('./../config')
+const db = require('./../server/db')
+const ffmpeg = require('fluent-ffmpeg')
 
 let count = 0
 
@@ -12,7 +13,7 @@ function error(err) {
 
 function convert(file) {
   function reportProgress(status) {
-    db
+    return db
       .knex('convert')
       .where({file: fileId})
       .update({
@@ -25,7 +26,7 @@ function convert(file) {
   return new Promise(function (resolve, reject) {
     const fileId = +file.id
     const inputFilename = config.file.temp + '/' + fileId.toString(36)
-    const outputFilename = inputFilename + '-converted.m4a'
+    const outputFilename = inputFilename + '.m4a'
     ffmpeg()
       .addInput(inputFilename)
       .noVideo()
@@ -38,9 +39,9 @@ function convert(file) {
       .on('start', function (status) {
         console.log(status)
       })
-      .on('codecData', function (data) {
-        console.log(data)
-      })
+      // .on('codecData', function (data) {
+      //   console.log(data)
+      // })
       .addOutput(outputFilename)
       // .on('progress', reportProgress)
       .on('end', resolve)
@@ -57,13 +58,37 @@ function processTask() {
   COMMIT`, null, [db.errors.SERIALIZATION_FAILURE, db.errors.IN_FAILED_SQL_TRANSACTION])
     .then(function (result) {
       if (result.rows.length > 0) {
-        const fileId = result.rows[0].file
+        let file
+        const record = result.rows[0]
+        const fileId = +record.file
+        const fileIdString = fileId.toString(36)
         db.retrySQL('SELECT * FROM file WHERE id = $1::BIGINT', [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
           .then(function (result) {
-            return convert(result.rows[0])
+            file = result.rows[0]
+            return convert(file)
           })
           .then(function () {
-            return db.retrySQL('DELETE FROM convert WHERE id = $1::BIGINT',
+            const options = {
+              Key: fileId.toString(36),
+              filename: config.file.temp + '/' + fileIdString + '.m4a',
+              ContentType: 'audio/aac',
+              Metadata: {
+                name: file.name
+              }
+            }
+            if (record.blog) {
+              options.Metadata.user = +record.blog
+            }
+            return common.upload(options)
+          })
+          .then(function () {
+            return common.remove(fileIdString)
+          })
+          .then(function () {
+            return common.remove(fileIdString + '.m4a')
+          })
+          .then(function () {
+            return db.retrySQL('DELETE FROM convert WHERE file = $1::BIGINT',
               [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
           })
           .then(processTask)

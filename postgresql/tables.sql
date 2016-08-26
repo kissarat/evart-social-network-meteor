@@ -20,12 +20,14 @@ CREATE TABLE file (
 );
 
 CREATE TABLE convert (
-  id       BIGSERIAL PRIMARY KEY,
-  file     BIGINT NOT NULL UNIQUE REFERENCES file (id),
-  pid      INT CHECK (pid > 0),
-  progress FLOAT4 NOT NULL DEFAULT 0,
-  processed BIGINT NOT NULL DEFAULT 0,
-  size     BIGINT
+  id        BIGSERIAL PRIMARY KEY,
+  file      BIGINT                    NOT NULL UNIQUE REFERENCES file (id),
+  pid       INT CHECK (pid > 0),
+  progress  FLOAT4                    NOT NULL DEFAULT 0,
+  processed BIGINT                    NOT NULL DEFAULT 0,
+  blog      BIGINT REFERENCES blog (id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+  size      BIGINT
 );
 
 CREATE TYPE blog_type AS ENUM ('user', 'group', 'chat');

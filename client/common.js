@@ -1,53 +1,30 @@
-'use strict'
+const _ = require('underscore')
 
-const isNode = ('undefined' !== typeof module) && module.exports
-if (isNode) {
-  global.self = global
-}
-self.isService = !isNode && !(self.window && window.document)
+export const isFirefox = self.InstallTrigger
+export const isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0
+export const isIE = /*@cc_on!@*/false || !!document.documentMode
+export const isEdge = !isIE && !!self.StyleMedia
+export const isChrome = !!self.chrome && !!window.chrome.webstore
+export const isBlink = isChrome && !!window.CSS
+export const isMicrosoftWindows = navigator.userAgent.indexOf('Windows') >= 0
 
-if (isNode) {
-  var _ = require('underscore')
-}
-else {
-  self.isFirefox = !isNode && self.InstallTrigger
-  self.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0
-  self.isIE = /*@cc_on!@*/false || !!document.documentMode
-  self.isEdge = !isIE && !!self.StyleMedia
-  self.isChrome = !!self.chrome && !!window.chrome.webstore
-  self.isBlink = isChrome && !!window.CSS
-}
-
-if (!self.statistics) {
-  self.statistics = {
-    start: Date.now()
-  }
-}
-
-var SocketReadyState = {
-  0: 'The connection is not yet open',
-  1: 'The connection is open and ready to communicate',
-  2: 'The connection is in the process of closing',
-  3: 'The connection is closed or couldn\'t be opened'
-}
-
-var HumanRelationship = {
+export const HumanRelationship = {
   '': 'None selected',
-  'single': 'Single',
-  'in': 'In a relationship',
-  'engaged': 'Engaged',
-  'married': 'Married',
-  'love': 'In love',
-  'complex': 'It\'s complicated',
-  'search': 'Actively searching'
+  single: 'Single',
+  in: 'In a relationship',
+  engaged: 'Engaged',
+  married: 'Married',
+  love: 'In love',
+  complex: 'It\'s complicated',
+  search: 'Actively searching'
 }
 
-var Languages = [
+export const Languages = [
   {id: 0, iso: 'ru', name: 'Русский'},
   {id: 3, iso: 'en', name: 'English'}
 ]
 
-var emoji = {
+export const emoji = {
   '😃': ['Smile', ':)', ':-)'],
   '😄': ['Laugh', ':D', ':-D'],
   '😉': ['Blink', ')', '-)'],
@@ -105,7 +82,7 @@ var emoji = {
   '🍦': 'Ice'
 }
 
-var code = {
+export const code = {
   CONTINUE: 100,
   SWITCHING_PROTOCOLS: 101,
   PROCESSING: 102,
@@ -160,30 +137,25 @@ var code = {
   NETWORK_AUTHENTICATION_REQUIRED: 511
 }
 
-var EmptyKeys = [' ', '\n', '\t', '\xa0', 'Meta', 'Alt', 'Control', 'Shift', 'CapsLock', 'ArrowLeft', 'ArrowRight']
+export const EmptyKeys = [' ', '\n', '\t', '\xa0', 'Meta', 'Alt', 'Control', 'Shift', 'CapsLock', 'ArrowLeft', 'ArrowRight']
 
-var t13n = {
+export const t13n = {
   'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'j',
   'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f',
   'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu',
   'я': 'ya', '_': '_', 'ї': 'yi', 'ґ': 'g', 'є': 'ie', 'і': 'i'
 }
 
-var Scroll = {
-  UP: false,
-  DOWN: true
-}
-
-var Sex = {
+export const Sex = {
   male: 'Male',
   female: 'Female'
 }
 
-var twilio = {
+export const twilio = {
   INVALID_NUMBER: 21211
 }
 
-var _countries = [
+const _countries = [
   {iso: 'AF', code: 93, flag: '🇦🇫', id: 30},
   {iso: 'AL', code: 355, flag: '🇦🇱', id: 21},
   {iso: 'DZ', code: 213, flag: '🇩🇿', id: 22},
@@ -427,322 +399,46 @@ var _countries = [
   {iso: 'AX'}
 ]
 
-var countries = []
-var country_codes = []
+export const countries = []
+export const countryCodes = []
 
-var archives = [
-  'application/gzip',
-  'application/tar+gzip',
-  'application/x-7z-compressed',
-  'application/zip',
-  'application/x-rar-compressed'
-]
-
-var mimes = [
-  'application/atom+xml,128,atom',
-  'application/font-woff,8192,woff',
-  'application/gzip,65536,gz',
-  'application/java-archive,8192,jar war ear',
-  'application/json,512,json',
-  'application/mac-binhex40,64,hqx',
-  'application/msword,8192,doc',
-  'application/octet-stream,16384,bin exe dll deb dmg iso img msi msp msm',
-  'application/pdf,16384,pdf',
-  'application/postscript,8192,ps eps ai',
-  'application/rss+xml,128,rss',
-  'application/rtf,4096,rtf',
-  'application/tar+gzip,65536,tgz',
-  'application/vnd.apple.mpegurl,16,m3u8',
-  'application/vnd.google-earth.kml+xml,16,kml',
-  'application/vnd.google-earth.kmz,16,kmz',
-  'application/vnd.ms-excel,1024,xls',
-  'application/vnd.ms-fontobject,8192,eot',
-  'application/vnd.ms-powerpoint,8192,ppt',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation,16384,pptx',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,16384,xlsx',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document,16384,docx',
-  'application/vnd.wap.wmlc,8192,wmlc',
-  'application/x-7z-compressed,65536,7z',
-  'application/x-cocoa,8192,cco',
-  'application/x-java-archive-diff,512,jardiff',
-  'application/x-java-jnlp-file,16,jnlp',
-  'application/x-makeself,8192,run',
-  'application/x-perl,128,pl pm',
-  'application/x-pilot,2048,prc pdb',
-  'application/x-rar-compressed,2048,rar',
-  'application/x-redhat-package-manager,16384,rpm',
-  'application/x-sea,8192,sea',
-  'application/x-shockwave-flash,256,swf',
-  'application/x-stuffit,8192,sit',
-  'application/x-tcl,256,tcl tk',
-  'application/x-www-form-urlencoded,8,data',
-  'application/x-x509-ca-cert,64,der pem crt',
-  'application/x-xpinstall,512,xpi',
-  'application/xhtml+xml,2048,xhtml',
-  'application/xspf+xml,8192,xspf',
-  'application/zip,8192,zip',
-
-  'audio/midi,256,mid midi kar',
-  'audio/mpeg,16384,mp3',
-  'audio/ogg,8192,ogg',
-  'audio/x-m4a,16384,m4a',
-  'audio/x-realaudio,2048,ra',
-
-  'image/gif,8192,gif',
-  'image/jpeg,8192,jpeg jpg',
-  'image/png,1024,png',
-  'image/svg+xml,1024,svg svgz',
-  'image/tiff,2048,tif tiff',
-  'image/vnd.wap.wbmp,256,wbmp',
-  'image/webp,8192,webp',
-  'image/x-icon,256,ico',
-  'image/x-jng,8192,jng',
-  'image/x-ms-bmp,256,bmp',
-
-  'text/css,512,css',
-  'text/csv,2048,csv',
-  'text/mathml,32,mml',
-  'text/plain,2048,txt',
-  'text/php,64,php',
-  'text/vnd.sun.j2me.app-descriptor,8192,jad',
-  'text/vnd.wap.wml,8192,wml',
-  'text/x-component,512,htc',
-  'text/xml,512,xml',
-  'text/json,2,xml',
-
-  'video/3gpp,16384,3gpp 3gp',
-  'video/mp2t,16384,ts',
-  'video/mp4,32768,mp4',
-  'video/mpeg,8192,mpeg mpg',
-  'video/quicktime,8192,mov',
-  'video/webm,32768,webm',
-  'video/x-flv,4096,flv',
-  'video/x-m4v,4096,m4v',
-  'video/x-mng,4096,mng',
-  'video/x-ms-asf,8192,asx asf',
-  'video/x-ms-wmv,2048,wmv',
-  'video/x-msvideo,32768,avi'
-]
-
-var extensions = {}
-
-var filetypes = [
-  {mime: ['image/jpeg'], type: 'photo'},
-  {mime: ['audio/mpeg', 'audio/ogg', 'audio/ogg'], type: 'audio'},
-  {mime: ['video/mp4', 'video/webm'], type: 'video'},
-  {mime: ['text/html', 'text/plain'], type: 'text'},
-  {mime: ['application/pdf'], type: 'pdf'}
-]
-
-function _generate_data() {
-  _.each(emoji, function (object, chararcter) {
-    if ('string' === typeof object) {
-      object = {
-        title: object
-      }
-    }
-    else {
-      object = {
-        title: object[0],
-        shortcuts: object.slice(1)
-      }
-    }
-    emoji[chararcter] = object
-    object.name = object.title.toLowerCase().replace(/\s+/g, '_')
+export function register(target, events) {
+  _.each(events, function (event, key) {
+    target.addEventListener(key, event)
   })
-  Object.freeze(emoji)
-
-  _countries.forEach(function (country) {
-    if (country.id && country.flag && country.code) {
-      countries.push(country)
-      country_codes.push(country.code)
-    }
-  })
-  Object.freeze(countries)
-
-  country_codes.sort(function (a, b) {
-    return b - a
-  })
-  Object.freeze(country_codes)
-
-  var _mimes = {}
-  mimes.forEach(function (mime) {
-    mime = mime.split(',')
-    var name = mime[0]
-    mime = {
-      size: mime[1] * 1024,
-      ext: mime[2].split(' ')
-    }
-    mime.ext.forEach(function (ext) {
-      extensions[ext] = name
-    })
-    _mimes[name] = mime
-  })
-  mimes = _mimes
-  Object.freeze(mimes)
-
-  var _filetypes = {}
-  filetypes.forEach(function (record) {
-    record.mime.forEach(function (mime) {
-      _filetypes[mime] = record.type
-    })
-  })
-  filetypes = _filetypes
-  Object.freeze(filetypes)
 }
 
-if (isNode) {
-  _generate_data()
-  module.exports = {
-    archives: archives,
-    countries: countries,
-    mimes: mimes,
-    extensions: extensions,
-    filetypes: filetypes,
-    t13n: t13n
-  }
-}
-else {
-  setImmediate(_generate_data)
-}
-
-var browser = {
-  client: {},
-  os: {}
-}
-
-self.isMicrosoftWindows = false;
-(function () {
-  if (isNode) {
-    return
-  }
-  var b
-
-  if (b = /(MSIE |Edge\/)([0-9\.]+)/.exec(navigator.userAgent)) {
-    browser.client.name = 'IE'
-    browser.client.version = b[2]
-  }
-  else if (b = /(Chrome|Firefox)\/([0-9\.]+)/.exec(navigator.userAgent)) {
-    browser.client.name = b[1]
-    browser.client.version = b[2]
-    if (navigator.userAgent.indexOf('YaBrowser') >= 0) {
-      browser.client.vendor = 'Yandex'
-    }
-    if (navigator.userAgent.indexOf('OPR') >= 0) {
-      browser.client.vendor = 'Opera'
+_.each(emoji, function (object, chararcter) {
+  if ('string' === typeof object) {
+    object = {
+      title: object
     }
   }
-  else if (b = /Version\/([0-9\.]+).*Safari\//.exec(navigator.userAgent)) {
-    browser.client.name = 'Safari'
-    browser.client.version = b[1]
-  }
-
-  if (b = /(iPod|iPhone|iPad).*OS ([0-9_\.]+)/i.exec(navigator.userAgent)) {
-    browser.os.name = 'iOS'
-    browser.os.device = b[1].toLowerCase()
-    browser.os.version = b[2].replace('_', '.')
-  }
-  else if (b = /Macintosh.*Mac OS X ([0-9_\.]+)/.exec(navigator.userAgent)) {
-    browser.os.name = 'Mac'
-    browser.os.version = b[1].replace(/_/g, '.')
-  }
-  else if (navigator.userAgent.indexOf('Windows') >= 0) {
-    self.isMicrosoftWindows = true
-    browser.os.name = 'Windows'
-    var versions = {
-      'XP': ['Windows NT 5.1', 'Windows XP'],
-      'Server 2003': ['Windows NT 5.2'],
-      'Vista': ['Windows NT 6.0'],
-      '7': ['Windows NT 6.1'],
-      '8': ['Windows NT 6.2'],
-      '10': ['Windows NT 10.0']
-    }
-    windows: for (var v in versions) {
-      var matches = versions[v]
-      for (var i = 0; i < matches.length; i++) {
-        if (navigator.userAgent.indexOf(matches[i]) > 0) {
-          browser.os.version = v
-          break windows
-        }
-      }
+  else {
+    object = {
+      title: object[0],
+      shortcuts: object.slice(1)
     }
   }
-  else if (b = /Android ([0-9\.]+)/.exec(navigator.userAgent)) {
-    browser.os.name = 'Android'
-    browser.os.version = b[1]
+  emoji[chararcter] = object
+  object.name = object.title.toLowerCase().replace(/\s+/g, '_')
+})
+Object.freeze(emoji)
+
+_countries.forEach(function (country) {
+  if (country.id && country.flag && country.code) {
+    countries.push(country)
+    countryCodes.push(country.code)
   }
-  else if (navigator.userAgent.indexOf('Linux') >= 0) {
-    browser.os.name = 'Linux'
-    if (b = /(Ubuntu|Debian|Fedora|CentOS)/.exec(navigator.userAgent)) {
-      browser.os.name = b[1]
-    }
-    else if (navigator.userAgent.indexOf('Android') >= 0) {
-      browser.os.name = 'Android'
-    }
-  }
+})
 
-  if (browser.client.version && !isNaN(browser.version)) {
-    browser.client.version = +browser.version
-  }
+countryCodes.sort(function (a, b) {
+  return b - a
+})
 
-  statistics.agent = browser
-
-  self.defaultConfig = {
-    search: {
-      delay: 250
-    },
-    trace: {
-      history: false
-    },
-    socket: {
-      address: 'ws://' + location.hostname + '/socket',
-      wait: 800,
-      error: {
-        wait: 2000
-      }
-    },
-    alert: {
-      duration: 12000
-    },
-    online: {
-      delay: 10 * 1000,
-      duration: 5 * 60 * 1000
-    },
-    peer: {
-      iceServers: [
-        {
-          urls: 'stun:stun.services.mozilla.com',
-          username: 'louis@mozilla.com',
-          credential: 'webrtcdemo'
-        }, {
-          urls: [
-            'stun:stun.l.google.com:19302', 'stun:stun2.l.google.com:19302', 'stun:stun3.l.google.com:19302',
-            'stun:stun.services.mozilla.com', 'stun:23.21.150.121']
-        }
-      ]
-    }
-  }
-
-  self.features = {
-    peer: {
-      available: !!(self.RTCPeerConnection || self.webkitRTCPeerConnection)
-    },
-    notification: {
-      available: !!self.Notification,
-      enabled: false
-    },
-    fullscreen: {
-      available: !!(self.Element
-      && (Element.prototype.requestFullscreen || (Element.prototype.requestFullscreen = Element.prototype.webkitRequestFullscreen)))
-    }
-  }
-})()
-
-
-Object.freeze(SocketReadyState)
+Object.freeze(countries)
+Object.freeze(countryCodes)
 Object.freeze(HumanRelationship)
 Object.freeze(Languages)
-Object.freeze(browser)
 Object.freeze(code)
-Object.freeze(Scroll)
 Object.freeze(Sex)

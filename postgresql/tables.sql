@@ -21,10 +21,10 @@ CREATE TABLE file (
 
 CREATE TABLE convert (
   id        BIGSERIAL PRIMARY KEY,
-  file      BIGINT                    NOT NULL UNIQUE REFERENCES file (id),
+  file      BIGINT NOT NULL UNIQUE REFERENCES file (id),
   pid       INT CHECK (pid > 0),
-  progress  FLOAT4                    NOT NULL DEFAULT 0,
-  processed BIGINT                    NOT NULL DEFAULT 0,
+  progress  FLOAT4 NOT NULL DEFAULT 0,
+  processed BIGINT NOT NULL DEFAULT 0,
   blog      BIGINT REFERENCES blog (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
   size      BIGINT
@@ -83,4 +83,15 @@ CREATE TABLE attitude (
   "message" BIGINT REFERENCES message (id)
   ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
   "type"    attitude_type             NOT NULL
+);
+
+CREATE TYPE event_type AS ENUM ('offer', 'answer', 'candidate');
+
+CREATE TABLE channel (
+  id     BIGINT PRIMARY KEY,
+  "type" event_type                   NOT NULL,
+  "from" BIGINT REFERENCES blog (id)
+  ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
+  "to"   BIGINT REFERENCES blog (id),
+  "text" VARCHAR(8000)                NOT NULL
 );

@@ -4,6 +4,7 @@ import {MessageRoute} from './message'
 import {AdminRoute} from './admin/index'
 import {FileRoute} from './file'
 import {AuthRoute} from './auth'
+import {PhoneRoute} from './phone'
 
 const App = ({children, menu}) =>
   <div>
@@ -26,5 +27,6 @@ export const RootRoute =
       {AuthRoute}
     </Route>
     {AdminRoute}
+    {PhoneRoute}
     <Route path="*" component={NotFound} />
   </Route>

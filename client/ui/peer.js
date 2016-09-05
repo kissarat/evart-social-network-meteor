@@ -1,6 +1,6 @@
 import _ from 'underscore'
 import {isFirefox} from '../common'
-import {channel} from './events'
+import {channel, register, listenOncePromise} from './events'
 
 function trigger(target, name, detail) {
   target.dispatchEvent(new CustomEvent(name, {detail: detail}))
@@ -22,26 +22,19 @@ const events = {
   }
 }
 
-const Peer = window.RTCPeerConnection || window.webkitRTCPeerConnection
+const Peer = window.RTCPeerConnection || window.webkitRTCPeerConnection || {}
 
+// Polyfills
 if (window.webkitRTCPeerConnection) {
   ['createOffer', 'createAnswer'].forEach(function (method) {
     const original = this[method]
-    this[method] = function () {
-      return new Promise(function (resolve, reject) {
-        original.call(this, resolve, reject, options)
-      })
+    this[method] = function (options) {
+      return new Promise((resolve, reject) => original.call(this, resolve, reject, options))
     }
   }, Peer.prototype)
 }
 
-_.each(events, function (event, key) {
-  channel.on(key, function (message) {
-    events[key].call(Peer.get(message.from), message.text)
-  })
-})
-
-if (navigator.webkitGetUserMedia && !navigator.mediaDevices.getUserMedia) {
+if (navigator.mediaDevices && navigator.webkitGetUserMedia && !navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia = function (options) {
     return new Promise(function (resolve, reject) {
       navigator.webkitGetUserMedia(options, resolve, reject)
@@ -49,20 +42,27 @@ if (navigator.webkitGetUserMedia && !navigator.mediaDevices.getUserMedia) {
   }
 }
 
+export function peerStartup() {
+  _.each(events, function (event, key) {
+    channel.on(key, function (message) {
+      events[key].call(Peer.get(message.from), message.text)
+    })
+  })
+}
+
 let camera
 
 function getUserMedia(options) {
-  return new Promise(function (resolve, reject) {
-    if (camera) {
-      resolve(camera)
-    }
-    else {
-      navigator.mediaDevices.getUserMedia(options).then(function (_camera) {
+  if (camera) {
+    return Promise.resolve(camera)
+  }
+  else {
+    return navigator.mediaDevices.getUserMedia(options)
+      .then(function (_camera) {
         camera = _camera
+        return camera
       })
-        .catch(reject)
-    }
-  })
+  }
 }
 
 Peer.peers = {}
@@ -100,7 +100,7 @@ _.extend(Peer.prototype, {
       identityresult: trace,
       idpassertionerror: error,
       idpvalidationerror: error,
-      negotiationneeded: trace,
+      negotiationneeded: this.onNegotiationNeeded,
       peeridentity: trace,
       iceconnectionstatechange: function (e) {
         trace('CONNECTION: ' + e.target.iceConnectionState)
@@ -110,17 +110,25 @@ _.extend(Peer.prototype, {
     })
   },
 
-  OnSignalingStateChange() {
+  OnSignalingStateChange(e) {
     trace('SIGNAL: ' + e.target.signalingState)
   },
 
   OnIceCandidate: function (e) {
     if (e.candidate) {
-      channel.emit('candidate', e.candidate)
+      this.emit('candidate', JSON.stringify(e.candidate))
     }
     else {
-      error('No candidate')
+      // error('No candidate')
     }
+  },
+
+  emit: function (type, text) {
+    channel.dispatch({
+      to: this.getReceiverId(),
+      type: type,
+      text: text
+    })
   },
 
   isClosed: function () {
@@ -141,10 +149,11 @@ _.extend(Peer.prototype, {
   },
 
   setupCamera: function () {
-    return getUserMedia({audio: true, video: true}).then(camera => {
-      this.addStream(camera)
-      return camera
-    })
+    return getUserMedia({audio: true, video: true})
+      .then(_camera => {
+        // _camera.getTracks().forEach(track => this.addTrack(track, _camera))
+        this.addStream(_camera)
+      })
   },
 
   trace: function () {
@@ -153,6 +162,10 @@ _.extend(Peer.prototype, {
       signal: this.signalingState,
       streams: this.getRemoteStreams()
     }
+  },
+
+  getReceiverId: function () {
+    return parseInt(this.peerIdentity, 36)
   },
 
   addWaitingCandidates: function () {
@@ -169,22 +182,23 @@ _.extend(Peer.prototype, {
     if (!options) {
       options = makeMediaConstraints()
     }
-    let offer
     return this.createOffer(options)
-      .then((_offer) => {
-        offer = _offer
-        return this.setLocalDescription(offer)
+      .then(offer => {
+        this.setLocalDescription(offer)
+        return offer
       })
-      .then(() => offer)
   },
 
   offerCall: function () {
     return this.setupCamera()
+      .then(() => listenOncePromise(this, 'negotiationneeded'))
       .then(() => this.offer(makeMediaConstraints()))
-      .then(offer => channel.dispatch({
-        type: 'offer',
-        text: offer.sdp
-      }))
+      .then(offer => this.emit('offer', offer.sdp))
+      .catch(error)
+  },
+
+  onNegotiationNeeded: function (e) {
+    // trace('negotiationneeded', e)
   },
 
   answer: function (description, options) {
@@ -202,13 +216,11 @@ _.extend(Peer.prototype, {
       .then(answer => this.setLocalDescription(answer))
   },
 
-  answerCall: function (audio = true, video = true) {
+  answerCall: function () {
     return this.setupCamera()
+      .then(() => listenOncePromise(this, 'negotiationneeded'))
       .then(() => this.answer(this.callOffer, makeMediaConstraints()))
-      .then(answer => channel.dispatch({
-        type: 'answer',
-        text: answer.sdp
-      }))
+      .then(answer => this.emit('answer', answer.sdp))
   },
 
   receiveCall: function (offer) {
@@ -235,6 +247,9 @@ Peer.get = function (id) {
       peerIdentity: id
     })
     peer.initialize()
+    if (!peer.peerIdentity) {
+      peer.peerIdentity = id
+    }
     Peer.peers[id] = peer
   }
   return peer

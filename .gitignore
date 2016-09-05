@@ -1,8 +1,10 @@
+.DS_Store
 .idea/
 .meteor/local/
 .utilities/generate/json
 .utilities/generate/sql
 .vagrant/
+client/images/
 client/static/
 local.js*
 node_modules/

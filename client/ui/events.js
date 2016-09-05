@@ -32,8 +32,9 @@ export class Emitter {
 export class Channel extends Emitter {
   constructor(name, params) {
     super()
-    this.subscription = PgSubscription(name, params)
+    this.subscription = new PgSubscription(name, params)
     this.subscription.addEventListener('updated', function (changes) {
+      console.log(changes)
       _.each(changes.added, function (message) {
         Emitter.prototype.emit.call(this, message.type, message)
       }, this)
@@ -55,3 +56,22 @@ export class Channel extends Emitter {
 }
 
 export const channel = new Channel('channel')
+
+export function register(target, events) {
+  _.each(events, function (listener, name) {
+    target.addEventListener(name, listener)
+  })
+}
+
+export function listenOnce(target, name, listener) {
+  target.addEventListener(name, function once(e) {
+    target.removeEventListener(name, once)
+    listener(e)
+  })
+}
+
+export function listenOncePromise(target, name) {
+  return new Promise(function (resolve, reject) {
+    listenOnce(target, name, resolve)
+  })
+}

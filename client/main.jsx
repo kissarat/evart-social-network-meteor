@@ -30,4 +30,8 @@ Meteor.startup(function () {
       {RootRoute}
     </Router>
     , root)
+
+  if (Meteor.isClient && !Meteor.isCordova) {
+    require('./ui/peer').peerStartup()
+  }
 })

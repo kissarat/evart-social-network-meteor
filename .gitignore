@@ -5,6 +5,6 @@
 .utilities/generate/sql
 .vagrant/
 client/images/
-client/static/
+public/
 local.js*
 node_modules/

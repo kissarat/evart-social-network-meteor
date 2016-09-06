@@ -1,7 +1,7 @@
 import React from 'react'
 import {render} from 'react-dom'
 import {Router, browserHistory} from 'react-router'
-import {RootRoute} from './ui/index'
+import {RootRoute} from '/imports/ui/index'
 import './main.css'
 
 function $tag(name, attributes) {
@@ -31,7 +31,7 @@ Meteor.startup(function () {
     </Router>
     , root)
 
-  if (Meteor.isClient && !Meteor.isCordova) {
-    require('./ui/peer').peerStartup()
+  if (!Meteor.isCordova) {
+    require('/imports/ui/peer').peerStartup()
   }
 })

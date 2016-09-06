@@ -1,5 +1,5 @@
 import _ from 'underscore'
-import {isFirefox} from '../common'
+import {isFirefox} from '/imports/constants'
 import {channel, register, listenOncePromise} from './events'
 
 function trigger(target, name, detail) {

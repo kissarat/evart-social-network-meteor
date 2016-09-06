@@ -7,6 +7,7 @@ App.info({
   website: 'http://evart.com'
 })
 
+/*
 App.icons({
   iphone_2x: 'client/images/logo.png',
   iphone_3x: 'client/images/logo.png',
@@ -26,21 +27,22 @@ App.icons({
 })
 
 App.launchScreens({
-  iphone_2x: 'client/images/screen.png',
-  iphone5: 'client/images/screen.png',
-  iphone6: 'client/images/screen.png',
-  iphone6p_portrait: 'client/images/screen.png',
-  iphone6p_landscape: 'client/images/screen.png',
-  ipad_portrait: 'client/images/screen.png',
-  ipad_portrait_2x: 'client/images/screen.png',
-  ipad_landscape: 'client/images/screen.png',
-  ipad_landscape_2x: 'client/images/screen.png',
-  android_mdpi_portrait: 'client/images/screen.png',
-  android_mdpi_landscape: 'client/images/screen.png',
-  android_hdpi_portrait: 'client/images/screen.png',
-  android_hdpi_landscape: 'client/images/screen.png',
-  android_xhdpi_portrait: 'client/images/screen.png',
-  android_xhdpi_landscape: 'client/images/screen.png',
-  android_xxhdpi_portrait: 'client/images/screen.png',
-  android_xxhdpi_landscape: 'client/images/screen.png'
+  iphone_2x: 'client/images/logo.png',
+  iphone5: 'client/images/logo.png',
+  iphone6: 'client/images/logo.png',
+  iphone6p_portrait: 'client/images/logo.png',
+  iphone6p_landscape: 'client/images/logo.png',
+  ipad_portrait: 'client/images/logo.png',
+  ipad_portrait_2x: 'client/images/logo.png',
+  ipad_landscape: 'client/images/logo.png',
+  ipad_landscape_2x: 'client/images/logo.png',
+  android_mdpi_portrait: 'client/images/logo.png',
+  android_mdpi_landscape: 'client/images/logo.png',
+  android_hdpi_portrait: 'client/images/logo.png',
+  android_hdpi_landscape: 'client/images/logo.png',
+  android_xhdpi_portrait: 'client/images/logo.png',
+  android_xhdpi_landscape: 'client/images/logo.png',
+  android_xxhdpi_portrait: 'client/images/logo.png',
+  android_xxhdpi_landscape: 'client/images/logo.png'
 })
+*/

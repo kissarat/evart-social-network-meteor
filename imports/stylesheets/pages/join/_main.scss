@@ -1,0 +1,92 @@
+main{
+  font-family: "Panton-Regular";
+  padding-top: 10px;
+  min-height: calc(100vh - 247px - 91px);
+  .mt{
+    font-family: "Roboto-Light";
+    color: #fff;
+    margin-top: 10px;
+    a{
+      color: #fff;
+      &:hover{
+        color: #ffffff;
+      }
+    }
+  }
+  .chbox{
+    @include user-select(none);
+    input[type="checkbox"] {
+      position: absolute;
+      left: -9999px;
+    }
+    label{
+      cursor: pointer;
+      font-weight: normal;
+      color: #fff;
+      margin-bottom: 0;
+    }
+    input[type="checkbox"] + label {
+      background: url(../img/checkbox.png) 0 -1px no-repeat;
+      padding-left: 25px;
+    }
+    input[type="checkbox"]:checked + label {
+      background-position: 0 -22px;
+    }
+  }
+
+  #loginform{
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    .form-group {
+      width: 40%;
+      padding-right: 1%;
+      .form-control {
+        width: 100%;
+      }
+    }
+    button{
+      width: 18%;
+      color: white;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 20px;
+      border: 1px solid #035db8;
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.09), inset 0 1px 0 #8bc5ff;
+      background-color: #147ce4;
+      border-radius: 5px;
+    }
+  }
+
+  #welcome{
+    margin-top: 25px;
+    width: 100%;
+  }
+  .btn-join{
+    margin-top: 150px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    font-size: 30px;
+    line-height: 80px;
+    width: 100%;
+    height: 80px;
+    background-color: #fe5400;
+    background-image: linear-gradient(to top, transparent 0%, rgba(255, 255, 255, 0.3) 100%);
+    border-radius: 4px;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25), inset 0 0 2px rgba(0, 0, 0, 0.3);
+    &:hover{
+      background-color: rgb(255, 97, 19);
+      background-image: linear-gradient(to top, transparent 0%, rgba(255, 255, 255, 0.3) 100%);
+    }
+    &:active{
+      background-color: rgb(254, 84, 0);
+      background-image: linear-gradient(to top, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    }
+
+  }
+}

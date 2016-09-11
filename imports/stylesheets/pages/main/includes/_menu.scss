@@ -1,0 +1,65 @@
+$icon-width: 75px;
+$icon-offset: 3.5px;
+.menu{
+  position: relative;
+  background: url(../img/menu.png) no-repeat;
+  display: inline-block;
+  width: $icon-width;
+  height: 83px;
+  cursor: pointer;
+  transition: transform .2s;
+
+  &:after{
+    content: attr(data-content);
+    position: absolute;
+    right: -4px;
+    top: -4px;
+    background: #0084ff;
+    color: #fff;
+    font-family: "Panton-Regular";
+    font-style: normal;
+    font-size: 13px;
+    padding: 0 5px;
+    border-radius: 5px;
+  }
+
+  &:hover{
+    transform: translateY(-5px);
+  }
+  &.menu-news{
+    background-position: 1px 0;
+  }
+  &.menu-profile{
+    background-position: -($icon-width+$icon-offset) 0;
+  }
+  &.menu-feedback{
+    background-position: -(($icon-width+$icon-offset)*2) 0;
+  }
+  &.menu-message{
+    background-position: -(($icon-width+$icon-offset)*3) 0;
+  }
+  &.menu-phone{
+    background-position: -(($icon-width+$icon-offset)*4) 0;
+  }
+  &.menu-friends{
+    background-position: -(($icon-width+$icon-offset)*5)  0;
+  }
+  &.menu-group{
+    background-position: -(($icon-width+$icon-offset)*6)  0;
+  }
+  &.menu-photo{
+    background-position: -(($icon-width+$icon-offset)*7)  0;
+  }
+  &.menu-video{
+    background-position: -(($icon-width+$icon-offset)*8)  0;
+  }
+  &.menu-movie{
+    background-position: -(($icon-width+$icon-offset)*9)  0;
+  }
+  &.menu-music{
+    background-position: -(($icon-width+$icon-offset)*10)  0;
+  }
+  &.menu-settings{
+    background-position: -(($icon-width+$icon-offset)*11)  0;
+  }
+}

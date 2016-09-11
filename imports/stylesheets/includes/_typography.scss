@@ -1,0 +1,27 @@
+// _typography.scss
+@include font-face('Panton-Regular', '../fonts/Panton-Regular', $file-formats: eot woff2 woff);
+@include font-face('Roboto-Light', '../fonts/Roboto-Light', $file-formats: eot woff2 woff);
+
+#{$all-text-inputs} {
+  border: 1px solid #ccc;
+}
+
+#{$all-text-inputs-focus},
+#{$all-text-inputs-hover} {
+  border: 1px solid darken(#ccc, 25%);
+}
+
+
+.join {
+  background-image: url(../img/joinform.png);
+  background-repeat: no-repeat;
+  display: inline-block;
+
+  &.join-lock {
+    @include sprite(-3px, -3px, 13px, 16px);
+  }
+
+  &.join-mail {
+    @include sprite(-22px, -3px, 16px, 13px);
+  }
+}

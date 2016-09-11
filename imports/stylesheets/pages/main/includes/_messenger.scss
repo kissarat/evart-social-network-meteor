@@ -1,0 +1,527 @@
+#messenger-content{
+  height: 100vh;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1100px;
+  position: relative;
+}
+#messenger{
+  height: 100vh;
+  .mCSB_scrollTools {
+    right: -8px;
+  }
+  .messenger-container{
+    display: table;
+    min-width: 100%;
+    width: 100%;
+    height: 100vh;
+    table-layout: fixed;
+    position: relative;
+    padding-bottom: 120px;
+    &:after{
+      content: "";
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 10px;
+      background: linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0) 100%);
+    }
+    .online{
+      position: relative;
+      left: 3px;
+      display: inline-block;
+      border-radius: 50%;
+      background-color: #8dc63f;
+      @include size(10px);
+    }
+    .dialogs{
+      display: table-cell;
+      width: 33%;
+      position: relative;
+      .wrap-many {
+        display: flex;
+        flex-flow: row wrap;
+        img{
+          width: 50%;
+          height: 50%;
+        }
+      }
+      > ul{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        border: 1px solid #d9d9d9;
+        li{
+          list-style: none;
+          padding-left: 15px;
+          overflow: hidden;
+          border-top: 1px solid #d9d9d9;
+          &:hover{
+            background-color: #eceff4;
+            a .icon{
+              display: inline-block;
+            }
+          }
+          .photo{
+            width: 55px;
+            float: left;
+            margin: 10px 0;
+            position: relative;
+            .count{
+              background: #0084ff;
+              border-radius: 5px;
+              font-family: "Panton-Regular";
+              font-size: 12px;
+              color: #ffffff;
+              position: absolute;
+              bottom: -5px;
+              right: 0;
+              padding: 0px 5px;
+            }
+          }
+          .content{
+            display: block;
+            overflow: hidden;
+            position: relative;
+            text-decoration: none;
+            padding: 15px 0 0 5px;
+            .name{
+              color: #656a6e;
+              font-size: 14px;
+              font-family: "Panton-Regular";
+            }
+            .last{
+              color: #999999;
+              font-size: 12px;
+              font-family: "Panton-Regular";
+            }
+            .icon{
+              display: none;
+              position: absolute;
+              right: 5px;
+              top: 5px;
+            }
+            .date{
+              font-family: "Panton-Regular";
+              font-size: 10px;
+              color: #999999;
+              position: absolute;
+              right: 20px;
+              top: 17px;
+            }
+          }
+        }
+      }
+    }
+    .messages{
+      display: table-cell;
+      width: 67%;
+      position: relative;
+      > ul{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        border-bottom: 1px solid #d9d9d9;
+        li{
+          list-style: none;
+        }
+      }
+
+
+      .message-container{
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+        padding: 10px;
+        cursor: pointer;
+        &:after{
+          content: "";
+          display: table;
+          height: 1px;
+          width: 100%;
+        }
+        @include user-select();
+        > div {
+          cursor: auto;
+        }
+        .options{
+          display: none;
+          $background: #aaacad;
+          background-color: $background;
+          border-radius: 5px;
+          position: absolute;
+          height: 20px;
+          width: 75px;
+          text-align: center;
+          top: -22px;
+          right: 3px;
+          .arrow-down {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid $background;
+            position: absolute;
+            left: 50%;
+            margin-left: -6px;
+          }
+          .icon + .icon{
+            margin-left: 5px;
+            position: relative;
+            top: 1px;
+          }
+        }
+        &:hover{
+          background-color: lighten(#eceff4, 3%);
+          .chbox{
+            display: block;
+            label{
+              opacity: 0.5;
+            }
+
+          }
+        }
+        .message{
+          width: 50%;
+          display: flex;
+          position: relative;
+          float: right;
+          .avatar{
+            min-width: 55px;
+            width: 55px;
+            order: 3;
+          }
+          .text{
+            order: 2;
+            background-color: #4aa1d9;
+            border-radius: 5px;
+            position: relative;
+            margin-right: 15px;
+            color: #ffffff;
+            font-family: "Panton-Regular";
+            font-size: 12px;
+            padding: 15px;
+            @include user-select(text);
+            &:after{
+              content: "";
+              width: 0;
+              height: 0;
+              position: absolute;
+              right: -10px;
+              top: 10px;
+              border-top: 7px solid transparent;
+              border-bottom: 7px solid transparent;
+              border-left: 10px solid #4aa1d9;
+            }
+          }
+          .time{
+            order: 1;
+            position: absolute;
+            align-self: center;
+            font-family: "Roboto-Regular";
+            font-size: 10px;
+            color: #aaacad;
+            right: 103%;
+          }
+        }
+        &.active{
+          background-color: #eceff4;
+          .chbox{
+            display: block;
+          }
+        }
+        &.left{
+          .message{
+            float: left;
+          }
+          .avatar{
+            order: 1;
+          }
+          .text{
+            order: 2;
+            background-color: #eceff4;
+            margin-right: 0;
+            margin-left: 15px;
+            color: #999999;
+            &:after{
+              right: auto;
+              left: -10px;
+              top: 10px;
+              border-left: none;
+              border-right: 10px solid #eceff4;
+            }
+          }
+          .time{
+            order: 3;
+            right: auto;
+            left: 103%;
+          }
+          .chbox{
+            right: 10px;
+          }
+          .options{
+            left: 2px;
+            right: auto;
+          }
+          &.active{
+            .text{
+              background-color: #fff;
+            }
+          }
+        }
+      }
+      .chbox{
+        display: none;
+        @include user-select(none);
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        input[type="checkbox"] {
+          position: absolute;
+          left: -9999px;
+        }
+        label{
+          cursor: pointer;
+          font-weight: normal;
+          margin-bottom: 0;
+          @include size(31px);
+        }
+        input[type="checkbox"] + label {
+          background: url(../img/checkbox-big.png) 0 -31px no-repeat;
+        }
+        input[type="checkbox"]:checked + label {
+          opacity: 1;
+          background-position: 0 0;
+        }
+      }
+    }
+    .dialogs, .messages{
+      padding: 10px 0;
+      > ul{
+        bottom: 90px;
+        overflow: hidden;
+      }
+    }
+    .find{
+      position: absolute;
+      bottom: 45px;
+      width: 100%;
+      span{
+        background-color: #e0e0e0;
+        border: none;
+        border-radius: 0;
+      }
+      input{
+        font-family: "Panton-Regular";
+        font-size: 13px;
+        background: #eceff4;
+        border: none;
+        outline: none;
+        border-radius: 0;
+        height: 45px;
+        @include placeholder{
+          color: #aaacad
+        }
+      }
+    }
+    .message-block {
+      position: absolute;
+      top: calc(100% - 90px);
+      width: 98%;
+      display: block;
+      max-height:90px;
+      .add{
+        display: inline-block;
+        height: 35px;
+        width: 35px;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+      }
+      textarea{
+        width: 100%;
+        margin: 15px 0 0;
+        padding: 0 110px 0 60px;
+      }
+      label{
+        bottom: 5px;
+      }
+      .controls{
+        bottom: 10px;
+        width: 115px;
+      }
+    }
+    .popover{
+      $bgc: #fff;
+      opacity: 1;
+      padding: 0;
+      border: none;
+      margin-top: -25px;
+      .arrow{
+        border-top-color: #cad3df;
+        bottom: -40px;
+        border-width: 20px;
+        &:after{
+          border-top-color: #eceff4;
+          bottom: -19px;
+          margin-left: -20px;
+          border-width: 20px;
+        }
+      }
+      .popover-content{
+        background-color: $bgc;
+        max-width: 270px;
+        width: 270px;
+        padding: 0;
+        border-radius: 5px;
+        border: 1px solid #cad3df;
+      }
+      .head{
+        font-family: "Panton-Regular";
+        font-size: 20px;
+        color: #8493a8;
+        background-color: #eceff4;
+        border-bottom: 1px solid #cad3df;
+        text-align: left;
+        padding: 20px 30px;
+        position: relative;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        .icon{
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+        }
+        .popover{
+          margin-left: 15px;
+          .arrow{
+            display: none;
+          }
+          .popover-content{
+            max-width: 220px;
+          }
+          ul{
+            margin: 0;
+            padding: 0;
+            li{
+              list-style: none;
+              border-bottom: 1px solid #cad3df;
+              padding: 0 30px;
+              &:last-child{
+                border-bottom: none;
+              }
+              &:hover{
+                background: #eceff4;
+                a{
+                  color: #0082d5;
+                }
+              }
+              a{
+                text-decoration: none;
+                font-family: "Panton-Regular";
+                font-size: 15px;
+                color: #54657e;
+                line-height: 50px;
+              }
+            }
+          }
+        }
+      }
+      .footer{
+        position: relative;
+        bottom: 0;
+        overflow: hidden;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        span{
+          background-color: #eceff4;
+        }
+        input{
+          box-shadow: none;
+          font-size: 15px;
+          @include placeholder{
+            font-family: "Roboto-Light";
+            font-size: 15px;
+            color: #8493a8;
+          }
+        }
+      }
+      .content{
+        max-height: 420px;
+        overflow: hidden;
+        .item{
+          display: table;
+          width: 100%;
+          .avatar{
+            display: table-cell;
+            width: 60px;
+            padding: 10px;
+            position: relative;
+            display: inline-block;
+            .avatar-online{
+              display: inline-block;
+              border-radius: 50%;
+              border: 2px solid #fff;
+              position: absolute;
+              top: 10px;
+              right: 10px;
+            }
+          }
+          .name, .action{
+            display: table-cell;
+            vertical-align: middle;
+          }
+          .name{
+            font-family: "Panton-Regular";
+            font-size: 15px;
+            color: #54657e;
+          }
+          .action{
+            width: 40px;
+            text-align: center;
+            .icon{
+              display: none;
+              cursor: pointer;
+            }
+          }
+          &.user-online{
+            .avatar-online{
+              background: #04be5b;
+              height: 10px;
+              width: 10px;
+            }
+          }
+          &.user-busy{
+            .avatar-online{
+              background: #ff9948;
+              height: 10px;
+              width: 10px;
+            }
+          }
+          &.user-exists{
+            .avatar, .name{
+              opacity: .5;
+            }
+          }
+          &:hover{
+            .action{
+              .icon{
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,261 @@
+@include font-face('Panton-Regular', '../fonts/Panton-Regular', $file-formats: eot woff2 woff);
+@include font-face('Panton-Bold', '../fonts/Panton-Bold', $file-formats: eot woff2 woff);
+@include font-face('Roboto-Regular', '../fonts/Roboto-Regular', $file-formats: eot woff2 woff);
+@include font-face('Roboto-Light', '../fonts/Roboto-Light', $file-formats: eot woff2 woff);
+
+.icon {
+  background-image: url(../img/iconpack.png);
+  background-repeat: no-repeat;
+  display: inline-block;
+
+  &.icon-accept-big {
+    @include sprite(-3px, -3px, 23px, 23px);
+  }
+
+  &.icon-add {
+    @include sprite(-32px, -3px, 19px, 19px);
+  }
+
+  &.icon-add-inverse {
+    @include sprite(-57px, -3px, 24px, 24px);
+  }
+
+  &.icon-attach {
+    @include sprite(-87px, -3px, 14px, 22px);
+  }
+
+  &.icon-call {
+    @include sprite(-107px, -3px, 39px, 39px);
+  }
+
+  &.icon-call-small {
+    @include sprite(-152px, -3px, 21px, 21px);
+  }
+
+  &.icon-chart {
+    @include sprite(-179px, -3px, 34px, 31px);
+  }
+
+  &.icon-checkbox-checked {
+    @include sprite(-219px, -3px, 14px, 14px);
+  }
+
+  &.icon-checkbox-unchecked {
+    @include sprite(-239px, -3px, 14px, 14px);
+  }
+
+  &.icon-close-big {
+    @include sprite(-259px, -3px, 23px, 23px);
+  }
+
+  &.icon-close-blue {
+    @include sprite(-288px, -3px, 12px, 12px);
+  }
+
+  &.icon-close-gray {
+    @include sprite(-306px, -3px, 8px, 8px);
+  }
+
+  &.icon-close-green {
+    @include sprite(-320px, -3px, 12px, 12px);
+  }
+
+  &.icon-close-orange {
+    @include sprite(-338px, -3px, 12px, 12px);
+  }
+
+  &.icon-close-red {
+    @include sprite(-356px, -3px, 12px, 12px);
+  }
+
+  &.icon-dialog-menu {
+    @include sprite(-374px, -3px, 33px, 17px);
+  }
+
+  &.icon-dialog-repost-white {
+    @include sprite(-413px, -3px, 16px, 13px);
+  }
+
+  &.icon-dialog-search {
+    @include sprite(-435px, -3px, 16px, 16px);
+  }
+
+  &.icon-dialog-trash-gray {
+    @include sprite(-457px, -3px, 12px, 14px);
+  }
+
+  &.icon-dialog-trash-white {
+    @include sprite(-475px, -3px, 12px, 14px);
+  }
+
+  &.icon-disliked {
+    @include sprite(-493px, -3px, 12px, 11px);
+  }
+
+  &.icon-email {
+    @include sprite(-511px, -3px, 53px, 36px);
+  }
+
+  &.icon-info-big {
+    @include sprite(-570px, -3px, 23px, 23px);
+  }
+
+  &.icon-like {
+    @include sprite(-599px, -3px, 12px, 10px);
+  }
+
+  &.icon-liked {
+    @include sprite(-617px, -3px, 12px, 10px);
+  }
+
+  &.icon-location {
+    @include sprite(-635px, -3px, 11px, 16px);
+  }
+
+  &.icon-photo {
+    @include sprite(-652px, -3px, 35px, 31px);
+  }
+
+  &.icon-post {
+    @include sprite(-693px, -3px, 24px, 24px);
+  }
+
+  &.icon-quote {
+    @include sprite(-723px, -3px, 15px, 14px);
+  }
+
+  &.icon-reply {
+    @include sprite(-744px, -3px, 16px, 12px);
+  }
+
+  &.icon-repost {
+    @include sprite(-766px, -3px, 16px, 14px);
+  }
+
+  &.icon-search {
+    @include sprite(-788px, -3px, 23px, 23px);
+  }
+
+  &.icon-send {
+    @include sprite(-817px, -3px, 18px, 15px);
+  }
+
+  &.icon-smile {
+    @include sprite(-841px, -3px, 20px, 19px);
+  }
+
+  &.icon-statusbar-close {
+    @include sprite(-867px, -3px, 11px, 12px);
+  }
+
+  &.icon-statusbar-prev {
+    @include sprite(-884px, -3px, 8px, 13px);
+  }
+
+  &.icon-switch {
+    @include sprite(-898px, -3px, 23px, 24px);
+  }
+
+  &.icon-trash {
+    @include sprite(-927px, -3px, 15px, 15px);
+  }
+
+  &.icon-video-call {
+    @include sprite(-948px, -3px, 59px, 35px);
+  }
+
+  &.icon-video-call-small {
+    @include sprite(-1013px, -3px, 22px, 14px);
+  }
+
+  &.icon-warning-big {
+    @include sprite(-1041px, -3px, 23px, 23px);
+  }
+}
+
+.call {
+  background-image: url(../img/iconcall.png);
+  background-repeat: no-repeat;
+  display: inline-block;
+
+  &.call-add {
+    @include sprite(-3px, -3px, 40px, 40px);
+  }
+
+  &.call-answer {
+    @include sprite(-49px, -3px, 84px, 85px);
+  }
+
+  &.call-border {
+    @include sprite(-139px, -3px, 54px, 166px);
+  }
+
+  &.call-cancel {
+    @include sprite(-199px, -3px, 84px, 85px);
+  }
+
+  &.call-close {
+    @include sprite(-289px, -3px, 15px, 16px);
+  }
+
+  &.call-expand {
+    @include sprite(-310px, -3px, 19px, 20px);
+  }
+
+  &.call-microphone-off {
+    @include sprite(-335px, -3px, 21px, 29px);
+  }
+
+  &.call-microphone-on {
+    @include sprite(-362px, -3px, 17px, 29px);
+  }
+
+  &.call-video-on {
+    @include sprite(-385px, -3px, 28px, 16px);
+  }
+
+  &.call-volume {
+    @include sprite(-419px, -3px, 25px, 19px);
+  }
+}
+
+
+.spinner {
+  margin: 0 auto;
+  width: 70px;
+  text-align: center;
+  > div {
+    width: 6px;
+    height: 6px;
+    background-color: #fff;
+
+    border-radius: 100%;
+    display: inline-block;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  }
+  .bounce1 {
+    animation-delay: -0.54s;
+  }
+  .bounce2 {
+    animation-delay: -0.48s;
+  }
+  .bounce3 {
+    animation-delay: -0.32s;
+  }
+  .bounce4 {
+    animation-delay: -0.16s;
+  }
+}
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% {
+      -webkit-transform: scale(1.0);
+      transform: scale(1.0);
+    }
+}
+
+
+
+

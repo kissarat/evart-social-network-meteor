@@ -1,0 +1,58 @@
+$text-color: rgb(102, 106, 109);
+$margin-top: 91px;
+footer{
+  margin-top: $margin-top;
+  background: url(../img/reg-footer.jpg) no-repeat right;
+  height: 247px;
+  font-family: "Panton-Regular";
+
+  h4{
+    font-size: 36px;
+    color: $text-color;
+    margin-top: 25px;
+  }
+  p{
+    color: $text-color;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  .appbtn {
+    background-image: url(../img/app-buttons.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin: 0 1%;
+
+    &.appbtn-App-Store {
+      @include sprite(-2px, -2px, 230px, 69px);
+    }
+
+    &.appbtn-Google-Play {
+      @include sprite(-2px, -75px, 230px, 69px);
+    }
+  }
+  .randomIcons{
+    background: url(../img/randomIcons.png) no-repeat;
+    width: 730px;
+    height: 338px;
+    position: absolute;
+    top: -$margin-top;
+    right: 0;
+  }
+  .copyrights{
+    margin-top: 140px;
+    padding-left: 140px;
+    position: relative;
+    p{
+      font-size: 12px;
+      margin: 6px 0;
+    }
+  }
+  @media screen and (max-width:1200px){
+    .copyrights{
+      padding-left: 0;
+    }
+    .randomIcons{
+      right: -80px;
+    }
+  }
+}

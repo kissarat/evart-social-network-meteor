@@ -1,0 +1,51 @@
+@import "includes/mixins";
+@import "pages/main/variables";
+@import "pages/main/typography";
+
+// Styles
+html, body {
+  background: #fff;
+}
+
+#menu {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  pointer-events: none;
+  .bar {
+    text-align: center;
+    pointer-events: auto;
+    max-width: 945px;
+    width: 100%;
+    position: relative;
+    margin-top: 20px;
+    -webkit-box-reflect: below -25px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(250, 250, 250, 0.2)));
+    @include user-select();
+    @import "pages/main/includes/menu";
+  }
+  $tooltip-color: #4aa1d9;
+  .tooltip {
+    margin-top: -10px;
+    font-family: "Panton-Regular";
+    font-size: 12px;
+  }
+  .tooltip-inner {
+    background: $tooltip-color;
+    padding: 5px 15px;
+    border-radius: 1px;
+  }
+  .tooltip-arrow {
+    border-top-color: $tooltip-color;
+    bottom: -4px;
+    margin-left: -10px;
+    border-width: 10px 10px 0;
+  }
+}
+
+@import "pages/main/includes/container";
+@import "pages/main/main";
+@import "pages/main/includes/modals";
+@import "pages/main/includes/sideBlocks";
+@import "pages/main/media";

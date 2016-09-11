@@ -1,0 +1,169 @@
+@mixin btn-default {
+  color: white;
+  font-family: "Panton-Regular";
+  background-color: $button-color;
+  border-radius: 5px;
+}
+main {
+  min-height: calc(100vh - 247px - 91px);
+  .mt{
+    font-family: "Roboto-Light";
+    margin-top: 10px;
+    a{
+      color: rgb(20, 124, 228);
+      font-weight: 300;
+    }
+  }
+  .chbox{
+    @include user-select(none);
+    input[type="checkbox"] {
+      position: absolute;
+      left: -9999px;
+    }
+    label{
+      cursor: pointer;
+      font-weight: normal;
+      color: $text-color;
+      margin-bottom: 0;
+      &.text-danger{
+        color: #ff0500;
+        a{
+          color: #c15452;
+        }
+      }
+    }
+    input[type="checkbox"] + label {
+      background: url(../img/checkbox.png) 0 -1px no-repeat;
+      padding-left: 25px;
+    }
+    input[type="checkbox"]:checked + label {
+      background-position: 0 -22px;
+    }
+  }
+  font-family: "Panton-Regular";
+  padding-top: 10px;
+  #loginform {
+    max-width: 470px;
+    .form-group {
+      width: 42%;
+      padding-right: 1%;
+      .form-control {
+        width: 100%;
+      }
+    }
+    button {
+      width: 14%;
+      font-size: 12px;
+      line-height: 20px;
+      @include btn-default;
+    }
+
+  }
+  .reg{
+    margin-top: 125px;
+    font-family: "Panton-Regular";
+    h1{
+      text-shadow: 0 1px 0 white;
+      color: rgb(0, 115, 191);
+      font-size: 34px;
+      font-weight: 400;
+      line-height: 41px;
+    }
+    p{
+      text-shadow: 0 1px 0 white;
+      color: rgb(145, 145, 145);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 41px;
+    }
+    .reg-progress{
+      $back-color: #cad3df;
+      $back-color-active: #147ce4;
+      $description: #cad3df;
+      $description-active: #696d70;
+      $text-padding: 10px;
+      $action-height: 200px;
+
+      width: 100%;
+      display: flex;
+      position: relative;
+      margin-bottom: $action-height;
+      justify-content: center;
+      align-items: center;
+      .round{
+        background: $back-color;
+        text-align: center;
+        color: #ffffff;
+        @include size(40px);
+        line-height: 40px;
+        border-radius: 50%;
+
+      }
+      .step-desc{
+        font-size: 18px;
+        text-align: center;
+        padding-top: $text-padding;
+        color: $description;
+      }
+      .step-line{
+        height: 3px;
+        width: 100%;
+        background: $back-color;
+        position: relative;
+        @include calc(top, "-10px - #{$text-padding}*.7");
+        margin: 0 10px;
+      }
+      .action{
+        display: none;
+        position: absolute;
+        width: 100%;
+        left: 0;
+        height: $action-height;
+        padding: 35px 96px 0 96px;
+        .group{
+          button{
+            @include btn-default;
+            font-size: 16px;
+            line-height: 24px;
+            padding: 10px 55px;
+            width: 100%;
+          }
+          .form-group{
+            width: 49%;
+            padding: 0 1%;
+            input{
+              width: 100%;
+            }
+          }
+        }
+        .mt{
+          width: 100%;
+          font-size: 14px;
+          line-height: 26px;
+          padding: 0 1%;
+          input[type="checkbox"] + label {
+            background: url(../img/checkbox-big.png) 0 -34px no-repeat;
+            width: 100%;
+            padding-left: 40px;
+          }
+          input[type="checkbox"]:checked + label {
+            background-position: 0 -3px;
+          }
+        }
+        &.active{
+          display: block;
+        }
+      }
+      [class*='step-'].active{
+        display: block;
+        .round{
+            background: $back-color-active;
+        }
+        .step-desc{
+          color: $description-active;
+        }
+      }
+    }
+  }
+}
+

@@ -2,7 +2,7 @@ import React from 'react'
 import {render} from 'react-dom'
 import {Router, browserHistory} from 'react-router'
 import {RootRoute} from '/imports/ui/index'
-import './main.css'
+import '/imports/'
 
 function $tag(name, attributes) {
   const tag = document.createElement(name)

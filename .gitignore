@@ -4,7 +4,8 @@
 .utilities/generate/json
 .utilities/generate/sql
 .vagrant/
+client/fonts/
 client/images/
-public/
 local.js*
 node_modules/
+public/

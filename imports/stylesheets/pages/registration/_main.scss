@@ -33,7 +33,7 @@ main {
       }
     }
     input[type="checkbox"] + label {
-      background: url(../img/checkbox.png) 0 -1px no-repeat;
+      background: url(/images/checkbox.png) 0 -1px no-repeat;
       padding-left: 25px;
     }
     input[type="checkbox"]:checked + label {
@@ -142,7 +142,7 @@ main {
           line-height: 26px;
           padding: 0 1%;
           input[type="checkbox"] + label {
-            background: url(../img/checkbox-big.png) 0 -34px no-repeat;
+            background: url(/images/checkbox-big.png) 0 -34px no-repeat;
             width: 100%;
             padding-left: 40px;
           }

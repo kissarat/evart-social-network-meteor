@@ -3,7 +3,8 @@ import {Route, IndexRoute} from 'react-router'
 import {MessageRoute} from './message'
 import {AdminRoute} from './admin/index'
 import {FileRoute} from './file'
-import {AuthRoute} from './auth'
+import {LoginPage} from './auth/login'
+import {Signup} from './auth/signup'
 import {PhoneRoute} from './phone'
 
 const App = ({children, menu}) =>
@@ -45,7 +46,8 @@ export const RootRoute =
       {FileRoute}
     </Route>
     <Route component={NoIndex}>
-      {AuthRoute}
+      <Route path="login" component={LoginPage}/>
+      <Route path="signup" component={Signup}/>
     </Route>
     {AdminRoute}
     {PhoneRoute}

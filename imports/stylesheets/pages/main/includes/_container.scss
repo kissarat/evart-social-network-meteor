@@ -52,7 +52,7 @@
 
 header{
   padding: 50px 90px 250px 90px;
-  background: url(../img/mypageBack.jpg) no-repeat center / cover;
+  background: url(/images/mypageBack.jpg) no-repeat center / cover;
   overflow: hidden;
   border-bottom: 3px solid #e0e0e0;
   &.user-banned{
@@ -153,7 +153,7 @@ header{
     background-color: #8dc63f;
   }
   &.square-image {
-    background: url(../img/squareImage.png) no-repeat center;
+    background: url(/images/squareImage.png) no-repeat center;
 
     &.square-image-music-1 {
       @include spriteMax(-3px - $offset, -3px - $offset, $square-size);

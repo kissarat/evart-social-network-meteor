@@ -3,8 +3,6 @@ import {render} from 'react-dom'
 import {Router, browserHistory} from 'react-router'
 import {RootRoute} from '/imports/ui/index'
 import '/imports/ui/index'
-import '/node_modules/bootstrap/dist/js/bootstrap.js'
-import '/node_modules/bootstrap/dist/css/bootstrap.css'
 
 function $tag(name, attributes) {
   const tag = document.createElement(name)
@@ -33,7 +31,7 @@ Meteor.startup(function () {
     </Router>
     , root)
 
-  if (!Meteor.isCordova) {
+  if (Meteor.userId() && !Meteor.isCordova) {
     require('/imports/ui/peer').peerStartup()
   }
 })

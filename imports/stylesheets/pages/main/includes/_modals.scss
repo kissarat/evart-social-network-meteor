@@ -262,13 +262,13 @@
         right: 0;
         bottom: 0;
         top: 0;
-        background: url(../img/volume.png) no-repeat;
+        background: url(/images/volume.png) no-repeat;
         opacity: .3;
       }
     }
     .volumeslider__fill{
       display: inline-block;
-      background: url(../img/volume.png) no-repeat;
+      background: url(/images/volume.png) no-repeat;
       height: 19px;
       position: absolute;
       left: 0;
@@ -508,7 +508,7 @@
           margin: 18px 40px 0;
         }
         span{
-          background: url(../img/expand-photo.png) no-repeat;
+          background: url(/images/expand-photo.png) no-repeat;
           @include size(16px);
           position: absolute;
           right: 17px;

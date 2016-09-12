@@ -3,8 +3,8 @@
 @import "includes/typography";
 
 // Styles
-body{
-  background: url(../img/join-back.jpg) no-repeat top / cover;
+#login-page {
+  background: url(/images/join-back.jpg) no-repeat top / cover;
 }
 
 @import "pages/join/main";

@@ -271,7 +271,7 @@
         @include size(31px);
       }
       input[type="checkbox"] + label {
-        background: url(../img/checkbox-big.png) 0 -31px no-repeat;
+        background: url(/images/checkbox-big.png) 0 -31px no-repeat;
       }
       input[type="checkbox"]:checked + label {
         opacity: 1;
@@ -400,13 +400,13 @@
             right: 0;
             bottom: 0;
             top: 0;
-            background: url(../img/volume.png) no-repeat;
+            background: url(/images/volume.png) no-repeat;
             opacity: .3;
           }
         }
         .volumeslider__fill{
           display: inline-block;
-          background: url(../img/volume.png) no-repeat;
+          background: url(/images/volume.png) no-repeat;
           height: 19px;
           position: absolute;
           left: 0;
@@ -429,7 +429,7 @@
         width: 40px;
         text-align: right;
         .repeat{
-          background: url(../img/repeat.png) no-repeat;
+          background: url(/images/repeat.png) no-repeat;
           width: 24px;
           height: 22px;
         }
@@ -449,12 +449,12 @@
         border-left: 4px solid $ctrl-color;
       }
       .volume{
-        background: url(../img/volume.png) no-repeat;
+        background: url(/images/volume.png) no-repeat;
         width: 25px;
         height: 19px;
       }
       .expand{
-        background: url(../img/expand.png) no-repeat;
+        background: url(/images/expand.png) no-repeat;
         width: 19px;
         height: 20px;
       }
@@ -640,7 +640,7 @@
             padding-left: 10px;
             .settings{
               display: inline-block;
-              background: url(../img/settings.png) no-repeat;
+              background: url(/images/settings.png) no-repeat;
               width: 28px;
               height: 16px;
               vertical-align: middle;
@@ -715,7 +715,7 @@
         border-color: #f00;
       }
       .upload{
-        background: url(../img/upload.png) no-repeat;
+        background: url(/images/upload.png) no-repeat;
         width: 49px;
         height: 37px;
         display: inline-block;
@@ -1117,13 +1117,13 @@
             right: 0;
             bottom: 0;
             top: 0;
-            background: url(../img/volume.png) no-repeat;
+            background: url(/images/volume.png) no-repeat;
             opacity: .3;
           }
         }
         .volumeslider__fill{
           display: inline-block;
-          background: url(../img/volume.png) no-repeat;
+          background: url(/images/volume.png) no-repeat;
           height: 19px;
           position: absolute;
           left: 0;
@@ -1146,7 +1146,7 @@
         width: 40px;
         text-align: right;
         .repeat{
-          background: url(../img/repeat.png) no-repeat;
+          background: url(/images/repeat.png) no-repeat;
           width: 24px;
           height: 22px;
         }
@@ -1171,12 +1171,12 @@
         border-left: 4px solid $ctrl-color;
       }
       .volume{
-        background: url(../img/volume.png) no-repeat;
+        background: url(/images/volume.png) no-repeat;
         width: 25px;
         height: 19px;
       }
       .expand{
-        background: url(../img/expand.png) no-repeat;
+        background: url(/images/expand.png) no-repeat;
         width: 19px;
         height: 20px;
       }

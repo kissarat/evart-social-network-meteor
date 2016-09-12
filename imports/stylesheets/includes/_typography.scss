@@ -1,6 +1,6 @@
 // _typography.scss
-@include font-face('Panton-Regular', '../fonts/Panton-Regular', $file-formats: eot woff2 woff);
-@include font-face('Roboto-Light', '../fonts/Roboto-Light', $file-formats: eot woff2 woff);
+@include font-face('Panton-Regular', '/fonts/Panton-Regular', $file-formats: eot woff2 woff);
+@include font-face('Roboto-Light', '/fonts/Roboto-Light', $file-formats: eot woff2 woff);
 
 #{$all-text-inputs} {
   border: 1px solid #ccc;
@@ -13,8 +13,7 @@
 
 
 .join {
-  background-image: url(../img/joinform.png);
-  background-repeat: no-repeat;
+  background: url("/images/joinform.png") no-repeat;
   display: inline-block;
 
   &.join-lock {

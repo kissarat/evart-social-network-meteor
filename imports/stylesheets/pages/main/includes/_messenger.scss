@@ -295,7 +295,7 @@
           @include size(31px);
         }
         input[type="checkbox"] + label {
-          background: url(../img/checkbox-big.png) 0 -31px no-repeat;
+          background: url(/images/checkbox-big.png) 0 -31px no-repeat;
         }
         input[type="checkbox"]:checked + label {
           opacity: 1;

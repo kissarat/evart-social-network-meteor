@@ -1,10 +1,10 @@
-@include font-face('Panton-Regular', '../fonts/Panton-Regular', $file-formats: eot woff2 woff);
-@include font-face('Panton-Bold', '../fonts/Panton-Bold', $file-formats: eot woff2 woff);
-@include font-face('Roboto-Regular', '../fonts/Roboto-Regular', $file-formats: eot woff2 woff);
-@include font-face('Roboto-Light', '../fonts/Roboto-Light', $file-formats: eot woff2 woff);
+@include font-face('Panton-Regular', '/fonts/Panton-Regular', $file-formats: eot woff2 woff);
+@include font-face('Panton-Bold', '/fonts/Panton-Bold', $file-formats: eot woff2 woff);
+@include font-face('Roboto-Regular', '/fonts/Roboto-Regular', $file-formats: eot woff2 woff);
+@include font-face('Roboto-Light', '/fonts/Roboto-Light', $file-formats: eot woff2 woff);
 
 .icon {
-  background-image: url(../img/iconpack.png);
+  background-image: url(/images/iconpack.png);
   background-repeat: no-repeat;
   display: inline-block;
 
@@ -174,7 +174,7 @@
 }
 
 .call {
-  background-image: url(../img/iconcall.png);
+  background-image: url(/images/iconcall.png);
   background-repeat: no-repeat;
   display: inline-block;
 

@@ -429,7 +429,7 @@ main{
     content: "";
     left: 2px;
     bottom: 2px;
-    background: #fff url(../img/iconpack.png) no-repeat;
+    background: #fff url(/images/iconpack.png) no-repeat;
     border-radius: 50%;
     @include sprite(-597px, 0px, $slider-size, $slider-size);
     transition: .4s;
@@ -452,7 +452,7 @@ main{
     opacity: 0;
   }
   .slider-dislike{
-    background: #fff url(../img/iconpack.png) no-repeat;
+    background: #fff url(/images/iconpack.png) no-repeat;
     border-radius: 50%;
     position: absolute;
     top: 2px;

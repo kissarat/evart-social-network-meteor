@@ -1,7 +1,7 @@
 // _mixins.scss
 
 // @Bourbon config
-@import "../../../bower_components/bourbon/app/assets/stylesheets/bourbon";
+@import "{wolves:bourbon}/bourbon";
 @mixin sprite($x: 0, $y: 0, $width: 0, $height: 0) {
   background-position: $x $y;
   width: $width;

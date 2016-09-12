@@ -264,8 +264,9 @@ _knex.Client.prototype.QueryBuilder.prototype.toSQL = function () {
   return q
 }
 
+const liveDb = new LivePg('postgres://evart:evart@127.0.0.1/evart', 'channel')
+
 function liveSQL(rawSQL, bindings) {
-  const liveDb = new LivePg('postgres://evart:evart@127.0.0.1/evart', 'channel')
   return liveDb.select(rawSQL, bindings)
 }
 

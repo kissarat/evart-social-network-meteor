@@ -10,10 +10,12 @@ export class Subscriber extends Component {
       subscription.change(state)
     }
     else {
+      // this.unsubscribe(name)
       subscription = new PgSubscription(name, state)
       this.subscription[name] = subscription
     }
     subscription.addEventListener('updated', () => this.setState({[name]: state}))
+    return subscription
   }
 
   unsubscribe(name) {
@@ -21,6 +23,7 @@ export class Subscriber extends Component {
     if (old) {
       old.stop()
     }
+    delete this.subscription[name]
   }
 
   isSubscriptionReady(name) {
@@ -36,7 +39,11 @@ export class Subscriber extends Component {
   }
 
   componentWillUnmount() {
-    _.each(this.subscription, (subscription, name) => subscription.stop())
+    if (this.subscription) {
+      for (const name in this.subscription) {
+        this.unsubscribe(name)
+      }
+    }
   }
 }
 

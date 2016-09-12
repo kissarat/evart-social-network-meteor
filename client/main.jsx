@@ -22,6 +22,11 @@ function $tag(name, attributes) {
   return tag
 }
 
+Meteor.userIdInt = function () {
+  const userId = this.userId()
+  return userId ? parseInt(userId, 36) : false
+}
+
 Meteor.startup(function () {
   document.body.appendChild($tag('div', {id: 'root'}))
 

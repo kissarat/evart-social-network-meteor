@@ -20,6 +20,7 @@ Meteor.publish('messenger', function () {
 Meteor.methods({
   'message.create'(message) {
     message.id = timeId()
+    message.from = parseInt(Meteor.userId(), 36)
     return query('message')
       .insert(message)
       .promise()

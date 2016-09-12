@@ -19,7 +19,7 @@ CREATE OR REPLACE VIEW dialog AS
     FROM "message" m
       JOIN member r ON m."to" = r."from"
     WHERE r.blog_type = 'chat'
-    UNION ALL
+    UNION
     SELECT
       m.id,
       m."to"   AS recipient,
@@ -44,7 +44,7 @@ CREATE OR REPLACE VIEW dialog AS
     mm.id,
     mm."from",
     mm.peer,
-    b.id AS recipient,
+    mm.recipient,
     b.name,
     b.avatar,
     mm.text
@@ -57,6 +57,7 @@ CREATE OR REPLACE VIEW "last" AS
     peer,
     recipient
   FROM dialog
+    WHERE peer <> recipient
   GROUP BY peer, recipient;
 
 CREATE OR REPLACE VIEW messenger AS

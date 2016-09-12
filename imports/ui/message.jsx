@@ -24,7 +24,9 @@ export class LastMessage extends Component {
 
 export class Message extends Component {
   render() {
-    return <li className='message-container'>
+    const me = parseInt(Meteor.userId(), 36)
+    const className = (me == this.props.from ? '' : 'left') + 'message-container'
+    return <li className={className} ref={element => this.props.onRenderElement(element, this.props)}>
       <div className="message">
         <div className="avatar">
           <img src="/images/profile-image.jpg" alt="..." className="img-responsive img-circle"/>
@@ -46,38 +48,34 @@ export class Message extends Component {
 }
 
 export class Editor extends Component {
-  draft(value) {
-    const key = `dialog_${this.props.id}_draft`
-    if (value) {
-      localStorage[key] = value
-    }
-    else {
-      return localStorage[key] || ''
-    }
+  componentWillMount() {
+    this.state = {}
   }
 
   onSubmit = (e) => {
-    if ('Enter' === e.key) {
+    e = e.nativeEvent
+    e.preventDefault()
+    const text = this.state.text.trim()
+    if (text && (e instanceof MouseEvent || 'Enter' === e.key)) {
       const data = {
         type: this.props.type,
-        from: +Meteor.userId(),
         ['dialog' === this.props.type ? 'to' : 'parent']: +this.props.id,
-        text: this.draft()
+        text: text
       }
-      console.log(this.props)
       Meteor.call('message.create', data,
         (err, res) => {
           if (err) {
             console.error(err)
           }
           else {
-            localStorage.removeItem(`dialog_${this.props.id}_draft`)
+            this.setState({text: ''})
           }
         })
     }
-    else {
-      this.draft(e.target.value)
-    }
+  }
+
+  onChange = (e) => {
+    this.setState({text: e.target.value})
   }
 
   render() {
@@ -86,7 +84,7 @@ export class Editor extends Component {
         <span className="icon icon-attach"/>
         <input type="file" name="file" id="file" className="hidden"/>
       </label>
-      <textarea name="messsage" placeholder="Type your message..."/>
+      <textarea name="messsage" placeholder="Type your message..." onChange={this.onChange}/>
       <div className="controls">
         <div className="add">
           <span className="icon icon-add"/>
@@ -94,7 +92,7 @@ export class Editor extends Component {
         <div className="emoji">
           <span className="icon icon-smile"/>
         </div>
-        <button className="send" type="submit" onClick={this.onSubmit}>
+        <button className="send" type="submit" onClick={this.onSubmit} value={this.state.text}>
           <span className="icon icon-send"/>
         </button>
       </div>
@@ -103,20 +101,35 @@ export class Editor extends Component {
 }
 
 export class Dialog extends Subscriber {
-  componentWillReceiveProps(props) {
-    const params = {
+  setupSubscription(props) {
+    this.subscribe('message', {
       type: props.type,
       ['dialog' === props.type ? 'peer' : 'parent']: +props.id
+    })
+  }
+
+  componentWillMount() {
+    this.setupSubscription(this.props)
+  }
+
+  componentWillReceiveProps(props) {
+    this.setupSubscription(props)
+  }
+
+  onRenderMessageElement(array, i, element, message) {
+    if (0 === i && element) {
+      element.scrollIntoView(false)
     }
-    this.subscribe('message', params)
   }
 
   render() {
-    const messages = this.getSubscription('message')
-      .map(message => <Message key={message.id} {...message} />)
+    const messages = this.getSubscription('message').map((message, i, array) => <Message
+      key={message.id}
+      {...message}
+      onRenderElement={this.onRenderMessageElement.bind(this, array, i)}/>)
     return <div className="messages">
       <ScrollArea>{messages}</ScrollArea>
-      <Editor/>
+      <Editor {...this.props}/>
       <div className="addblock hidden">
         <div className="head">
           <span>Public chat</span>
@@ -147,21 +160,50 @@ export class Dialog extends Subscriber {
 }
 
 export class Messenger extends Subscriber {
+  setupTarget() {
+    if (this.props.params.peer) {
+      const peer = this.getSubscription('messenger').find(peer => peer.id === this.props.params.peer)
+      if (peer) {
+        this.setState({peer})
+      }
+      else {
+        Meteor.call('blog.get', {id: this.props.params.peer}, (err, res) => {
+          if (err) {
+            console.error(err)
+          }
+          else {
+            this.setState({
+              peer: {
+                id: +res.id,
+                type: 'chat' === res.type ? 'chat' : 'dialog'
+              }
+            })
+          }
+        })
+      }
+    }
+  }
+
   componentWillMount() {
+    this.state = {}
     this.subscribe('messenger', {})
+    this.setupTarget()
+  }
+
+  componentWillReceiveProps() {
+    this.setupTarget()
   }
 
   render() {
-    const peers = this.getSubscription('messenger')
     const peerListView = this.getSubscription('messenger').map(peer => <LastMessage key={peer.id} {...peer}/>)
-    const dialog = this.props.params.peer ? <Dialog {...peers.find(peer => peer.id === this.props.params.peer)}/> : ''
+    const dialog = this.state.peer ? <Dialog {...this.state.peer}/> : ''
     return <div className="container">
       <div className="row wrap">
         <div id="messenger">
           <div className="messenger-container">
             <div className="dialogs">
               <ScrollArea>{peerListView}</ScrollArea>
-              <div className="find">
+              <div className="  find">
                 <div className="input-group">
                   <input type="text" className="form-control" placeholder="Search dialog"/>
                   <span className="input-group-addon">

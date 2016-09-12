@@ -29,6 +29,7 @@
     width: 10px;
   }
   .addon-container {
+    display: none;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -37,7 +38,6 @@
     z-index: 1;
     &.addon-container-left {
       left: 0;
-      display: none;
     }
     &.addon-container-right {
       right: 0;

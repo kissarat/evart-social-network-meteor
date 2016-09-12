@@ -37,6 +37,7 @@ export const RootRoute =
     <IndexRoute component={BrowserFeatures}/>
     <Route component={App}>
       <Route path="messenger" component={Messenger}/>
+      <Route path="dialog/:peer" component={Messenger}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

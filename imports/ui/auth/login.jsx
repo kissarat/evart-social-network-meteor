@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router'
+import {Link, browserHistory} from 'react-router'
 import '/imports/stylesheets/join.scss'
 
 export class Login extends Component {
@@ -17,12 +17,14 @@ export class Login extends Component {
         Meteor.call('blog.get', blog, (err1, res1) => {
           if (res1) {
             this.setState(blog)
+            browserHistory.push('/messenger')
           }
           else {
             blog.type = 'user'
             Meteor.call('blog.create', blog, (err2, res2) => {
               blog.id = res2.id
               this.setState(blog)
+              browserHistory.push('/messenger')
             })
           }
         })
@@ -87,8 +89,8 @@ export const Footer = () =>
             <p>Application available</p>
           </div>
           <div className="row text-center">
-            <a href="#" className="appbtn appbtn-App-Store" onClick={'alert("Application not available")'}/>
-            <a href="#" className="appbtn appbtn-Google-Play" onClick={'alert("Application not available")'}/>
+            <a href="#" className="appbtn appbtn-App-Store"/>
+            <a href="#" className="appbtn appbtn-Google-Play"/>
           </div>
         </div>
       </div>

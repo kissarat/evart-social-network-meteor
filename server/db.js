@@ -361,7 +361,7 @@ function retrySQL(sql, bindings, codes) {
 }
 
 function query(table, params = {}) {
-  const q = knex(table)
+  const q = knex.table(table)
   q.where(_.pick(params, 'id', 'recipient', 'peer'))
   if (params.order) {
     _.each(params.order, function (direction, name) {

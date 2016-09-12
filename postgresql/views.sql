@@ -44,13 +44,12 @@ CREATE OR REPLACE VIEW dialog AS
     mm.id,
     mm."from",
     mm.peer,
-    r.domain AS recipient,
+    b.id AS recipient,
     b.name,
     b.avatar,
     mm.text
   FROM mm
-    JOIN blog b ON mm."from" = b.id
-    JOIN blog r ON mm.recipient = b.id;
+    JOIN blog b ON mm."from" = b.id;
 
 CREATE OR REPLACE VIEW "last" AS
   SELECT
@@ -66,7 +65,7 @@ CREATE OR REPLACE VIEW messenger AS
     m.id   AS message,
     b.name,
     b.avatar,
-    b.type,
+    m.type,
     m."text",
     l.recipient
   FROM "last" l

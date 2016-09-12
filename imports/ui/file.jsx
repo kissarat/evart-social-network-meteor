@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Subscriber} from './widget'
+import {Subscriber} from './common/widget'
 import {Route} from 'react-router'
 
 function upload(e) {
@@ -65,7 +65,7 @@ export class Convert extends Subscriber {
   }
 
   render() {
-    const rows = this.getSubscrition('convert').map(function (c) {
+    const rows = this.getSubscription('convert').map(function (c) {
       const progress = Math.round(c.progress * 10)
       return (
         <tr key={c.id}>

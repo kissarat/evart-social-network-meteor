@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Subscriber} from './widget'
+import {Subscriber} from './common/widget'
 import {Route} from 'react-router'
 
 export class Phone extends Subscriber {

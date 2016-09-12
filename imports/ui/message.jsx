@@ -25,7 +25,7 @@ export class LastMessage extends Component {
 export class Message extends Component {
   render() {
     const me = parseInt(Meteor.userId(), 36)
-    const className = (me == this.props.from ? '' : 'left') + 'message-container'
+    const className = (me == this.props.from ? '' : 'left ') + 'message-container'
     return <li className={className} ref={element => this.props.onRenderElement(element, this.props)}>
       <div className="message">
         <div className="avatar">
@@ -53,10 +53,13 @@ export class Editor extends Component {
   }
 
   onSubmit = (e) => {
-    e = e.nativeEvent
-    e.preventDefault()
+    e.nativeEvent.preventDefault()
+    this.send()
+  }
+
+  send = () => {
     const text = this.state.text.trim()
-    if (text && (e instanceof MouseEvent || 'Enter' === e.key)) {
+    if (text) {
       const data = {
         type: this.props.type,
         ['dialog' === this.props.type ? 'to' : 'parent']: +this.props.id,
@@ -78,13 +81,25 @@ export class Editor extends Component {
     this.setState({text: e.target.value})
   }
 
+  onKeyPress = (e) => {
+    if ('Enter' === e.nativeEvent.key) {
+      this.setState({text: e.target.value})
+      this.send()
+    }
+  }
+
   render() {
     return <form id="@@id" className="message-block">
       <label htmlFor="file">
         <span className="icon icon-attach"/>
         <input type="file" name="file" id="file" className="hidden"/>
       </label>
-      <textarea name="messsage" placeholder="Type your message..." onChange={this.onChange}/>
+      <textarea
+        name="messsage"
+        placeholder="Type your message..."
+        onChange={this.onChange}
+        onKeyPress={this.onKeyPress}
+        value={this.state.text}/>
       <div className="controls">
         <div className="add">
           <span className="icon icon-add"/>
@@ -92,7 +107,7 @@ export class Editor extends Component {
         <div className="emoji">
           <span className="icon icon-smile"/>
         </div>
-        <button className="send" type="submit" onClick={this.onSubmit} value={this.state.text}>
+        <button className="send" type="submit" onClick={this.onSubmit}>
           <span className="icon icon-send"/>
         </button>
       </div>

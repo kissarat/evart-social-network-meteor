@@ -11,7 +11,7 @@ export class Login extends Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-    Meteor.loginWithPassword(this.state.username, this.state.password, () => {
+    Meteor.loginWithPassword(this.state.login, this.state.password, () => {
       if (Meteor.userId()) {
         const blog = {id: parseInt(Meteor.userId(), 36)}
         Meteor.call('blog.get', blog, (err1, res1) => {
@@ -37,19 +37,21 @@ export class Login extends Component {
     return <form className="form-inline center-block" id="loginform">
       <div className="form-group">
         <label className="sr-only" htmlFor="login">Email address</label>
-        <input type="text" className="form-control" id="login" name="login" placeholder="Login"/>
+        <input type="text" className="form-control" id="login" name="login" placeholder="Login"
+               onChange={this.onChange}/>
         <span className="visible-xs-block">
-                    <span className="join join-mail"/>
-                  </span>
+          <span className="join join-mail"/>
+        </span>
       </div>
       <div className="form-group">
         <label className="sr-only" htmlFor="password">Password</label>
-        <input type="password" className="form-control" id="password" name="password" placeholder="Password"/>
+        <input type="password" className="form-control" id="password" name="password" placeholder="Password"
+               onChange={this.onChange}/>
         <span className="visible-xs-block">
-                    <span className="join join-lock"/>
-                  </span>
+          <span className="join join-lock"/>
+        </span>
       </div>
-      <button type="submit" className="btn">Sign in</button>
+      <button type="submit" className="btn" onClick={this.onSubmit}>Sign in</button>
       <div className="mt">
         <div className="form-group">
           <div className="chbox">
@@ -60,7 +62,7 @@ export class Login extends Component {
           </div>
         </div>
         <div className="form-group">
-          <a href="#">Forgot password?</a>
+          <Link to="/recovery">Forgot password?</Link>
         </div>
       </div>
     </form>
@@ -76,7 +78,7 @@ export const Footer = () =>
           <div className="copyrights">
             <p>&copy; 2015-2016 Evart Systems Incorporated.</p>
             <p>All rights reserved.</p>
-            <p>Part of the <a href="#">Evart</a> corporation.</p>
+            <p>Part of the <a href="http://evartcorp.com/">Evart</a> corporation.</p>
           </div>
         </div>
         <div className="col-sm-8 col-lg-6">
@@ -85,8 +87,8 @@ export const Footer = () =>
             <p>Application available</p>
           </div>
           <div className="row text-center">
-            <a href="#" className="appbtn appbtn-App-Store"/>
-            <a href="#" className="appbtn appbtn-Google-Play"/>
+            <a href="#" className="appbtn appbtn-App-Store" onClick={'alert("Application not available")'}/>
+            <a href="#" className="appbtn appbtn-Google-Play" onClick={'alert("Application not available")'}/>
           </div>
         </div>
       </div>

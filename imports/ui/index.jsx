@@ -1,18 +1,12 @@
 import React, {Component} from 'react'
 import {Route, IndexRoute} from 'react-router'
-import {MessageRoute} from './message'
+import {Messenger} from './message'
 import {AdminRoute} from './admin/index'
 import {FileRoute} from './file'
 import {LoginPage} from './auth/login'
 import {Signup} from './auth/signup'
 import {PhoneRoute} from './phone'
-
-const App = ({children, menu}) =>
-  <div>
-    <nav>{menu}</nav>
-    <div>{navigator.userAgent}</div>
-    <article>{children}</article>
-  </div>
+import {App} from './app'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -42,7 +36,7 @@ export const RootRoute =
   <Route path='/'>
     <IndexRoute component={BrowserFeatures}/>
     <Route component={App}>
-      {MessageRoute}
+      <Route path="messenger" component={Messenger}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

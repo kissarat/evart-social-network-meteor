@@ -1,125 +1,80 @@
 import React, {Component} from 'react'
-import {Subscriber} from './widget'
-import {Route} from 'react-router'
+// import {Subscriber} from './widget'
 
-class Message extends Component {
+export class Editor extends Component {
   render() {
-    return (
-      <div key={this.props.id} className="message">
-        <div>
-          <img src={this.props.avatar}/>
-          <div className="name">{this.props.name}</div>
+    return <form id="@@id" className="message-block">
+      <label htmlFor="file">
+        <span className="icon icon-attach"/>
+        <input type="file" name="file" id="file" className="hidden"/>
+      </label>
+      <textarea name="messsage" placeholder="Type your message..."/>
+      <div className="controls">
+        <div className="add">
+          <span className="icon icon-add"/>
         </div>
-        <div className="text">{this.props.text}</div>
+        <div className="emoji">
+          <span className="icon icon-smile"/>
+        </div>
+        <button className="send" type="submit">
+          <span className="icon icon-send"/>
+        </button>
       </div>
-    )
+    </form>
   }
 }
 
-export class Dialog extends Subscriber {
-  componentWillMount() {
-    const params = {
-      type: this.props.type,
-      ['dialog' === this.props.type ? 'peer' : 'parent']: +this.props.id
-    }
-    this.subscribe('message', params)
-  }
-
-  send = (e) => {
-    if ('Enter' === e.key) {
-      const data = {
-        type: this.props.type,
-        from: +Meteor.userId(),
-        ['dialog' === this.props.type ? 'to' : 'parent']: +this.props.id,
-        text: this.draft()
-      }
-      console.log(this.props)
-      Meteor.call('message.create', data,
-        (err, res) => {
-          if (err) {
-            console.error(err)
-          }
-          else {
-            localStorage.removeItem(`dialog_${this.props.id}_draft`)
-          }
-        })
-    }
-    else {
-      this.draft(e.target.value)
-    }
-  }
-
-  draft(value) {
-    const key = `dialog_${this.props.id}_draft`
-    if (value) {
-      localStorage[key] = value
-    }
-    else {
-      return localStorage[key] || ''
-    }
-  }
-
+export class Messenger extends Component {
   render() {
-    const messages = this.getSubscrition('message').map(m =>
-      <Message key={m.id}
-               className="message"
-               id={m.id}
-               name={m.name}
-               text={m.text}
-      />
-    )
-    return (
-      <div className="dialog">
-        <div>{messages}</div>
-        <form>
-          <textarea onKeyDown={this.send}/>
-        </form>
+    return <div className="container">
+      <div className="row wrap">
+        <div id="messenger">
+          <div className="messenger-container">
+            <div className="dialogs">
+              <ul>
+              </ul>
+              <div className="find">
+                <div className="input-group">
+                  <input type="text" className="form-control" placeholder="Search dialog"/>
+                  <span className="input-group-addon">
+                    <i className="icon icon-search"/>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="messages">
+              <ul>
+              </ul>
+              <Editor/>
+              <div className="addblock hidden">
+                <div className="head">
+                  <span>Public chat</span>
+                  <span className="icon icon-dialog-menu"/>
+                </div>
+                <div className="content">
+                </div>
+                <div className="footer find">
+                  <div className="input-group">
+                    <input type="text" className="form-control" placeholder="Search"/>
+                    <span className="input-group-addon">
+                      <i className="icon icon-dialog-search"/>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="addmenu hidden">
+                <ul>
+                  <li><a href="#">Change chat name</a></li>
+                  <li><a href="#">Add chat icon</a></li>
+                  <li><a href="#">Show members</a></li>
+                  <li><a href="#">Leave conversation</a></li>
+                  <li><a href="#">Delete conversation</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    )
+    </div>
   }
 }
-
-export class Messenger extends Subscriber {
-  componentWillMount() {
-    this.subscribe('messenger', {})
-  }
-
-  open = (e) => {
-    this.subscribe('blog', {
-      id: e.target.id
-    })
-  }
-
-  render() {
-    const peers = this.getSubscrition('messenger').map(p =>
-      <div key={p.id} onClick={this.open}>
-        <div id={p.id}>{p.name}</div>
-      </div>
-    )
-    const dialogs = this.getSubscrition('blog').map(p =>
-      <Dialog key={p.id}
-              id={p.id}
-              name={p.name}
-      />
-    )
-    return (
-      <div className="messenger">
-        <div>{peers}</div>
-        <div>{dialogs}</div>
-      </div>
-    )
-  }
-}
-
-export class Wall extends Subscriber {
-  render() {
-    return <Dialog id={+this.props.params.id} type='wall'/>
-  }
-}
-
-export const MessageRoute =
-  <Route>
-    <Route path='messenger' component={Messenger}/>
-    <Route path='dialog/:peer' component={Messenger}/>
-    <Route path='blog/:id' component={Wall}/>
-  </Route>

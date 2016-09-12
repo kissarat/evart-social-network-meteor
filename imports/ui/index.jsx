@@ -18,18 +18,28 @@ const NoIndex = ({children, menu}) =>
 
 const NotFound = () => <div>Page not found</div>
 
-class About extends Component {
+class BrowserFeatures extends Component {
   render() {
-    // document.body.style.backgroundColor = 'black'
+    document.title = 'Browser Features'
+    const features = {
+      UserAgent: navigator.userAgent,
+      WebRTC: window.RTCPeerConnection || window.webkitRTCPeerConnection ? 'Yes' : 'No',
+      MediaRecorder: window.MediaRecorder ? 'Yes' : 'No'
+    }
+    const rows = _.map(features, (v, k) => <tr><td>{k}</td><td>{v}</td></tr>)
     return (
-      <div>{navigator.userAgent}</div>
+      <table>
+        <tbody>
+        {rows}
+        </tbody>
+      </table>
     )
   }
 }
 
 export const RootRoute =
   <Route path='/'>
-    <IndexRoute component={About} />
+    <IndexRoute component={BrowserFeatures}/>
     <Route component={App}>
       {MessageRoute}
       {FileRoute}
@@ -39,5 +49,5 @@ export const RootRoute =
     </Route>
     {AdminRoute}
     {PhoneRoute}
-    <Route path="*" component={NotFound} />
+    <Route path="*" component={NotFound}/>
   </Route>

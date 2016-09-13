@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
-import {Route, IndexRoute} from 'react-router'
-import {Messenger} from './message'
 import {AdminRoute} from './admin/index'
+import {App} from './app'
 import {FileRoute} from './file'
 import {LoginPage} from './auth/login'
-import {Signup} from './auth/signup'
+import {Messenger} from './message'
 import {PhoneRoute} from './phone'
-import {App} from './app'
+import {Route, IndexRoute} from 'react-router'
+import {Signup} from './auth/signup'
+import {Blog} from './blog/article'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -38,6 +39,8 @@ export const RootRoute =
     <Route component={App}>
       <Route path="messenger" component={Messenger}/>
       <Route path="dialog/:peer" component={Messenger}/>
+      <Route path="profile" component={Blog}/>
+      <Route path="blog/:id" component={Blog}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

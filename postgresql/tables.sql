@@ -82,7 +82,8 @@ CREATE TABLE attitude (
   ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
   "message" BIGINT REFERENCES message (id)
   ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
-  "type"    attitude_type             NOT NULL
+  "type"    attitude_type             NOT NULL,
+  UNIQUE ("from", "message")
 );
 
 CREATE TYPE event_type AS ENUM ('offer', 'answer', 'candidate');

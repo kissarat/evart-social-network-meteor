@@ -57,7 +57,7 @@ CREATE OR REPLACE VIEW "last" AS
     peer,
     recipient
   FROM dialog
-    WHERE peer <> recipient
+  WHERE peer <> recipient
   GROUP BY peer, recipient;
 
 CREATE OR REPLACE VIEW messenger AS
@@ -90,7 +90,7 @@ CREATE OR REPLACE VIEW "message_attitude_recipient" AS
     a.type AS attitude,
     a.from AS recipient
   FROM message m
-    LEFT JOIN attitude a ON m.id = a.message;
+    JOIN attitude a ON m.id = a.message;
 
 CREATE OR REPLACE VIEW "comments_count" AS
   SELECT
@@ -104,12 +104,11 @@ CREATE OR REPLACE VIEW "comments_count" AS
 CREATE OR REPLACE VIEW "wall" AS
   SELECT
     m.*,
-    a.attitude,
-    a.recipient,
-    c.comments
-  FROM message_attitude_recipient a
-    JOIN "message" m ON a.id = m.id
-    JOIN comments_count c ON m.id = c.id AND m.type = 'wall';
+    b.id   AS recipient,
+    a.type AS attitude
+  FROM "blog" b CROSS JOIN message m
+    LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
+  WHERE m.type = 'wall' AND b.type = 'user';
 
 CREATE OR REPLACE VIEW convert_file AS
   SELECT
@@ -117,8 +116,8 @@ CREATE OR REPLACE VIEW convert_file AS
     f.name,
     f.mime,
     f.data,
-    coalesce(c.size, f.size) as size,
-    (c.size * power(random(), 2)) as priority
+    coalesce(c.size, f.size)      AS size,
+    (c.size * power(random(), 2)) AS priority
   FROM file f
     JOIN "convert" c ON f.id = c.file
   WHERE c.pid IS NULL;

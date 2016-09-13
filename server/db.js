@@ -363,7 +363,7 @@ function retrySQL(sql, bindings, codes) {
 
 function query(table, params = {}) {
   const q = knex.table(table)
-  q.where(_.pick(params, 'id', 'recipient', 'peer'))
+  q.where(_.pick(params, 'id', 'recipient', 'peer', 'parent'))
   if (params.order) {
     _.each(params.order, function (direction, name) {
       q.orderBy(name, direction > 0 ? 'asc' : 'desc')
@@ -382,6 +382,7 @@ function timeId(base) {
 
 module.exports = {
   knex,
+  table: name => knex.table(name),
   sql,
   query,
   liveSQL,

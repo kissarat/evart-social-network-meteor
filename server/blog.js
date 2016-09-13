@@ -52,10 +52,5 @@ Meteor.methods({
     else {
       return q.where(where).del().promise()
     }
-  },
-
-  repost(params) {
-    params.from = parseInt(Meteor.userId(), 36)
-    return table('repost').insert(params).promise()
   }
 })

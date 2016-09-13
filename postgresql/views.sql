@@ -84,43 +84,27 @@ CREATE OR REPLACE VIEW "message_attitude" AS
     RIGHT JOIN attitude a ON m.id = a.message
   GROUP BY m.id;
 
+CREATE OR REPLACE VIEW repost_count AS
+  SELECT
+    m.*,
+    (SELECT count(*)
+     FROM message
+     WHERE original = m.id) as repost
+  FROM message m;
+
 CREATE OR REPLACE VIEW "message_attitude_recipient" AS
   SELECT
     m.*,
     b.id   AS recipient,
     a.type AS attitude
-  FROM "blog" b CROSS JOIN message m
+  FROM "blog" b CROSS JOIN repost_count m
     LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
   WHERE b.type = 'user';
 
 CREATE OR REPLACE VIEW "wall" AS
-  WITH mm AS (
-    SELECT
-      id,
-      type,
-      "from",
-      parent,
-      text,
-      recipient,
-      attitude
-    FROM message_attitude_recipient
-    WHERE type = 'wall'
-    UNION
-    SELECT
-      r.id,
-      type,
-      r."from",
-      r."from" AS parent,
-      text,
-      recipient,
-      attitude
-    FROM repost r
-      JOIN message_attitude_recipient m ON r.original = m.id
-  )
-  SELECT mm.*, count(r.*) as repost
-  FROM mm
-    LEFT JOIN repost r ON mm.id = r.source
-  GROUP BY mm.id, mm.type, mm."from", mm.parent, mm.text, mm.recipient, mm.attitude;
+  SELECT *
+  FROM message_attitude_recipient m
+  WHERE type = 'wall';
 
 CREATE OR REPLACE VIEW "news" AS
   SELECT w.*
@@ -171,5 +155,3 @@ CREATE OR REPLACE VIEW "blog_recipient" AS
   FROM "blog" rec CROSS JOIN blog b
     LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
   WHERE rec.type = 'user';
-
-CREATE OR REPLACE VIEW

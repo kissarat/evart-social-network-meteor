@@ -38,9 +38,13 @@ class Attitude extends Component {
 }
 
 class Repost extends Component {
+  onClick = () => {
+    Meteor.call('repost', {id: +this.props.id})
+  }
+
   render() {
-    const count = this.props.repost > 0 ? this.props.repost : ''
-    return <div className="repost">
+    const count = this.props.repost > 0 ? +this.props.repost : ''
+    return <div className="repost" onClick={this.onClick}>
       <span className="icon icon-repost"/>
       {count}
     </div>

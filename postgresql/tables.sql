@@ -64,14 +64,8 @@ CREATE TABLE "message" (
   "to"   BIGINT REFERENCES blog (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
   parent BIGINT,
-  "text" VARCHAR(8000)                NOT NULL
-);
-
-CREATE TABLE "repost" (
-  id       BIGINT PRIMARY KEY,
-  original BIGINT REFERENCES message (id),
-  "from" BIGINT REFERENCES blog (id),
-  source BIGINT
+  "text" VARCHAR(8000)                NOT NULL,
+  original BIGINT REFERENCES message (id)
 );
 
 CREATE TABLE attachment (

@@ -50,5 +50,18 @@ Meteor.methods({
     else {
       return q.where(data).del().promise()
     }
+  },
+
+  repost({id}) {
+    return table('message').where('id', id).single().then(function (message) {
+      if (message) {
+        message.original = id
+        message.id = timeId()
+        message.from = parseInt(Meteor.userId(), 36)
+        message.parent = message.from
+        return table('message').insert(message).promise()
+      }
+      throw new Meteor.Error(404)
+    })
   }
 })

@@ -1,8 +1,12 @@
 DROP VIEW IF EXISTS "convert_progress";
 DROP VIEW IF EXISTS "convert_file";
+DROP VIEW IF EXISTS "blog_recipient";
+DROP VIEW IF EXISTS "child";
+DROP VIEW IF EXISTS "news";
 DROP VIEW IF EXISTS "wall";
 DROP VIEW IF EXISTS "comments_count";
 DROP VIEW IF EXISTS "message_attitude_recipient";
+DROP VIEW IF EXISTS "repost_count";
 DROP VIEW IF EXISTS "message_attitude";
 DROP VIEW IF EXISTS "messenger";
 DROP VIEW IF EXISTS "last";

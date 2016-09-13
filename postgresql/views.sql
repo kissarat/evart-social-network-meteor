@@ -86,11 +86,22 @@ CREATE OR REPLACE VIEW "message_attitude" AS
 
 CREATE OR REPLACE VIEW "message_attitude_recipient" AS
   SELECT
-    m.id,
-    a.type AS attitude,
-    a.from AS recipient
-  FROM message m
-    JOIN attitude a ON m.id = a.message;
+    m.*,
+    b.id   AS recipient,
+    a.type AS attitude
+  FROM "blog" b CROSS JOIN message m
+    LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
+  WHERE b.type = 'user';
+
+CREATE OR REPLACE VIEW "wall" AS
+  SELECT *
+  FROM message_attitude_recipient
+  WHERE type = 'wall';
+
+CREATE OR REPLACE VIEW "child" AS
+  SELECT *
+  FROM message_attitude_recipient
+  WHERE type = 'child';
 
 CREATE OR REPLACE VIEW "comments_count" AS
   SELECT
@@ -100,15 +111,6 @@ CREATE OR REPLACE VIEW "comments_count" AS
     LEFT JOIN "message" c ON m.id = c.parent AND 'child' = c.type
   WHERE 'wall' = m.type
   GROUP BY m.id;
-
-CREATE OR REPLACE VIEW "wall" AS
-  SELECT
-    m.*,
-    b.id   AS recipient,
-    a.type AS attitude
-  FROM "blog" b CROSS JOIN message m
-    LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
-  WHERE m.type = 'wall' AND b.type = 'user';
 
 CREATE OR REPLACE VIEW convert_file AS
   SELECT

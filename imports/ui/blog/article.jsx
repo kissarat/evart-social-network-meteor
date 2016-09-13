@@ -1,8 +1,14 @@
 import React, {Component} from 'react'
 import {Subscriber} from '/imports/ui/common/widget'
 import {UserLayout} from './user'
+import {Editor} from './editor'
+import {idToTimeString} from '/imports/ui/common/helpers'
 
 export class Article extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
   onChangeAttitude = (e) => {
     Meteor.call('estimate', {id: this.props.id, attitude: e.nativeEvent.target.value || false}, (err, res) => {
       if (err) {
@@ -12,6 +18,10 @@ export class Article extends Component {
         // console.log(res)
       }
     })
+  }
+
+  onClickComment = (e) => {
+    this.setState({comments: true})
   }
 
   render() {
@@ -31,32 +41,32 @@ export class Article extends Component {
                checked={'like' === this.props.attitude} onChange={this.onChangeAttitude}/>
         <div className="slider-dislike"></div>
       </div>
+    const comments = this.state.comments ? <Children id={this.props.id}/> : ''
+    const buttons = 'wall' === this.props.type ?
+      <div className="comment">
+        <span className="icon icon-quote"/>
+        <span className="comment-text" onClick={this.onClickComment}>Comment</span>
+      </div>
+      : ''
     return <article>
       <div className="posted-by">
         <div className="poster-border">
           <div className="poster-wrapper">
-            <img src="img/profile-image.jpg" alt="..." className="img-circle img-responsive"/>
-            <time>20 apr 21:59</time>
+            <img src="/images/profile-image.jpg" alt="..." className="img-circle img-responsive"/>
+            <time>{idToTimeString(this.props.id)}</time>
           </div>
         </div>
       </div>
       <div className="post-content">
         <div className="content-head">
-          <h3>Nikita Safronov</h3>
-          <span>&bull;&bull;&bull;</span>
+          <h3>{this.props.name || 'Untitled'}</h3>
         </div>
         <p>{this.props.text}</p>
         <div className="content-footer">
-          <div className="comment">
-            <span className="icon icon-quote"/>
-            <span className="comment-text">Comment</span>
-          </div>
-          <div className="repost">
-            <span className="icon icon-repost"/>
-            3
-          </div>
+          {buttons}
           {attitude}
         </div>
+        {comments}
       </div>
     </article>
   }
@@ -81,10 +91,27 @@ export class Blog extends Subscriber {
     if (this.state.id) {
       const articles = this.getSubscription('message')
         .map(message => <Article key={message.id} {...message}/>)
-      return <UserLayout {...this.state}>{articles}</UserLayout>
+      return <UserLayout {...this.state}>
+        <Editor type='wall' id={this.props.params.id}/>
+        <div className="posts">{articles}</div>
+      </UserLayout>
     }
     else {
       return <div>Loading...</div>
     }
+  }
+}
+
+export class Children extends Subscriber {
+  componentWillMount() {
+    this.subscribe('message', {parent: this.props.id, type: 'child'})
+  }
+
+  render() {
+    const comments = this.getSubscription('message').map(comment => <Article key={comment.id} {...comment}/>)
+    return <div className="comments">
+      <Editor type="child" id={this.props.id}/>
+      <div className="posts">{comments}</div>
+    </div>
   }
 }

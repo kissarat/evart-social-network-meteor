@@ -20,3 +20,4 @@ twbs:bootstrap
 underscore@1.0.9
 webapp@1.3.11
 wolves:bourbon
+momentjs:moment

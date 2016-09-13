@@ -10,3 +10,7 @@
 .blog .user-container {
   min-height: 256px;
 }
+
+textarea:hover, textarea:focus {
+  border: none !important;
+}

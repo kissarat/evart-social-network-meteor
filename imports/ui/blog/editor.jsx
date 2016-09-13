@@ -42,7 +42,10 @@ export class Editor extends Component {
   }
 
   render() {
-    return <form id="@@id" className="message-block">
+    const add = 'chat' === this.props.type ? <div className="add">
+      <span className="icon icon-add"/>
+    </div> : ''
+    return <form className="message-block">
       <label htmlFor="file">
         <span className="icon icon-attach"/>
         <input type="file" name="file" id="file" className="hidden"/>
@@ -54,9 +57,7 @@ export class Editor extends Component {
         onKeyPress={this.onKeyPress}
         value={this.state.text}/>
       <div className="controls">
-        <div className="add">
-          <span className="icon icon-add"/>
-        </div>
+        {add}
         <div className="emoji">
           <span className="icon icon-smile"/>
         </div>

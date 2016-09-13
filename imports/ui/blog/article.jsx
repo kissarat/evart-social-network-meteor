@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
+import {Link} from 'react-router'
 import {Subscriber} from '/imports/ui/common/widget'
-import {UserLayout} from './user'
+import {BlogLayout} from './layout'
 import {Editor} from './editor'
 import {idToTimeString} from '/imports/ui/common/helpers'
 
@@ -59,7 +60,7 @@ export class Article extends Component {
       </div>
       <div className="post-content">
         <div className="content-head">
-          <h3>{this.props.name || 'Untitled'}</h3>
+          <Link className='name' to={'/blog/' + this.props.from}>{this.props.name || 'Untitled'}</Link>
         </div>
         <p>{this.props.text}</p>
         <div className="content-footer">
@@ -73,28 +74,46 @@ export class Article extends Component {
 }
 
 export class Blog extends Subscriber {
+  setupState(state) {
+    this.setState(state)
+    this.subscribe('message', {parent: state.id, type: 'wall'})
+  }
+
+  setup(props) {
+    if (props.id) {
+      this.setupState(props)
+    }
+    else {
+      const id = props.params && props.params.id ? +props.params.id : Meteor.userIdInt()
+      Meteor.call('blog.get', {id: id}, (err, state) => {
+        if (err) {
+          console.error(err)
+        }
+        else {
+          state.busy = false
+          this.setupState(state)
+        }
+      })
+    }
+  }
+
   componentWillMount() {
-    this.state = {}
-    const id = +this.props.params.id || Meteor.userIdInt()
-    Meteor.call('blog.get', {id: id}, (err, res) => {
-      if (err) {
-        console.error(err)
-      }
-      else {
-        this.setState(res)
-        this.subscribe('message', {parent: id, type: 'wall'})
-      }
-    })
+    this.setup(this.props)
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({busy: true})
+    this.setup(props)
   }
 
   render() {
-    if (this.state.id) {
+    if (this.state) {
       const articles = this.getSubscription('message')
         .map(message => <Article key={message.id} {...message}/>)
-      return <UserLayout {...this.state}>
-        <Editor type='wall' id={this.props.params.id}/>
+      return <BlogLayout {...this.state}>
+        <Editor type='wall' id={this.state.id}/>
         <div className="posts">{articles}</div>
-      </UserLayout>
+      </BlogLayout>
     }
     else {
       return <div>Loading...</div>

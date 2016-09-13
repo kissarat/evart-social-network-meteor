@@ -1,26 +1,26 @@
-#news{
+#news {
   min-height: calc(100vh - 20px);
   padding: 0 10px 120px;
-  .content-item{
+  .content-item {
     $content-padding: 20px;
     font-family: "Panton-Regular";
     display: table;
     table-layout: fixed;
     max-width: 100%;
     width: 100%;
-    .content-type{
+    .content-type {
       width: 130px;
       display: table-cell;
       background: #eceff4;
       padding-top: $content-padding;;
     }
-    .type{
+    .type {
       $box-size: 130px;
       position: relative;
       border-radius: 5px;
       overflow: hidden;
       background: url(/images/news.png) no-repeat;
-      > span{
+      > span {
         color: #ffffff;
         font-size: 10px;
         text-align: center;
@@ -31,8 +31,8 @@
         right: 0;
         padding: 6px 0;
       }
-      &.type-news{
-        > span{
+      &.type-news {
+        > span {
           $color: #f1592a;
           background: $color;
           border-top: 1px solid lighten($color, 5%);
@@ -40,7 +40,7 @@
         @include sprite(-139px, -3px, $box-size, $box-size);
       }
       &.type-media {
-        > span{
+        > span {
           $color: #25aae1;
           background: $color;
           border-top: 1px solid lighten($color, 5%);
@@ -48,19 +48,19 @@
         @include sprite(-3px, -3px, $box-size, $box-size);
       }
     }
-    article{
+    article {
       display: table-cell;
       vertical-align: top;
       position: relative;
       padding-top: $content-padding;
-      > img{
+      > img {
         position: absolute;
         width: 50px;
         top: $content-padding;
         left: -25px;
       }
       $content-distance-left: 40px;
-      .article-footer{
+      .article-footer {
         border-top: 1px solid #cad3df;
         margin-left: $content-distance-left/4;
       }
@@ -69,35 +69,35 @@
         overflow: hidden;
       }
 
-      h3{
+      h3 {
         color: #656a6e;
         font-size: 16px;
-        span{
+        span {
           padding-left: 20px;
           font-family: "Roboto-Light";
           font-size: 12px;
           color: #8493a8;
         }
       }
-      p{
+      p {
         color: #999999;
         font-size: 12px;
 
       }
 
     }
-    &:nth-child(even){
+    &:nth-child(even) {
       article p {
-        > img{
+        > img {
           width: 50%;
           float: left;
           padding-right: 15px;
         }
       }
     }
-    &:nth-child(odd){
+    &:nth-child(odd) {
       article p {
-        > img{
+        > img {
           width: 50%;
           float: right;
           padding-left: 15px;
@@ -105,18 +105,18 @@
       }
     }
   }
-  .notification{
+  .notification {
     margin: 20px 0;
     font-family: "Panton-Regular";
-    p{
+    p {
       font-size: 16px;
       color: #b8b8b8;
     }
-    a{
+    a {
       color: #b8b8b8;
       text-decoration: underline;
     }
-    .notification-tabs{
+    .notification-tabs {
       display: flex;
       max-width: 340px;
       border-radius: 5px;
@@ -128,31 +128,31 @@
         color: #c7c7c7;
         text-align: center;
         line-height: 35px;
-        &:nth-child(even){
+        &:nth-child(even) {
           border-right: 1px solid #fff;
           border-left: 1px solid #fff;
         }
-        &.active{
+        &.active {
           color: #999999;
           background-color: #e0e0e0;
         }
-        &:hover{
+        &:hover {
           cursor: pointer;
           background-color: darken(#eceff4, 3%);
         }
       }
 
     }
-    .search{
+    .search {
       width: 340px;
       margin-top: 10px;
-      span{
+      span {
         height: 45px;
         background: #e0e0e0;
         border: none;
         border-radius: 0;
       }
-      input{
+      input {
         font-family: "Panton-Regular";
         font-size: 13px;
         background: #eceff4;
@@ -160,14 +160,14 @@
         outline: none;
         border-radius: 0;
         height: 45px;
-        @include placeholder{
+        @include placeholder {
           color: #aaacad
         }
       }
     }
   }
 
-  .notification-item{
+  .notification-item {
     font-family: "Panton-Regular";
     overflow: hidden;
     border-bottom: 1px solid #e0e0e0;
@@ -177,19 +177,18 @@
     width: 100%;
     table-layout: fixed;
 
-
   }
-  .user-info{
+  .user-info {
     display: table-cell;
     vertical-align: middle;
     width: 250px;
-    > img{
+    > img {
       display: inline-block;
       width: 50px;
       float: left;
       margin-right: 25px;
     }
-    .name{
+    .name {
       padding-top: 5px;
       font-size: 16px;
       color: #656a6e;
@@ -202,15 +201,15 @@
       position: relative;
     }
   }
-  .user-content{
+  .user-content {
     display: table-cell;
     vertical-align: middle;
     width: 100%;
-    .text{
+    .text {
       font-size: 12px;
       color: #b8b8b8;
     }
-    .users{
+    .users {
       display: inline-block;
       > img {
         width: 25px;
@@ -218,7 +217,7 @@
         margin: 2px;
         cursor: pointer;
       }
-      > span{
+      > span {
         font-size: 12px;
         color: #b8b8b8;
         line-height: 28px;
@@ -228,13 +227,13 @@
 
     }
   }
-  .user-action{
+  .user-action {
     display: table-cell;
     vertical-align: middle;
     text-align: right;
     padding-right: 28px;
     width: 130px;
-    .image-wrap{
+    .image-wrap {
       width: 100%;
       position: relative;
       right: -28px;
@@ -242,28 +241,28 @@
     }
   }
 
-  .alphabet{
+  .alphabet {
     text-align: center;
     padding: 10px 0 20px;
     a {
       font-family: "Panton-Regular";
       font-size: 16px;
       color: #aaacad;
-      &:after{
+      &:after {
         content: ",";
       }
-      &:last-child{
-        &:after{
+      &:last-child {
+        &:after {
           content: "";
         }
       }
     }
   }
-  .content{
+  .content {
     display: flex;
     flex-flow: row wrap;
   }
-  .online{
+  .online {
     position: relative;
     left: 3px;
     display: inline-block;
@@ -271,17 +270,17 @@
     background-color: #8dc63f;
     @include size(10px);
   }
-  .user-all{
+  .user-all {
     position: relative;
     width: 31%;
     padding: 13px 0;
     border-bottom: 1px solid #e0e0e0;
     margin-right: 3.5%;
-    &:nth-child(3n){
+    &:nth-child(3n) {
       margin-right: 0;
     }
   }
-  .about{
+  .about {
     display: none;
     background-color: #f5f5f5;
     height: 305%;
@@ -292,11 +291,11 @@
     top: -1px;
     border: 1px solid #e0e0e0;
     padding-top: 65px;
-    .connect-menu{
+    .connect-menu {
       width: 90%;
       height: 45px;
     }
-    p{
+    p {
       font-family: "Panton-Regular";
       font-size: 12px;
       color: #666a6d;
@@ -304,7 +303,7 @@
       margin-left: 40px;
       margin-top: -10px;
     }
-    .delete{
+    .delete {
       position: absolute;
       right: 0;
       bottom: 0;

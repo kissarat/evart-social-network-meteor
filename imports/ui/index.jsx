@@ -5,14 +5,39 @@ import {FileRoute} from './file'
 import {LoginPage} from './auth/login'
 import {Messenger} from './message'
 import {PhoneRoute} from './phone'
-import {Route, IndexRoute} from 'react-router'
+import {Route, IndexRoute, browserHistory} from 'react-router'
 import {Signup} from './auth/signup'
 import {Blog} from './blog/article'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
 
-const NotFound = () => <div>Page not found</div>
+class NotFound extends Component {
+  resolveUrl() {
+    Meteor.call('blog.get', {domain: location.pathname.slice(1)}, (err, res) => {
+      if (res) {
+        this.setState(res)
+      }
+    })
+  }
+
+  componentWillMount() {
+    this.resolveUrl()
+  }
+
+  componentWillReceiveProps() {
+    this.resolveUrl()
+  }
+
+  render() {
+    if (this.state) {
+      return <Blog {...this.state} />
+    }
+    else {
+      return <div>Not Found</div>
+    }
+  }
+}
 
 class BrowserFeatures extends Component {
   render() {
@@ -22,7 +47,10 @@ class BrowserFeatures extends Component {
       WebRTC: window.RTCPeerConnection || window.webkitRTCPeerConnection ? 'Yes' : 'No',
       MediaRecorder: window.MediaRecorder ? 'Yes' : 'No'
     }
-    const rows = _.map(features, (v, k) => <tr><td>{k}</td><td>{v}</td></tr>)
+    const rows = _.map(features, (v, k) => <tr>
+      <td>{k}</td>
+      <td>{v}</td>
+    </tr>)
     return (
       <table>
         <tbody>

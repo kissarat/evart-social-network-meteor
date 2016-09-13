@@ -14,3 +14,8 @@
 textarea:hover, textarea:focus {
   border: none !important;
 }
+
+.busy {
+  opacity: 0.2;
+  //transition: opacity 300ms;
+}

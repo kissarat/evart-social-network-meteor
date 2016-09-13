@@ -7,7 +7,7 @@ import {Messenger} from './message'
 import {PhoneRoute} from './phone'
 import {Route, IndexRoute, browserHistory} from 'react-router'
 import {Signup} from './auth/signup'
-import {Blog} from './blog/article'
+import {Blog, News} from './blog/article'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -66,6 +66,7 @@ export const RootRoute =
     <IndexRoute component={BrowserFeatures}/>
     <Route component={App}>
       <Route path="messenger" component={Messenger}/>
+      <Route path="news" component={News}/>
       <Route path="dialog/:peer" component={Messenger}/>
       <Route path="profile" component={Blog}/>
       <Route path="blog/:id" component={Blog}/>

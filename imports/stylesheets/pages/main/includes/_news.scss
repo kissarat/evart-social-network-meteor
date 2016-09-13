@@ -1,7 +1,7 @@
 #news {
   min-height: calc(100vh - 20px);
   padding: 0 10px 120px;
-  .content-item {
+  > .content-item {
     $content-padding: 20px;
     font-family: "Panton-Regular";
     display: table;
@@ -48,11 +48,14 @@
         @include sprite(-3px, -3px, $box-size, $box-size);
       }
     }
-    article {
+    > article {
       display: table-cell;
       vertical-align: top;
       position: relative;
       padding-top: $content-padding;
+      > .comments {
+        border-top: none;
+      }
       > img {
         position: absolute;
         width: 50px;
@@ -64,7 +67,7 @@
         border-top: 1px solid #cad3df;
         margin-left: $content-distance-left/4;
       }
-      h3, p {
+      > h3, > p {
         padding-left: $content-distance-left;
         overflow: hidden;
       }

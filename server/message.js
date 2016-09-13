@@ -4,10 +4,11 @@ Meteor.publish('message', function (params = {}) {
   if (_.isEmpty(params.order)) {
     params.order = {id: -1}
   }
-  const table = params.type
+  const type = params.type
   params.recipient = parseInt(this.userId, 36)
   delete params.type
-  return query(table, params)
+  return query(type, params)
+    .limit(200)
     .cursor()
 })
 

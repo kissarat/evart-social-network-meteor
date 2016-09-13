@@ -5,11 +5,7 @@ import {BlogLayout} from './layout'
 import {Editor} from './editor'
 import {idToTimeString} from '/imports/ui/common/helpers'
 
-export class Article extends Component {
-  componentWillMount() {
-    this.state = {}
-  }
-
+class Attitude extends Component {
   onChangeAttitude = (e) => {
     Meteor.call('estimate', {id: this.props.id, attitude: e.nativeEvent.target.value || false}, (err, res) => {
       if (err) {
@@ -21,12 +17,8 @@ export class Article extends Component {
     })
   }
 
-  onClickComment = (e) => {
-    this.setState({comments: true})
-  }
-
   render() {
-    const attitude = Meteor.userIdInt() == this.props.from
+    return Meteor.userIdInt() == this.props.from
       ?
       <label className="switch">
         <input type="checkbox" checked={this.props.like}/>
@@ -42,8 +34,21 @@ export class Article extends Component {
                checked={'like' === this.props.attitude} onChange={this.onChangeAttitude}/>
         <div className="slider-dislike"></div>
       </div>
+  }
+}
+
+export class Article extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
+  onClickComment = (e) => {
+    this.setState({comments: true})
+  }
+
+  render() {
     const comments = this.state.comments ? <Children id={this.props.id}/> : ''
-    const buttons = 'wall' === this.props.type ?
+    const commentButton = 'wall' === this.props.type ?
       <div className="comment">
         <span className="icon icon-quote"/>
         <span className="comment-text" onClick={this.onClickComment}>Comment</span>
@@ -64,12 +69,45 @@ export class Article extends Component {
         </div>
         <p>{this.props.text}</p>
         <div className="content-footer">
-          {buttons}
-          {attitude}
+          {commentButton}
+          <Attitude {...this.props}/>
         </div>
         {comments}
       </div>
     </article>
+  }
+}
+
+export class NewsItem extends Component {
+  onClickComment = () => {
+    this.setState({comments: true})
+  }
+
+  render() {
+    const comments = this.state && this.state.comments ? <Children id={this.props.id}/> : ''
+    return <div className="content-item">
+      <div className="content-type">
+        <div className="type type-news">
+          <span>News</span>
+        </div>
+      </div>
+      <article>
+        <img src="/images/profile-image.jpg" alt="..." className="img-circle img-responsive"/>
+        <h3>{this.props.name || 'Untitled'} <span>{idToTimeString(this.props.id)}</span></h3>
+        <p>{this.props.text}</p>
+        <div className="article-footer">
+          <div className="comment">
+            <span className="icon icon-quote"/>
+            <span className="comment-text" onClick={this.onClickComment}>Comment</span>
+          </div>
+          <div className="repost">
+            <span className="icon icon-repost"/>
+            3
+          </div>
+        </div>
+        {comments}
+      </article>
+    </div>
   }
 }
 
@@ -132,5 +170,26 @@ export class Children extends Subscriber {
       <Editor type="child" id={this.props.id}/>
       <div className="posts">{comments}</div>
     </div>
+  }
+}
+
+export class News extends Subscriber {
+  componentWillMount() {
+    this.subscribe('message', {type: 'news'})
+  }
+
+  render() {
+    if (this.state) {
+      const items = this.getSubscription('message')
+        .map(message => <NewsItem key={message.id} {...message}/>)
+      return <div className="container">
+        <div className="row wrap">
+          <div id="news">{items}</div>
+        </div>
+      </div>
+    }
+    else {
+      return <div>Loading...</div>
+    }
   }
 }

@@ -98,6 +98,12 @@ CREATE OR REPLACE VIEW "wall" AS
   FROM message_attitude_recipient
   WHERE type = 'wall';
 
+CREATE OR REPLACE VIEW "news" AS
+  SELECT w.*
+  FROM relation r
+    JOIN wall w ON r.to = w.parent
+  WHERE r.type = 'follow';
+
 CREATE OR REPLACE VIEW "child" AS
   SELECT *
   FROM message_attitude_recipient
@@ -141,3 +147,5 @@ CREATE OR REPLACE VIEW "blog_recipient" AS
   FROM "blog" rec CROSS JOIN blog b
     LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
   WHERE rec.type = 'user';
+
+CREATE OR REPLACE VIEW

@@ -248,6 +248,15 @@ main {
     > img {
       padding: 15px;
     }
+    .poster-wrapper {
+      background: transparent;
+      time {
+        display: none;
+      }
+    }
+    .poster-border {
+      border-bottom: none;
+    }
   }
   .posts {
     margin-bottom: 15px;

@@ -42,9 +42,10 @@ CREATE TABLE blog (
   time   TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
-CREATE TYPE relation_type AS ENUM ('follow', 'manage', 'deny');
+CREATE TYPE relation_type AS ENUM ('follow', 'manage', 'deny', 'reject');
 
 CREATE TABLE relation (
+  id     BIGINT PRIMARY KEY,
   "from" BIGINT REFERENCES blog (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
   "to"   BIGINT REFERENCES blog (id)

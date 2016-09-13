@@ -28,9 +28,8 @@ Meteor.methods({
 
   estimate(params) {
     const attitude = params.attitude
-    const from = parseInt(Meteor.userId(), 36)
     const data = {
-      from: from,
+      from: parseInt(Meteor.userId(), 36),
       message: +params.id
     }
     const q = table('attitude')

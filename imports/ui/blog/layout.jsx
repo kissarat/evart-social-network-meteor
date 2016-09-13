@@ -99,14 +99,37 @@ class GroupHeader extends Component {
 }
 
 export class BlogLayout extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
+  onClickFollow = (e) => {
+    const params = {
+      id: +this.props.id,
+      relation: e.target.getAttribute('id')
+    }
+    Meteor.call('establish', params, (err, res) => this.setState({relation: params.relation}))
+  }
+
   render() {
     const header = 'user' === this.props.type
       ? <UserHeader {...this.props}/>
       : <GroupHeader {...this.props}/>
 
-    const widgets = 'user' === this.props.type ? [
-      <button key='follow' className="add-friend">Add friend</button>,
-      <div key='communicate' className="connect-menu">
+    const relation = 'relation' in this.state ? this.state.relation : this.props.relation
+    let follow
+    if ('follow' === relation) {
+      follow = <button className="add-friend" onClick={this.onClickFollow}>Unsubscribe</button>
+    }
+    else if ('user' === this.props.type) {
+      follow = <button className="add-friend" id="follow" onClick={this.onClickFollow}>Add friend</button>
+    }
+    else {
+      follow = <button className="add-group" id="follow" onClick={this.onClickFollow}>Subscribe</button>
+    }
+    let menu
+    if ('user' === this.props.type) {
+      menu = <div key='communicate' className="connect-menu">
         <Link to={'/dialog/' + this.props.id}>
           <span className="icon icon-email"/>
         </Link>
@@ -117,9 +140,9 @@ export class BlogLayout extends Component {
           <span className="icon icon-video-call"/>
         </a>
       </div>
-    ] : [
-      <button key='follow' className="add-group">Subscribe</button>,
-      <div key='followers' className="subscribers">
+    }
+    else {
+      menu = <div key='followers' className="subscribers">
         <div className="text-center"><a href="#">1 999 875</a> Subscribers</div>
         <div className="last-subscribers">
           <img src="img/profile-image.jpg" alt="..." className="img-circle"/>
@@ -129,14 +152,15 @@ export class BlogLayout extends Component {
           <img src="img/profile-image.jpg" alt="..." className="img-circle"/>
         </div>
       </div>
-    ]
+    }
 
     const page = [
       <div key='content' className="col-sm-4">
         <div className="row">
           <div className="user-block">
             <img src="/images/profile-image.jpg" alt="..." className="img-thumbnail"/>
-            {widgets}
+            {follow}
+            {menu}
           </div>
         </div>
       </div>,

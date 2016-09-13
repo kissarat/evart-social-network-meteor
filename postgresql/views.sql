@@ -132,3 +132,12 @@ CREATE OR REPLACE VIEW convert_progress AS
     c.processed
   FROM file f
     JOIN "convert" c ON f.id = c.file;
+
+CREATE OR REPLACE VIEW "blog_recipient" AS
+  SELECT
+    b.*,
+    rec.id   AS recipient,
+    rel.type AS relation
+  FROM "blog" rec CROSS JOIN blog b
+    LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
+  WHERE rec.type = 'user';

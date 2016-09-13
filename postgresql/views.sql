@@ -94,9 +94,33 @@ CREATE OR REPLACE VIEW "message_attitude_recipient" AS
   WHERE b.type = 'user';
 
 CREATE OR REPLACE VIEW "wall" AS
-  SELECT *
-  FROM message_attitude_recipient
-  WHERE type = 'wall';
+  WITH mm AS (
+    SELECT
+      id,
+      type,
+      "from",
+      parent,
+      text,
+      recipient,
+      attitude
+    FROM message_attitude_recipient
+    WHERE type = 'wall'
+    UNION
+    SELECT
+      r.id,
+      type,
+      r."from",
+      r."from" AS parent,
+      text,
+      recipient,
+      attitude
+    FROM repost r
+      JOIN message_attitude_recipient m ON r.original = m.id
+  )
+  SELECT mm.*, count(r.*) as repost
+  FROM mm
+    LEFT JOIN repost r ON mm.id = r.source
+  GROUP BY mm.id, mm.type, mm."from", mm.parent, mm.text, mm.recipient, mm.attitude;
 
 CREATE OR REPLACE VIEW "news" AS
   SELECT w.*

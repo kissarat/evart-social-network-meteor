@@ -67,6 +67,13 @@ CREATE TABLE "message" (
   "text" VARCHAR(8000)                NOT NULL
 );
 
+CREATE TABLE "repost" (
+  id       BIGINT PRIMARY KEY,
+  original BIGINT REFERENCES message (id),
+  "from" BIGINT REFERENCES blog (id),
+  source BIGINT
+);
+
 CREATE TABLE attachment (
   number  SMALLINT                    NOT NULL DEFAULT 0,
   message BIGINT REFERENCES message (id)

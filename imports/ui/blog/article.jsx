@@ -37,6 +37,16 @@ class Attitude extends Component {
   }
 }
 
+class Repost extends Component {
+  render() {
+    const count = this.props.repost > 0 ? this.props.repost : ''
+    return <div className="repost">
+      <span className="icon icon-repost"/>
+      {count}
+    </div>
+  }
+}
+
 export class Article extends Component {
   componentWillMount() {
     this.state = {}
@@ -70,6 +80,7 @@ export class Article extends Component {
         <p>{this.props.text}</p>
         <div className="content-footer">
           {commentButton}
+          <Repost {...this.props}/>
           <Attitude {...this.props}/>
         </div>
         {comments}
@@ -100,10 +111,7 @@ export class NewsItem extends Component {
             <span className="icon icon-quote"/>
             <span className="comment-text" onClick={this.onClickComment}>Comment</span>
           </div>
-          <div className="repost">
-            <span className="icon icon-repost"/>
-            3
-          </div>
+          <Repost {...this.props}/>
         </div>
         {comments}
       </article>

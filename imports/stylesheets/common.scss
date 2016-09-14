@@ -19,3 +19,20 @@ textarea:hover, textarea:focus {
   opacity: 0.2;
   //transition: opacity 300ms;
 }
+
+.add-external-video {
+  text-align: center;
+}
+
+.video-url {
+  display: flex;
+  input {
+    border: none;
+    border-bottom: 1px solid black;
+    flex-grow: 1;
+  }
+
+  > * {
+    padding: 6px 12px;
+  }
+}

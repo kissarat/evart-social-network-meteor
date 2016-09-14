@@ -1,4 +1,4 @@
-import {query, knex} from './db'
+import {query, table, timeId, errors} from './db'
 import request from 'request'
 import {escape} from 'querystring'
 
@@ -8,11 +8,11 @@ Meteor.publish('file', function (params = {}) {
 })
 
 Meteor.publish('convert', function (params = {}) {
-  return knex('convert')
+  return table('convert')
     .cursor()
 })
 
-const videoServies = [
+const videoServices = [
   function youtube(url) {
     const id = /youtube.com.*v=(\w+)/.exec(url)
     if (id) {
@@ -60,8 +60,8 @@ const videoServies = [
 ]
 
 function findService(url) {
-  for (let i = 0; i < videoServies.length; i++) {
-    const object = videoServies[i](url)
+  for (let i = 0; i < videoServices.length; i++) {
+    const object = videoServices[i](url)
     if (object) {
       return object
     }
@@ -69,30 +69,57 @@ function findService(url) {
   return false
 }
 
+function requestOembed({url}) {
+  const service = findService(url)
+  if (service) {
+    return new Promise(function (resolve, reject) {
+      request(service.oembed, function (err, r, b) {
+        if (err) {
+          reject(err)
+        }
+        else {
+          resolve(JSON.parse(b))
+        }
+      })
+    })
+  }
+  else {
+    throw new Meteor.Error(422, 'Unsupported service')
+  }
+}
+
 Meteor.methods({
   'file.get': function (params) {
-    return knex('file_message')
+    return table('file_message')
       .where(_.pick(params, 'id', 'url'))
       .single()
   },
 
-  'oembed.get': function (params) {
-    const service = findService(params.url)
-    if (service) {
-      return new Promise(function (resolve, reject) {
-        console.log(service.oembed)
-        request(service.oembed, function (err, r, b) {
-          if (err) {
-            reject(err)
-          }
-          else {
-            resolve(JSON.parse(b))
-          }
-        })
+  'oembed.get': requestOembed,
+
+  'external.add'(params) {
+    return requestOembed(params)
+      .then(function (oembed) {
+        return table('file')
+          .returning(['id', 'name'])
+          .insert({
+            id: timeId(),
+            name: oembed.title,
+            thumb: oembed.thumbnail_url,
+            url: params.url
+          })
+          .single()
       })
-    }
-    else {
-      throw new Meteor.Error(422, 'Unsupported service')
-    }
+      .then(function (file) {
+        return table('message')
+          .returning('id')
+          .insert({
+            id: file.id,
+            type: 'file',
+            from: parseInt(Meteor.userId(), 36),
+            text: file.name
+          })
+          .single()
+      })
   }
 })

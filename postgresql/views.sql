@@ -180,8 +180,9 @@ CREATE OR REPLACE VIEW invite AS
 CREATE OR REPLACE VIEW file_message AS
   SELECT
     f.*,
-    t.type,
-    m.from
+    coalesce(t.type, 'video') as type,
+    m.from,
+    m.text
   FROM file f
-    JOIN mime t ON f.mime = t.id
-  JOIN message m ON f.id = m.id;
+  JOIN message m ON f.id = m.id
+    LEFT JOIN mime t ON f.mime = t.id;

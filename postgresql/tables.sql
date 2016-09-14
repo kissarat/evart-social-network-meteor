@@ -11,7 +11,7 @@ CREATE TABLE file (
   id    BIGINT PRIMARY KEY,
   name  VARCHAR(250),
   mime  VARCHAR(80) REFERENCES mime (id),
-  url   VARCHAR(250) UNIQUE,
+  url   VARCHAR(250),
   hash  CHAR(32),
   size  BIGINT,
   data  JSON,

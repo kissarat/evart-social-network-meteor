@@ -548,53 +548,6 @@
         width: 25px;
       }
     }
-    .playlist-container {
-      position: relative;
-      height: 100%;
-      .input-group {
-        background-color: #e0e0e0;
-        > span {
-          border: none;
-          background-color: #e0e0e0;
-          padding: 11px 10px;
-          span {
-            font-size: 40px;
-            font-family: "Panton-Bold";
-            color: #c7c7c7;
-            line-height: 20px;
-            cursor: pointer;
-          }
-        }
-        input {
-          height: 40px;
-          border-radius: 0;
-          border: none;
-          background-color: #eceff4;
-          font-family: "Panton-Regular";
-          font-size: 13px;
-          @include placeholder {
-            color: #aaacad;
-          }
-        }
-      }
-      .playlist {
-        position: relative;
-        height: 100%;
-      }
-      ul {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 10px 0 0;
-        overflow: hidden;
-
-      }
-      .mCSB_scrollTools {
-        right: -3px;
-      }
-    }
     .video-wrap {
       overflow: hidden;
     }
@@ -1335,4 +1288,49 @@
 
 #container-add-right {
   right: 0;
+}
+
+.playlist-container {
+  .input-group {
+    background-color: #e0e0e0;
+    > span {
+      border: none;
+      background-color: #e0e0e0;
+      padding: 11px 10px;
+      span {
+        font-size: 40px;
+        font-family: "Panton-Bold", serif;
+        color: #c7c7c7;
+        line-height: 20px;
+        cursor: pointer;
+      }
+    }
+    input {
+      height: 40px;
+      border-radius: 0;
+      border: none;
+      background-color: #eceff4;
+      font-family: "Panton-Regular", serif;
+      font-size: 13px;
+      @include placeholder {
+        color: #aaacad;
+      }
+    }
+  }
+  ul {
+    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  li {
+    list-style: none;
+    max-width: calc(50% - 8px);
+    img {
+      width: 100%;
+    }
+  }
+  .mCSB_scrollTools {
+    right: -3px;
+  }
 }

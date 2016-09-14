@@ -369,6 +369,11 @@ function query(table, params = {}) {
       q.orderBy(name, direction > 0 ? 'asc' : 'desc')
     })
   }
+  if (params.search && params.search.trim()) {
+    params.search.split(/\s+/).forEach(function (token) {
+      q.where('name', 'ilike', `%${token}%`)
+    })
+  }
   return q
 }
 

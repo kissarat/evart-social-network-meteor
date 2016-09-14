@@ -2,7 +2,6 @@ const fs = require('fs')
 
 const _ = require('underscore')
 _.faker = require('faker/locale/ru')
-_.constants = require('../../client/data')
 _.minTime = new Date('2016-01-01').getTime() * 1000 * 1000
 _.maxTime = new Date().getTime() * 1000 * 1000
 _.insert = function (table, objects) {

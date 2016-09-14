@@ -89,7 +89,7 @@ CREATE OR REPLACE VIEW repost_count AS
     m.*,
     (SELECT count(*)
      FROM message
-     WHERE original = m.id) as repost
+     WHERE original = m.id) AS repost
   FROM message m;
 
 CREATE OR REPLACE VIEW "message_attitude_recipient" AS
@@ -155,3 +155,16 @@ CREATE OR REPLACE VIEW "blog_recipient" AS
   FROM "blog" rec CROSS JOIN blog b
     LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
   WHERE rec.type = 'user';
+
+CREATE OR REPLACE VIEW invite AS
+  WITH inv AS (
+      SELECT
+        r2."from",
+        r2."to" as recipient,
+        r1.type AS establish
+      FROM relation r1 RIGHT JOIN relation r2 ON r2."from" = r1."to"
+      WHERE r2.type = 'follow'
+  )
+  SELECT *
+  FROM blog b
+    JOIN inv ON b.id = inv.recipient

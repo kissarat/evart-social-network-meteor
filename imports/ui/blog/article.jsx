@@ -6,7 +6,7 @@ import {Editor} from './editor'
 import {idToTimeString} from '/imports/ui/common/helpers'
 
 class Attitude extends Component {
-  onChangeAttitude = (e) => {
+  onChange = (e) => {
     Meteor.call('estimate', {id: this.props.id, attitude: e.nativeEvent.target.value || false}, (err, res) => {
       if (err) {
         console.error(err)
@@ -27,11 +27,11 @@ class Attitude extends Component {
       :
       <div className="switch-dislike">
         <input type="radio" value="hate" className="disliked"
-               checked={'hate' === this.props.attitude} onChange={this.onChangeAttitude}/>
+               checked={'hate' === this.props.attitude} onChange={this.onChange}/>
         <input type="radio" className="none"
-               checked={!this.props.attitude} onChange={this.onChangeAttitude}/>
+               checked={!this.props.attitude} onChange={this.onChange}/>
         <input type="radio" value="like" className="liked"
-               checked={'like' === this.props.attitude} onChange={this.onChangeAttitude}/>
+               checked={'like' === this.props.attitude} onChange={this.onChange}/>
         <div className="slider-dislike"></div>
       </div>
   }

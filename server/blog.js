@@ -5,6 +5,11 @@ Meteor.publish('blog', function (params = {}) {
   return query('blog', params).cursor()
 })
 
+Meteor.publish('invite', function (params = {}) {
+  params.recipient = parseInt(Meteor.userId(), 36)
+  return query('invite', params).cursor()
+})
+
 Meteor.methods({
   'blog.get' (params) {
     const where = _.pick(params, 'id', 'domain')

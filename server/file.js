@@ -106,6 +106,7 @@ Meteor.methods({
             id: timeId(),
             name: oembed.title,
             thumb: oembed.thumbnail_url,
+            data: oembed,
             url: params.url
           })
           .single()

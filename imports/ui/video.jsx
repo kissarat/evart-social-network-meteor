@@ -47,6 +47,10 @@ export class VideoList extends Subscriber {
     this.setState({add: true})
   }
 
+  open(file) {
+    this.setState({current: file.data})
+  }
+
   videoAdded = () => {
     this.setState({add: false})
   }
@@ -61,13 +65,23 @@ export class VideoList extends Subscriber {
   }
 
   render() {
-    const videos = this.getSubscription('file').map(file => <li key={file.id}>
+    const current = this.state.current
+      ? <div className="current-video" dangerouslySetInnerHTML={{__html: this.state.current.html}} ref={el => {
+      if (el) {
+        el.removeAttribute('width')
+        el.removeAttribute('height')
+      }
+    }
+    }/>
+      : ''
+    const videos = this.getSubscription('file').map(file => <li key={file.id} onClick={this.open.bind(this, file)}>
       <img src={file.thumb}/>
       <p>{file.name}</p>
     </li>)
     const add = this.state.add ? <AddExternalVideo done={this.videoAdded}/> : ''
     return <div className="container">
       <div className="playlist-container">
+        {current}
         <div className="input-group">
           <span className="input-group-addon">
             <i className="icon icon-search"/>

@@ -32,7 +32,7 @@ export const App = ({children}) => <section role="main">
       <Link to="/friends" className="menu menu-friends" title="Friends"/>
       <Link to="/groups" className="menu menu-group" title="Groups"/>
       <Link to={'/gallery/' + Meteor.userIdInt()} className="menu menu-photo" title="Photos"/>
-      <Link to="/conference" className="menu menu-video" title="Videos"/>
+      <Link to="/video-search" className="menu menu-video" title="Videos"/>
       <Link to="/video" className="menu menu-movie" title="Movies"/>
       <Link to="/audio" className="menu menu-music" title="Music"/>
       <Link to="/settings" className="menu menu-settings" title="Settings"/>

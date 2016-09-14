@@ -10,7 +10,6 @@ export class Subscriber extends Component {
       subscription.change(state)
     }
     else {
-      // this.unsubscribe(name)
       subscription = new PgSubscription(name, state)
       this.subscription[name] = subscription
     }
@@ -24,11 +23,6 @@ export class Subscriber extends Component {
       old.stop()
     }
     delete this.subscription[name]
-  }
-
-  isSubscriptionReady(name) {
-    const subscription = this.getSubscription(name, false)
-    return subscription && subscription.ready()
   }
 
   getSubscription(name, defaultValue = []) {
@@ -58,7 +52,9 @@ export class ScrollArea extends Component {
     //     scrollAmount: 200
     //   }
     // })
-    element.classList.add('scroll')
+    if (element) {
+      element.classList.add('scroll')
+    }
   }
 
   render() {

@@ -57,7 +57,7 @@ function resizeImage(id, resize) {
   return promise.then(function () {
     const options = {
       src: filename,
-      dst: __dirname + `/../client/static/thumb/${id}.jpg`,
+      dst: __dirname + `/../public/thumb/${id}.jpg`,
       width: config.image.thumb.width,
       height: config.image.thumb.height,
       quality: config.image.thumb.quality
@@ -150,14 +150,14 @@ const server = http.createServer(function (req, res) {
           .then(function (stat) {
             file.size = stat.size
             uploadOptions.filename = filename
-            if (resize) {
+            if (size > config.image.resize.size) {
               file.mime = uploadOptions.ContentType = 'image/jpeg'
             }
             return common.upload(uploadOptions)
           })
           .then(function (data) {
             bucketResponse = data
-            file.thumb = `/static/thumb/${id}.jpg`
+            file.thumb = `/thumb/${id}.jpg`
             return insert(file)
           })
           .then(function () {

@@ -35,6 +35,13 @@ Meteor.methods({
       })
   },
 
+  'blog.update' (where, data) {
+    return table('blog')
+      .where(where)
+      .update(data)
+      .promise()
+  },
+
   establish(params) {
     const where = {
       from: parseInt(Meteor.userId(), 36),

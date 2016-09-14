@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
+import Dropzone from 'react-dropzone'
+import {bucketImage, upload} from '/imports/ui/common/helpers'
 
 class UserHeader extends Component {
   render() {
@@ -103,6 +105,19 @@ export class BlogLayout extends Component {
     this.state = {}
   }
 
+  onDrop(files) {
+    upload(files[0]).then(data => {
+      Meteor.call('blog.update', {id: Meteor.userIdInt()}, {avatar: data.id}, (err, res) => {
+        if (err) {
+          console.error(err)
+        }
+        else {
+          this.setState({avatar: data.id})
+        }
+      })
+    })
+  }
+
   onClickFollow = (e) => {
     const params = {
       id: +this.props.id,
@@ -154,11 +169,18 @@ export class BlogLayout extends Component {
       </div>
     }
 
+    const avatarURL = this.props.avatar ? bucketImage(this.state.avatar || this.props.avatar) : '/images/profile-image.jpg'
+    const avatar = Meteor.userIdInt() == this.props.id ?
+      <Dropzone style={{}} onDrop={this.onDrop}>
+        <img src={avatarURL} alt="..." className="img-thumbnail"/>
+      </Dropzone>
+      : <img src={avatarURL} alt="..." className="img-thumbnail"/>
+
     const page = [
       <div key='content' className="col-sm-4">
         <div className="row">
           <div className="user-block">
-            <img src="/images/profile-image.jpg" alt="..." className="img-thumbnail"/>
+            {avatar}
             {follow}
             {menu}
           </div>

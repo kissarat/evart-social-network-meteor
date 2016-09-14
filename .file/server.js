@@ -82,9 +82,14 @@ const server = http.createServer(function (req, res) {
 
     function insert(file) {
       return db
-        .knex('file')
+        .table('file')
         .insert(file)
         .promise()
+        .then(function () {
+          return db.table('message')
+            .insert({id: file.id, from: parseInt(req.user._id, 36), type: 'file'})
+            .promise()
+        })
     }
 
     function process() {
@@ -152,6 +157,9 @@ const server = http.createServer(function (req, res) {
             uploadOptions.filename = filename
             if (size > config.image.resize.size) {
               file.mime = uploadOptions.ContentType = 'image/jpeg'
+            }
+            else {
+              file.mime = req.mime.id
             }
             return common.upload(uploadOptions)
           })

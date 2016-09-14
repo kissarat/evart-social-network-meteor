@@ -1,28 +1,26 @@
-.photo-container{
+.photo-container {
   $item-background: #eceff4;
   box-shadow: 0px -1px 0px 0px #fff;
   padding-top: 10px;
   padding-bottom: 120px;
-  .albums{
+  .albums {
     display: block;
     overflow: hidden;
-    .item{
+    .item {
       width: 32%;
       background: $item-background;
       padding: 5px;
       margin: 0.66%;
       float: left;
-      .image{
+      .image {
         position: relative;
         height: 120px;
         width: 100%;
-        background-repeat: no-repeat;
         background-size: cover;
-        background-position: center;
-        &:before{
+        background: no-repeat center;
+        &:before {
           content: '';
-          background-image: url(/images/iconpack.png);
-          background-repeat: no-repeat;
+          background: url(/images/iconpack.png) no-repeat;
           display: inline-block;
           @include sprite(-652px, -3px, 35px, 31px);
           position: absolute;
@@ -30,11 +28,10 @@
           left: 50%;
           transform: translate(-50%, -50%);
         }
-        &:hover{
+        &:hover {
           cursor: pointer;
-          &:before{
-            background-image: none;
-            background-color: rgba(0,0,0,.45);
+          &:before {
+            background: rgba(0, 0, 0, .45) none;
             width: auto;
             height: auto;
             left: 0;
@@ -44,9 +41,9 @@
             transform: none;
 
           }
-          &:after{
+          &:after {
             content: attr(data-count);
-            font-family: "Panton-Regular";
+            font-family: "Panton-Regular", serif;
             font-size: 36px;
             color: #ffffff;
             position: absolute;
@@ -56,8 +53,8 @@
           }
         }
       }
-      h5{
-        font-family: "Panton-Regular";
+      h5 {
+        font-family: "Panton-Regular", serif;
         font-size: 14px;
         text-align: center;
         color: #aaacad;
@@ -66,25 +63,25 @@
       }
     }
   }
-  .photos{
+  .photos {
     margin-top: 20px;
     display: block;
     overflow: hidden;
-    .item{
+    .item {
       width: 19%;
       background: $item-background;
       padding: 5px;
       margin: 0.5%;
       float: left;
     }
-    .image{
+    .image {
       cursor: pointer;
+      display: block;
       position: relative;
       height: 80px;
       width: 100%;
-      background-repeat: no-repeat;
       background-size: cover;
-      background-position: center;
+      background: no-repeat center;
     }
   }
 }

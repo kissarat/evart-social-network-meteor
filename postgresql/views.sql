@@ -175,4 +175,13 @@ CREATE OR REPLACE VIEW invite AS
     inv.establish,
     inv.recipient
   FROM blog b
-    JOIN inv ON b.id = inv.from
+    JOIN inv ON b.id = inv.from;
+
+CREATE OR REPLACE VIEW file_message AS
+  SELECT
+    f.*,
+    t.type,
+    m.from
+  FROM file f
+    JOIN mime t ON f.mime = t.id
+  JOIN message m ON f.id = m.id;

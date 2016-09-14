@@ -9,6 +9,7 @@ import {Route, IndexRoute, browserHistory} from 'react-router'
 import {Signup} from './auth/signup'
 import {Blog, News} from './blog/article'
 import {InviteList} from './list'
+import {Gallery} from './photo'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -72,6 +73,7 @@ export const RootRoute =
       <Route path="profile" component={Blog}/>
       <Route path="blog/:id" component={Blog}/>
       <Route path="friends" component={InviteList}/>
+      <Route path="gallery/:id" component={Gallery}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

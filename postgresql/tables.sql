@@ -54,7 +54,7 @@ CREATE TABLE relation (
   UNIQUE ("from", "to")
 );
 
-CREATE TYPE message_type AS ENUM ('dialog', 'chat', 'wall', 'comment', 'child');
+CREATE TYPE message_type AS ENUM ('dialog', 'chat', 'wall', 'comment', 'child', 'file');
 
 CREATE TABLE "message" (
   id     BIGINT PRIMARY KEY,
@@ -64,7 +64,7 @@ CREATE TABLE "message" (
   "to"   BIGINT REFERENCES blog (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
   parent BIGINT,
-  "text" VARCHAR(8000)                NOT NULL,
+  "text" VARCHAR(8000),
   original BIGINT REFERENCES message (id)
 );
 

@@ -3,7 +3,7 @@ import request from 'request'
 import {escape} from 'querystring'
 
 Meteor.publish('file', function (params = {}) {
-  return query('file', params)
+  return query('file_message', params)
     .cursor()
 })
 

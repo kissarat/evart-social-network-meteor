@@ -123,12 +123,7 @@ export class NewsItem extends Component {
   }
 }
 
-export class Blog extends Subscriber {
-  setupState(state) {
-    this.setState(state)
-    this.subscribe('message', {parent: state.id, type: 'wall'})
-  }
-
+export class Profile extends Subscriber {
   setup(props) {
     if (props.id) {
       this.setupState(props)
@@ -154,6 +149,13 @@ export class Blog extends Subscriber {
   componentWillReceiveProps(props) {
     this.setState({busy: true})
     this.setup(props)
+  }
+}
+
+export class Blog extends Profile {
+  setupState(state) {
+    this.setState(state)
+    this.subscribe('message', {parent: state.id, type: 'wall'})
   }
 
   render() {

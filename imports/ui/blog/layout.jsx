@@ -169,7 +169,8 @@ export class BlogLayout extends Component {
       </div>
     }
 
-    const avatarURL = this.props.avatar ? bucketImage(this.state.avatar || this.props.avatar) : '/images/profile-image.jpg'
+    const avatarId = this.state.avatar || this.props.avatar
+    const avatarURL = avatarId ? bucketImage(avatarId) : '/images/profile-image.jpg'
     const avatar = Meteor.userIdInt() == this.props.id ?
       <Dropzone style={{}} onDrop={this.onDrop}>
         <img src={avatarURL} alt="..." className="img-thumbnail"/>

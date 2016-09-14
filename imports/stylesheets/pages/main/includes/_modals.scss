@@ -489,6 +489,9 @@
 
 .modal-media{
   .modal-content{
+    .content {
+      max-width: 100%;
+    }
     .photo-container{
       position: relative;
       img{

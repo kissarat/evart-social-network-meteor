@@ -71,7 +71,7 @@ function findService(url) {
 
 Meteor.methods({
   'file.get': function (params) {
-    return knex('file')
+    return knex('file_message')
       .where(_.pick(params, 'id', 'url'))
       .single()
   },

@@ -160,11 +160,19 @@ CREATE OR REPLACE VIEW invite AS
   WITH inv AS (
       SELECT
         r2."from",
-        r2."to" as recipient,
+        r2."to" AS recipient,
         r1.type AS establish
-      FROM relation r1 RIGHT JOIN relation r2 ON r2."from" = r1."to"
+      FROM relation r1 RIGHT
+        JOIN relation r2 ON r2."from" = r1."to" AND r2."to" = r1."from"
       WHERE r2.type = 'follow'
   )
-  SELECT *
+  SELECT
+    b.type,
+    b.name,
+    b.domain,
+    b.avatar,
+    inv.from,
+    inv.establish,
+    inv.recipient
   FROM blog b
-    JOIN inv ON b.id = inv.recipient
+    JOIN inv ON b.id = inv.from

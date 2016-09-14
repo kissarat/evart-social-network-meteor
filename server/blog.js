@@ -6,7 +6,7 @@ Meteor.publish('blog', function (params = {}) {
 })
 
 Meteor.publish('invite', function (params = {}) {
-  params.recipient = parseInt(Meteor.userId(), 36)
+  params.recipient = parseInt(this.userId, 36)
   return query('invite', params).cursor()
 })
 

@@ -66,20 +66,30 @@ class Contact extends Component {
 
 class Establish extends Component {
   onChange = (e) => {
-    Meteor.call('establish', {id: +this.params.from, relation: e.target.value})
+    let relation
+    if (e.target.value) {
+      relation = e.target.value
+    }
+    else if ('+' === e.target.innerHTML) {
+      relation = 'follow'
+    }
+    else if ('-' === e.target.innerHTML) {
+      relation = 'reject'
+    }
+    Meteor.call('establish', {id: +this.props.from, relation: relation})
   }
 
   render() {
     return <div className="switch-friends">
       <input type="radio" value="reject" className="disliked"
-             checked={'reject' === this.props.estimate} onChange={this.onChange}/>
+             checked={'reject' === this.props.establish} onChange={this.onChange}/>
       <input type="radio" className="none"
-             checked={!this.props.estimate} onChange={this.onChange}/>
+             checked={!this.props.establish} onChange={this.onChange}/>
       <input type="radio" value="follow" className="liked"
-             checked={'follow' === this.props.estimate} onChange={this.onChange}/>
+             checked={'follow' === this.props.establish} onChange={this.onChange}/>
       <div className="slider-dislike"></div>
-      <button type="button" className="btn minus">-</button>
-      <button type="button" className="btn plus">+</button>
+      <button type="button" className="btn minus" onClick={this.onChange}>-</button>
+      <button type="button" className="btn plus" onClick={this.onChange}>+</button>
     </div>
   }
 }
@@ -108,6 +118,6 @@ export class InviteList extends Subscriber {
 
   render() {
     const invites = this.getSubscription('invite').map(invite => <Invite key={invite.from} {...invite}/>)
-    return <List>{invites}</List>
+    return <List><div className="tab_invite">{invites}</div></List>
   }
 }

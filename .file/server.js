@@ -181,7 +181,7 @@ const server = http.createServer(function (req, res) {
             return common.probe(filename)
           })
           .then(function (probe) {
-            file.data = probe
+            file.data = common.lowercase(probe)
             return insert(file)
           })
           .then(function () {

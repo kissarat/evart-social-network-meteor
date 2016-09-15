@@ -29,6 +29,20 @@ function sha256(string) {
   return h.digest('base64')
 }
 
+function lowercase(obj) {
+  if (obj instanceof Array) {
+    return obj.map(v => v instanceof Object ? lowercase(v) : v)
+  }
+  else {
+    const result = {}
+    for (const key in obj) {
+      let value = obj[key]
+      result[key.toLocaleLowerCase()] = value instanceof Object ? lowercase(value) : value
+    }
+    return result
+  }
+}
+
 module.exports = {
   authenticate: function (token) {
     return new Promise(function (resolve, reject) {
@@ -135,5 +149,7 @@ module.exports = {
         }
       })
     })
-  }
+  },
+
+  lowercase
 }

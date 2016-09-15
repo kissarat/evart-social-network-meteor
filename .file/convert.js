@@ -95,7 +95,7 @@ function processTask() {
             return db.table('file')
               .where('id', fileId)
               .update({
-                time: 'default',
+                time: db.knex.raw('current_timestamp'),
                 mime: 'audio/aac'
               }).promise()
           })

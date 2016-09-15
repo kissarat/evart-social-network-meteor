@@ -16,23 +16,27 @@ export function idToTimeString(id) {
   }
 }
 
-export function bucketImage(id) {
+export function bucketFile(id) {
   return `https://${config.aws.endpoint}/${config.aws.params.Bucket}/${(+id).toString(36)}`
+}
+
+export function requestUpload(file) {
+  const xhr = new XMLHttpRequest()
+  xhr.open('POST', `//${location.hostname}:9080/${file.name}`)
+  xhr.setRequestHeader('authorization', 'Token ' + localStorage.getItem('Meteor.loginToken'))
+  xhr.setRequestHeader('content-type', file.type)
+  if (file.lastModifiedDate instanceof Date) {
+    xhr.setRequestHeader('last-modified', file.lastModifiedDate.toGMTString())
+  }
+  xhr.send(file)
 }
 
 export function upload(file) {
   return new Promise(function (resolve, reject) {
-    const xhr = new XMLHttpRequest()
-    xhr.open('POST', `//${location.hostname}:9080/${file.name}`)
-    xhr.setRequestHeader('authorization', 'Token ' + localStorage.getItem('Meteor.loginToken'))
-    xhr.setRequestHeader('content-type', file.type)
-    if (file.lastModifiedDate instanceof Date) {
-      xhr.setRequestHeader('last-modified', file.lastModifiedDate.toGMTString())
-    }
+    const xhr = requestUpload(file)
     xhr.addEventListener('error', reject)
     xhr.addEventListener('load', function () {
       resolve(JSON.parse(xhr.responseText))
     })
-    xhr.send(file)
   })
 }

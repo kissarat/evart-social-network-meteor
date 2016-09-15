@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import {Subscriber} from './common/widget'
 import Dropzone from 'react-dropzone'
-import {upload} from './common/helpers'
+import {upload, bucketFile} from './common/helpers'
 
 class Audio extends Component {
   render() {
     const meta = this.props.data.metadata
-    return <li>
+    return <li onClick={this.props.onClick}>
       <div className="order" data-order="1">
         <span className="number">{meta.track}</span>
         <span className="play"/>
@@ -17,38 +17,67 @@ class Audio extends Component {
   }
 }
 
-export class Player extends Subscriber {
-  componentWillMount() {
-    this.state = {}
-    this.subscribe('file', {type: 'audio'})
+class Player extends Component {
+  setup(props) {
+    this.audio.src = bucketFile(props.id)
   }
 
-  onClickAdd = (e) => {
-    this.setState({upload: true})
+  componentWillMount() {
+    this.state = {}
+    const audio = document.createElement('audio')
+    audio.autoplay = true
+    audio.addEventListener('loadedmetadata', this.onLoadedMetaData)
+    audio.addEventListener('timeupdate', this.onTimeUpdate)
+    this.audio = audio
+    document.body.appendChild(audio)
+    this.setup(this.props)
+  }
+
+  componentWillUnmount() {
+    this.audio.remove()
+  }
+
+  componentWillReceiveProps(props) {
+    this.setup(props)
+  }
+
+  onTimeUpdate = () => {
+    this.setState({time: this.audio.currentTime})
+  }
+
+  onLoadedMetaData = () => {
+    this.setState({loaded: true})
   }
 
   onChange = (e) => {
     this.setState({[e.target.getAttribute('name')]: e.target.value})
   }
 
-  onDrop = (files) => {
-    Promise.all(files.map(upload)).then(() => this.setState({upload: false}))
+  onSeek = (e) => {
+    this.audio.currentTime = +e.target.value
+  }
+
+  play = () => {
+    this.setState({playing: this.audio.paused})
+    if (this.audio.paused) {
+      this.audio.play()
+    }
+    else {
+      this.audio.pause()
+    }
   }
 
   render() {
-    const files = this.getSubscription('file').map(file => <Audio key={file.id} {...file}/>)
-    return <div className="player container audio">
-      <div className="media-container">
+    const meta = this.props.data.metadata
+    if (this.state.loaded) {
+      return <div className="media-container">
         <div className="background">
           <div style={{backgroundImage: 'url("/images/video-poster.jpg")'}}/>
         </div>
 
-        <div className="video-wrap">
-          <audio/>
-        </div>
         <div className="media-poster text-center">
           <div className="title">
-            <h3>Some song or album title</h3>
+            <h3>{meta.title}</h3>
           </div>
           <div className="poster-container">
             <div className="poster" style={{backgroundImage: 'url("/images/video-poster.jpg")'}}></div>
@@ -57,8 +86,8 @@ export class Player extends Subscriber {
 
         <div className="media-overlay">
           <div className="ctrl ctrl-title">
-            <h3>Group name</h3>
-            <p>Artist name here</p>
+            <h3>{meta.artist}</h3>
+            <p>{meta.album}</p>
           </div>
           <div className="ctrl ctrl-favorite">
             <span className="star-five"/>
@@ -69,21 +98,52 @@ export class Player extends Subscriber {
         </div>
 
         <div className='media-controls'>
-          <div className="ctrl ctrl-play">
-            <span className="play"/>
+          <div className="ctrl ctrl-play" onClick={this.play}>
+            <span className={this.audio.paused ? 'play' : 'pause'}/>
           </div>
           <div className="ctrl ctrl-volume">
-            <input type="range" min="0" max="1" step="0.1" value="0.5" onChange={this.onChange}/>
+            <input type="range"/>
           </div>
           <div className="ctrl ctrl-progress">
-            <input type="range" value="0" onChange={this.onChange}/>
+            <input type="range"
+                   step="1"
+                   min="0"
+                   value={this.audio.currentTime}
+                   max={this.audio.duration}
+                   onChange={this.onSeek}/>
           </div>
           <div className="ctrl ctrl-repeat">
             <span className="repeat"/>
           </div>
         </div>
       </div>
+    }
+    else {
+      return <div></div>
+    }
+  }
+}
 
+export class AudioPlaylist extends Subscriber {
+  componentWillMount() {
+    this.state = {}
+    this.subscribe('file', {type: 'audio', order: {id: -1}})
+  }
+
+  onClickAdd = (e) => {
+    this.setState({upload: true})
+  }
+
+  onDrop = (files) => {
+    Promise.all(files.map(upload)).then(() => this.setState({upload: false}))
+  }
+
+  render() {
+    const files = this.getSubscription('file').map(file =>
+      <Audio key={file.id} {...file} onClick={() => this.setState({active: file})}/>)
+    const player = this.state.active ? <Player {...this.state.active}/> : ''
+    return <div className="player container audio">
+      {player}
       <div className="playlist-container">
         <div className="input-group">
           <span className="input-group-addon">

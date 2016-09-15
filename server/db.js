@@ -363,7 +363,7 @@ function retrySQL(sql, bindings, codes) {
 
 function query(table, params = {}) {
   const q = knex.table(table)
-  q.where(_.pick(params, 'id', 'recipient', 'peer', 'parent', 'type', 'owner'))
+  q.where(_.pick(params, 'id', 'recipient', 'peer', 'parent', 'type', 'owner', 'from', 'to'))
   if (params.order) {
     _.each(params.order, function (direction, name) {
       q.orderBy(name, direction > 0 ? 'asc' : 'desc')
@@ -373,6 +373,9 @@ function query(table, params = {}) {
     params.search.split(/\s+/).forEach(function (token) {
       q.where('name', 'ilike', `%${token}%`)
     })
+  }
+  if (params.limit) {
+    q.limit(params.limit)
   }
   return q
 }

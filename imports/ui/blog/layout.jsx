@@ -1,7 +1,25 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
 import Dropzone from 'react-dropzone'
-import {bucketImage, upload} from '/imports/ui/common/helpers'
+import {bucketFile, upload} from '/imports/ui/common/helpers'
+import {Subscriber} from '/imports/ui/common/widget'
+
+const Track = function({playing}) {
+  if (playing) {
+    const duration = playing.data.format.duration / 60
+    return <div className="col-xs-6 col-sm-2 square square-image square-image-music-2">
+      <span className="expand">&bull;&bull;&bull;</span>
+      <div className="track">
+        <span className="track-name">{playing.data.metadata.title}</span>
+        <span
+          className="track-time">{Math.round(duration) + ':' + Math.round(60 * (duration - Math.round(duration)))}</span>
+      </div>
+    </div>
+  }
+  else {
+    return <div className="col-xs-6 col-sm-2 square square-image square-image-music-1"/>
+  }
+}
 
 class UserHeader extends Component {
   render() {
@@ -14,23 +32,17 @@ class UserHeader extends Component {
         {status}
       </div>
       <div className="col-xs-6 col-sm-2 square square-pink">
-        <p className="count">1050</p>
+        <p className="count">{this.props.audio}</p>
         <p className="name">Audio</p>
       </div>
       <div className="col-xs-6 col-sm-2 square square-image square-image-random-1"></div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-music-1">
-        <span className="expand">&bull;&bull;&bull;</span>
-        <div className="track">
-          <span className="track-name">Before we talked to much</span>
-          <span className="track-time">3:25</span>
-        </div>
-      </div>
+      <Track {...this.props}/>
       <div className="col-xs-6 col-sm-2 square square-darkblue">
-        <p className="count">983</p>
+        <p className="count">{this.props.friends}</p>
         <p className="name">Friends</p>
       </div>
       <div className="col-xs-6 col-sm-2 square square-skyblue">
-        <p className="count">345</p>
+        <p className="count">{this.props.subscribers}</p>
         <p className="name">Subscribers</p>
       </div>
       <div className="col-xs-6 col-sm-2 square square-image square-image-random-2"></div>
@@ -40,12 +52,12 @@ class UserHeader extends Component {
       <div className="col-xs-6 col-sm-2 square"></div>
       <div className="col-xs-6 col-sm-2 square square-image square-image-random-6"></div>
       <div className="col-xs-6 col-sm-2 square square-orange">
-        <p className="count">101</p>
+        <p className="count">{this.props.groups}</p>
         <p className="name">Groups</p>
       </div>
       <div className="col-xs-6 col-sm-2 square square-green">
-        <p className="count">35</p>
-        <p className="name">Группы</p>
+        <p className="count">{this.props.video}</p>
+        <p className="name">Videos</p>
       </div>
       <div className="col-xs-6 col-sm-2 square"></div>
       <div className="col-xs-6 col-sm-2 square square-image square-image-random-2"></div>
@@ -59,7 +71,7 @@ class GroupHeader extends Component {
     const status = this.props.status ? <p>{this.props.status}</p> : ''
     return <header>
       <div className="col-sm-2 square square-pink">
-        <p className="count">1050</p>
+        <p className="count">{this.props.audio}</p>
         <p className="name">Audio</p>
       </div>
       <div className="col-sm-2 square"></div>
@@ -71,7 +83,7 @@ class GroupHeader extends Component {
       </div>
       <div className="col-sm-2 square square-image square-image-random-7"></div>
       <div className="col-sm-2 square square-skyblue">
-        <p className="count">1.9m</p>
+        <p className="count">{this.props.subscribers}</p>
         <p className="name">Subscribers</p>
       </div>
       <div className="col-sm-2 square square-image square-image-random-8"></div>
@@ -80,23 +92,54 @@ class GroupHeader extends Component {
       <div className="col-sm-2 square square-image square-image-random-11"></div>
       <div className="col-sm-2 square"></div>
       <div className="col-sm-2 square square-image square-image-random-12"></div>
-      <div className="col-sm-2 square square-image square-image-music-2">
-        <span className="expand">&bull;&bull;&bull;</span>
-        <div className="track">
-          <span className="track-name">Before we talked to much</span>
-          <span className="track-time">3:25</span>
-        </div>
-      </div>
+      <Track {...this.props}/>
       <div className="col-sm-2 square square-green">
-        <p className="count">35</p>
+        <p className="count">{this.props.video}</p>
         <p className="name">Video</p>
       </div>
       <div className="col-sm-2 square square-blue">
-        <p className="count">2072</p>
+        <p className="count">{this.props.image}</p>
         <p className="name">Photo</p>
       </div>
       <div className="col-sm-2 square square-image square-image-random-13"></div>
     </header>
+  }
+}
+
+const Communicate = ({id}) => <div key='communicate' className="connect-menu">
+  <Link to={'/dialog/' + id}>
+    <span className="icon icon-email"/>
+  </Link>
+  <a href="#">
+    <span className="icon icon-call"/>
+  </a>
+  <a href="#">
+    <span className="icon icon-video-call"/>
+  </a>
+</div>
+
+class Subscribers extends Subscriber {
+  setup(props) {
+    this.subscribe('to_list', {to: props.id, limit: 5, order: {id: -1}})
+  }
+
+  componentWillMount() {
+    this.state = {}
+    this.setup(this.props)
+  }
+
+  componentWillReceiveProps(props) {
+    this.setup(props)
+  }
+
+  render() {
+    const subscribers = this.getSubscription('to_list').map(
+      blog => <img src={thumb(blog.avatar)} alt="..." className="img-circle"/>
+    )
+    return <div key='followers' className="subscribers">
+      <div className="text-center"><a href="#">{this.props.subscribers}</a> Subscribers</div>
+      <div className="last-subscribers">{subscribers}</div>
+    </div>
   }
 }
 
@@ -142,35 +185,11 @@ export class BlogLayout extends Component {
     else {
       follow = <button className="add-group" id="follow" onClick={this.onClickFollow}>Subscribe</button>
     }
-    let menu
-    if ('user' === this.props.type) {
-      menu = <div key='communicate' className="connect-menu">
-        <Link to={'/dialog/' + this.props.id}>
-          <span className="icon icon-email"/>
-        </Link>
-        <a href="#">
-          <span className="icon icon-call"/>
-        </a>
-        <a href="#">
-          <span className="icon icon-video-call"/>
-        </a>
-      </div>
-    }
-    else {
-      menu = <div key='followers' className="subscribers">
-        <div className="text-center"><a href="#">1 999 875</a> Subscribers</div>
-        <div className="last-subscribers">
-          <img src="img/profile-image.jpg" alt="..." className="img-circle"/>
-          <img src="img/profile-image.jpg" alt="..." className="img-circle"/>
-          <img src="img/profile-image.jpg" alt="..." className="img-circle"/>
-          <img src="img/profile-image.jpg" alt="..." className="img-circle"/>
-          <img src="img/profile-image.jpg" alt="..." className="img-circle"/>
-        </div>
-      </div>
-    }
-
+    const menu = 'user' === this.props.type
+      ? <Communicate id={this.props.id}/>
+      : <Subscribers {...this.props}/>
     const avatarId = this.state.avatar || this.props.avatar
-    const avatarURL = avatarId ? bucketImage(avatarId) : '/images/profile-image.jpg'
+    const avatarURL = avatarId ? bucketFile(avatarId) : '/images/profile-image.jpg'
     const avatar = Meteor.userIdInt() == this.props.id ?
       <Dropzone style={{}} onDrop={this.onDrop}>
         <img src={avatarURL} alt="..." className="img-thumbnail"/>

@@ -6,11 +6,11 @@ import {upload, bucketFile} from './common/helpers'
 class Audio extends Component {
   render() {
     const meta = this.props.data.metadata
-    return <li onClick={this.props.onClick}>
-      <div className="order" data-order="1">
-        <span className="number">{meta.track}</span>
-        <span className="play"/>
-      </div>
+    const track = this.props.active
+      ? <span className="play"/>
+      : <span className="number">{meta.track}</span>
+    return <li onClick={this.props.onClick} className={this.props.active ? 'active' : ''}>
+      <div className="order" data-order="1">{track}</div>
       <div className="title">{meta.artist} - {meta.title}</div>
       <div className="more">&bull;&bull;&bull;</div>
     </li>
@@ -33,12 +33,12 @@ class Player extends Component {
     this.setup(this.props)
   }
 
-  componentWillUnmount() {
-    this.audio.remove()
-  }
-
   componentWillReceiveProps(props) {
     this.setup(props)
+  }
+
+  componentWillUnmount() {
+    this.audio.remove()
   }
 
   onTimeUpdate = () => {
@@ -47,6 +47,7 @@ class Player extends Component {
 
   onLoadedMetaData = () => {
     this.setState({loaded: true})
+    Meteor.call('blog.update', {id: Meteor.userIdInt()}, {playing: this.props.id})
   }
 
   onChange = (e) => {
@@ -140,7 +141,11 @@ export class AudioPlaylist extends Subscriber {
 
   render() {
     const files = this.getSubscription('file').map(file =>
-      <Audio key={file.id} {...file} onClick={() => this.setState({active: file})}/>)
+      <Audio
+        key={file.id}
+        {...file}
+        onClick={() => this.setState({active: file})}
+        active={file == this.state.active}/>)
     const player = this.state.active ? <Player {...this.state.active}/> : ''
     return <div className="player container audio">
       {player}

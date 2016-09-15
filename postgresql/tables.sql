@@ -37,6 +37,7 @@ CREATE TABLE blog (
   domain VARCHAR(24) UNIQUE,
   name   VARCHAR(128),
   type   blog_type NOT NULL,
+  playing BIGINT REFERENCES file(id),
   avatar BIGINT REFERENCES file (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
   time   TIMESTAMP NOT NULL DEFAULT current_timestamp

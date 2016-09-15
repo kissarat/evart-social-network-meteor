@@ -180,9 +180,56 @@ CREATE OR REPLACE VIEW invite AS
 CREATE OR REPLACE VIEW file_message AS
   SELECT
     f.*,
-    coalesce(t.type, 'video') as type,
+    coalesce(t.type, 'video') AS type,
     m.from,
     m.text
   FROM file f
-  JOIN message m ON f.id = m.id
+    JOIN message m ON f.id = m.id
     LEFT JOIN mime t ON f.mime = t.id;
+
+CREATE OR REPLACE VIEW from_list AS
+  SELECT
+    b.*,
+    r.type AS establish,
+    r."from"
+  FROM blog b
+    JOIN relation r ON b.id = r."to";
+
+CREATE OR REPLACE VIEW to_list AS
+  SELECT
+    b.*,
+    r.type AS establish,
+    r."to"
+  FROM blog b
+    JOIN relation r ON b.id = r."from";
+
+CREATE OR REPLACE VIEW informer AS
+  SELECT
+    b.id,
+    b.domain,
+    b.name,
+    b.type,
+    b.avatar,
+    b.recipient,
+    b.relation,
+    (SELECT count(*)
+     FROM invite
+     WHERE recipient = b.id AND type = 'user' AND establish <> 'follow') AS subscribers,
+    (SELECT count(*)
+     FROM invite
+     WHERE recipient = b.id AND type = 'user' AND establish = 'follow') AS friends,
+    (SELECT count(*)
+     FROM from_list
+     WHERE "from" = b.id AND b.type = 'group')                          AS groups,
+    (SELECT count(*)
+     FROM file_message fm
+     WHERE "from" = b.id AND fm.type = 'image')                            AS image,
+    (SELECT count(*)
+     FROM file_message fm
+     WHERE "from" = b.id AND fm.type = 'audio')                            AS audio,
+    (SELECT count(*)
+     FROM file_message fm
+     WHERE "from" = b.id AND fm.type = 'video')                            AS video,
+    row_to_json(f.*)                                                    AS playing
+  FROM blog_recipient b
+    LEFT JOIN file f ON b.playing = f.id;

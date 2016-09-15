@@ -7,7 +7,10 @@ import {idToTimeString} from '/imports/ui/common/helpers'
 
 class Attitude extends Component {
   onChange = (e) => {
-    Meteor.call('estimate', {id: this.props.id, attitude: e.nativeEvent.target.value || false}, (err, res) => {
+    const attitude = 'checkbox' == e.target.getAttribute('type')
+      ? e.target.checked && 'like'
+      : e.nativeEvent.target.value || false
+    Meteor.call('estimate', {id: this.props.id, attitude: attitude}, (err, res) => {
       if (err) {
         console.error(err)
       }
@@ -21,8 +24,8 @@ class Attitude extends Component {
     return Meteor.userIdInt() == this.props.from
       ?
       <label className="switch">
-        <input type="checkbox" checked={this.props.like}/>
-        <div className="slider"></div>
+        <input type="checkbox" value="like" checked={'like' === this.props.attitude} onChange={this.onChange}/>
+        <div className="slider"/>
       </label>
       :
       <div className="switch-dislike">

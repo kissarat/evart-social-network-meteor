@@ -10,11 +10,16 @@ Meteor.publish('invite', function (params = {}) {
   return query('invite', params).cursor()
 })
 
+Meteor.publish('to_list', function (params = {}) {
+  params.to = parseInt(this.userId, 36)
+  return query('to_list', params).cursor()
+})
+
 Meteor.methods({
   'blog.get' (params) {
     const where = _.pick(params, 'id', 'domain')
     where.recipient = parseInt(Meteor.userId(), 36)
-    return table('blog_recipient')
+    return table('informer')
       .where(where)
       .single()
   },

@@ -20,6 +20,10 @@ export function bucketFile(id) {
   return `https://${config.aws.endpoint}/${config.aws.params.Bucket}/${(+id).toString(36)}`
 }
 
+export function thumb(id) {
+  return `/thumb/${id}.jpg`
+}
+
 export function requestUpload(file) {
   const xhr = new XMLHttpRequest()
   xhr.open('POST', `//${location.hostname}:9080/${file.name}`)

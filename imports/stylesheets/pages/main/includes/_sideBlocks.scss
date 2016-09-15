@@ -580,12 +580,6 @@
     overflow: hidden;
   }
   .uploader {
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     .progressBar-container {
       position: absolute;
       top: 290px;
@@ -650,34 +644,29 @@
       }
     }
   }
-  form {
-    position: relative;
-    button {
-      color: #fff;
-      font-family: "Panton-Regular";
-      font-size: 15px;
-      line-height: 21px;
-      text-transform: uppercase;
-      width: 175px;
-      height: 46px;
-      background-color: rgb(56, 146, 205);
-      border-radius: 50px;
-      position: absolute;
-      top: 110%;
-      left: 50%;
-      transform: translateX(-50%);
-      outline: none;
-    }
+  .upload-zone {
+    text-align: center;
+  }
+  button.upload {
+    color: #fff;
+    font-family: "Panton-Regular", serif;
+    font-size: 15px;
+    line-height: 21px;
+    text-transform: uppercase;
+    width: 175px;
+    height: 46px;
+    background-color: rgb(56, 146, 205);
+    border-radius: 50px;
+    outline: none;
   }
   .dropZone {
-    position: relative;
-    font-family: "Panton-Regular";
+    font-family: "Panton-Regular", serif;
     color: #aaacad;
     font-size: 16px;
     text-align: center;
 
     width: 95%;
-    padding: 90px 20px 50px;
+    padding: 50px 20px 50px;
     margin: 10px auto;
 
     background: #eceff4;
@@ -696,14 +685,9 @@
       border-color: #f00;
     }
     .upload {
-      background: url(/images/upload.png) no-repeat;
-      width: 49px;
       height: 37px;
-      display: inline-block;
-      position: absolute;
-      top: 40px;
-      left: 50%;
-      transform: translateX(-50%);
+      margin-bottom: 10px;
+      background: url(/images/upload.png) no-repeat center;
     }
   }
 

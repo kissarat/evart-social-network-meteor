@@ -91,6 +91,14 @@ function processTask() {
             return db.retrySQL('DELETE FROM convert WHERE file = $1::BIGINT',
               [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
           })
+          .then(function () {
+            return db.table('file')
+              .where('id', fileId)
+              .update({
+                time: 'default',
+                mime: 'audio/aac'
+              }).promise()
+          })
           .then(processTask)
           .catch(error)
       }

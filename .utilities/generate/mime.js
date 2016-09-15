@@ -44,6 +44,7 @@ const mimes = {
   'application/xhtml+xml': {size: 2097152, ext: ['xhtml']},
   'application/xspf+xml': {size: 8388608, ext: ['xspf']},
   'application/zip': {size: 8388608, ext: ['zip']},
+  'audio/aac': {size: 8388608, ext: ['aac', 'm4a']},
   'audio/flac': {size: 268435456, ext: ['mp3']},
   'audio/midi': {size: 262144, ext: ['mid', 'midi', 'kar']},
   'audio/mp3': {size: 268435456, ext: ['mp3']},

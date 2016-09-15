@@ -1,12 +1,42 @@
 import React, {Component} from 'react'
 import {Subscriber} from './common/widget'
+import Dropzone from 'react-dropzone'
+import {upload} from './common/helpers'
+
+class Audio extends Component {
+  render() {
+    const meta = this.props.data.metadata
+    return <li>
+      <div className="order" data-order="1">
+        <span className="number">{meta.track}</span>
+        <span className="play"/>
+      </div>
+      <div className="title">{meta.artist} - {meta.title}</div>
+      <div className="more">&bull;&bull;&bull;</div>
+    </li>
+  }
+}
 
 export class Player extends Subscriber {
+  componentWillMount() {
+    this.state = {}
+    this.subscribe('file', {type: 'audio'})
+  }
+
+  onClickAdd = (e) => {
+    this.setState({upload: true})
+  }
+
   onChange = (e) => {
     this.setState({[e.target.getAttribute('name')]: e.target.value})
   }
 
+  onDrop = (files) => {
+    Promise.all(files.map(upload)).then(() => this.setState({upload: false}))
+  }
+
   render() {
+    const files = this.getSubscription('file').map(file => <Audio key={file.id} {...file}/>)
     return <div className="player container audio">
       <div className="media-container">
         <div className="background">
@@ -61,19 +91,18 @@ export class Player extends Subscriber {
           </span>
           <input type="text" className="form-control" placeholder="Search music..." onChange={this.onChange}/>
           <span className="input-group-addon">
-            <span className="addfile">+</span>
+            <span className="addfile" onClick={this.onClickAdd}>+</span>
           </span>
         </div>
         <div className="playlist">
-          <ul></ul>
-          <div className="uploader hide">
-            <form action="/upload.php">
-              <button type="button" className="btn">Upload</button>
+          <Dropzone className={'uploader' + (this.state.upload ? '' : ' hide')} onDrop={this.onDrop}>
+            <div className="upload-zone">
               <div className="dropZone">
-                <span className="upload"/>
-                Drop audio file here
+                <div className="upload"/>
+                <div>Drop audio file here</div>
               </div>
-            </form>
+              <button type="button" className="btn upload">Upload</button>
+            </div>
             <div className="progressBar-container">
               <div className="progressBar">
                 <div className="uploader-content">
@@ -94,7 +123,8 @@ export class Player extends Subscriber {
                 </div>
               </div>
             </div>
-          </div>
+          </Dropzone>
+          <ul>{files}</ul>
         </div>
       </div>
     </div>

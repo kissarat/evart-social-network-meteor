@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone'
 import {bucketFile, upload} from '/imports/ui/common/helpers'
 import {Subscriber} from '/imports/ui/common/widget'
 
-const Track = function({playing}) {
+const Track = function ({playing}) {
   if (playing) {
     const duration = playing.data.format.duration / 60
     return <div className="col-xs-6 col-sm-2 square square-image square-image-music-2">
@@ -21,16 +21,42 @@ const Track = function({playing}) {
   }
 }
 
+class Title extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
+  onChangeStatus = (e) => {
+    this.setState({status: e.target.value.slice(0, 140)})
+  }
+
+  onBlurStatus = (e) => {
+    Meteor.call('blog.update', {id: this.props.id}, {status: this.state.status})
+  }
+
+  render() {
+    const name = this.props.name ? <h4>{this.props.name}</h4> : <h4>Untitled</h4>
+    const geo = this.props.geo ?
+      <div><span className="icon icon-location"/>{this.props.geo.replace('\t', ',')}</div> : ''
+    let status = this.state.status || this.props.status
+    status = 'manage' === this.props.relation
+      ? <textarea value={status} rows="3"
+                  placeholder="Status"
+                  onChange={this.onChangeStatus}
+                  onBlur={this.onBlurStatus}/>
+      : <p>{status}</p>
+    return <div className="col-sm-6 user-info">
+      {name}
+      {geo}
+      {status}
+    </div>
+  }
+}
+
 class UserHeader extends Component {
   render() {
-    const geo = this.props.geo ? <div><span className="icon icon-location"/>Kiev, Ukraine</div> : ''
-    const status = this.props.status ? <p>{this.props.status}</p> : ''
     return <header>
-      <div className="col-sm-6 user-info">
-        <h4>{this.props.name || 'Untitled'}</h4>
-        {geo}
-        {status}
-      </div>
+      <Title {...this.props}/>
       <div className="col-xs-6 col-sm-2 square square-pink">
         <p className="count">{this.props.audio}</p>
         <p className="name">Audio</p>
@@ -67,8 +93,6 @@ class UserHeader extends Component {
 
 class GroupHeader extends Component {
   render() {
-    const geo = this.props.geo ? <div><span className="icon icon-location"/>Kiev, Ukraine</div> : ''
-    const status = this.props.status ? <p>{this.props.status}</p> : ''
     return <header>
       <div className="col-sm-2 square square-pink">
         <p className="count">{this.props.audio}</p>
@@ -76,11 +100,7 @@ class GroupHeader extends Component {
       </div>
       <div className="col-sm-2 square"></div>
       <div className="col-sm-2 square square-image square-image-random-6"></div>
-      <div className="col-sm-6 user-info">
-        <h4>{this.props.name || 'Untitled'}</h4>
-        {geo}
-        {status}
-      </div>
+      <Title {...this.props}/>
       <div className="col-sm-2 square square-image square-image-random-7"></div>
       <div className="col-sm-2 square square-skyblue">
         <p className="count">{this.props.subscribers}</p>

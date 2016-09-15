@@ -25,11 +25,6 @@ class Player extends Component {
   componentWillMount() {
     this.state = {}
     const audio = document.createElement('audio')
-    audio.autoplay = true
-    audio.addEventListener('loadedmetadata', this.onLoadedMetaData)
-    audio.addEventListener('timeupdate', this.onTimeUpdate)
-    this.audio = audio
-    document.body.appendChild(audio)
     this.setup(this.props)
   }
 
@@ -37,25 +32,21 @@ class Player extends Component {
     this.setup(props)
   }
 
-  componentWillUnmount() {
-    this.audio.remove()
-  }
-
   onTimeUpdate = () => {
     this.setState({time: this.audio.currentTime})
   }
 
-  onLoadedMetaData = () => {
+  onLoadedMetadata = () => {
     this.setState({loaded: true})
     Meteor.call('blog.update', {id: Meteor.userIdInt()}, {playing: this.props.id})
   }
 
-  onChange = (e) => {
-    this.setState({[e.target.getAttribute('name')]: e.target.value})
+  onSeek = (e) => {
+    this.setState({time: +e.target.value})
   }
 
-  onSeek = (e) => {
-    this.audio.currentTime = +e.target.value
+  onChange = (e) => {
+    this.setState({[e.target.getAttribute('name')]: e.target.value})
   }
 
   play = () => {
@@ -72,6 +63,12 @@ class Player extends Component {
     const meta = this.props.data.metadata
     if (this.state.loaded) {
       return <div className="media-container">
+        <audio
+          src={bucketFile(props.id)}
+          onTimeUpdate={this.onTimeUpdate}
+          onLoadedMetadata={this.onLoadedMetadata}
+          onSeeked={this.onSeek}
+        />
         <div className="background">
           <div style={{backgroundImage: 'url("/images/video-poster.jpg")'}}/>
         </div>

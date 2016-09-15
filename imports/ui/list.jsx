@@ -61,7 +61,7 @@ class Contact extends Component {
         </div>
       </div>
     </div>
-  }tt
+  }
 }
 
 class Establish extends Component {
@@ -113,7 +113,7 @@ class Invite extends Component {
 
 export class InviteList extends Subscriber {
   componentWillMount() {
-    this.subscribe('invite')
+    this.subscribe('invite', {type: 'user'})
   }
 
   render() {

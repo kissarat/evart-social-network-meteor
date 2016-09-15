@@ -150,8 +150,10 @@ CREATE OR REPLACE VIEW convert_progress AS
 CREATE OR REPLACE VIEW "blog_recipient" AS
   SELECT
     b.*,
-    rec.id   AS recipient,
-    rel.type AS relation
+    rec.id            AS recipient,
+    CASE WHEN b.id = rec.id
+      THEN 'manage'
+    ELSE rel.type END AS relation
   FROM "blog" rec CROSS JOIN blog b
     LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
   WHERE rec.type = 'user';
@@ -210,26 +212,33 @@ CREATE OR REPLACE VIEW informer AS
     b.name,
     b.type,
     b.avatar,
+    b.status,
     b.recipient,
     b.relation,
     (SELECT count(*)
      FROM invite
-     WHERE recipient = b.id AND type = 'user' AND establish <> 'follow') AS subscribers,
+     WHERE
+       (establish IS NULL OR establish = 'reject')
+       AND type = 'user'
+       AND recipient = b.id)                    AS subscribers,
     (SELECT count(*)
      FROM invite
-     WHERE recipient = b.id AND type = 'user' AND establish = 'follow') AS friends,
+     WHERE
+       recipient = b.id
+       AND type = 'user'
+       AND establish = 'follow')                AS friends,
     (SELECT count(*)
      FROM from_list
-     WHERE "from" = b.id AND b.type = 'group')                          AS groups,
+     WHERE "from" = b.id AND type = 'group')    AS groups,
     (SELECT count(*)
      FROM file_message fm
-     WHERE "from" = b.id AND fm.type = 'image')                            AS image,
+     WHERE "from" = b.id AND fm.type = 'image') AS image,
     (SELECT count(*)
      FROM file_message fm
-     WHERE "from" = b.id AND fm.type = 'audio')                            AS audio,
+     WHERE "from" = b.id AND fm.type = 'audio') AS audio,
     (SELECT count(*)
      FROM file_message fm
-     WHERE "from" = b.id AND fm.type = 'video')                            AS video,
-    row_to_json(f.*)                                                    AS playing
+     WHERE "from" = b.id AND fm.type = 'video') AS video,
+    row_to_json(f.*)                            AS playing
   FROM blog_recipient b
     LEFT JOIN file f ON b.playing = f.id;

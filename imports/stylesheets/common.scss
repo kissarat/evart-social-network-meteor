@@ -49,3 +49,27 @@ header textarea {
     color: white;
   }
 }
+
+.blog-edit {
+  .form-group {
+    display: flex;
+    align-items: center;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  label {
+    min-width: 80px;
+  }
+
+  .form-control {
+
+  }
+
+  [type=submit] {
+    float: right;
+  }
+}

@@ -17,14 +17,14 @@ export class Login extends Component {
         Meteor.call('blog.get', blog, (err1, res1) => {
           if (res1) {
             this.setState(blog)
-            browserHistory.push('/messenger')
+            browserHistory.push('/profile')
           }
           else {
             blog.type = 'user'
             Meteor.call('blog.create', blog, (err2, res2) => {
               blog.id = res2.id
               this.setState(blog)
-              browserHistory.push('/messenger')
+              browserHistory.push('/profile')
             })
           }
         })

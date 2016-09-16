@@ -147,17 +147,6 @@ CREATE OR REPLACE VIEW convert_progress AS
   FROM file f
     JOIN "convert" c ON f.id = c.file;
 
-CREATE OR REPLACE VIEW "blog_recipient" AS
-  SELECT
-    b.*,
-    rec.id            AS recipient,
-    CASE WHEN b.id = rec.id
-      THEN 'manage'
-    ELSE rel.type END AS relation
-  FROM "blog" rec CROSS JOIN blog b
-    LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
-  WHERE rec.type = 'user';
-
 CREATE OR REPLACE VIEW invite AS
   WITH inv AS (
       SELECT
@@ -205,16 +194,20 @@ CREATE OR REPLACE VIEW to_list AS
   FROM blog b
     JOIN relation r ON b.id = r."from";
 
+CREATE OR REPLACE VIEW "blog_recipient" AS
+  SELECT
+    b.*,
+    rec.id            AS recipient,
+    CASE WHEN b.id = rec.id
+      THEN 'manage'
+    ELSE rel.type END AS relation
+  FROM "blog" rec CROSS JOIN blog b
+    LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
+  WHERE rec.type = 'user';
+
 CREATE OR REPLACE VIEW informer AS
   SELECT
-    b.id,
-    b.domain,
-    b.name,
-    b.type,
-    b.avatar,
-    b.status,
-    b.recipient,
-    b.relation,
+    b.*,
     (SELECT count(*)
      FROM invite
      WHERE
@@ -239,6 +232,6 @@ CREATE OR REPLACE VIEW informer AS
     (SELECT count(*)
      FROM file_message fm
      WHERE "from" = b.id AND fm.type = 'video') AS video,
-    row_to_json(f.*)                            AS playing
+    row_to_json(f.*)                            AS track
   FROM blog_recipient b
     LEFT JOIN file f ON b.playing = f.id;

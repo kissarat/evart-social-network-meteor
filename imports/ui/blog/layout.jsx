@@ -4,13 +4,13 @@ import Dropzone from 'react-dropzone'
 import {bucketFile, upload} from '/imports/ui/common/helpers'
 import {Subscriber} from '/imports/ui/common/widget'
 
-const Track = function ({playing}) {
-  if (playing) {
-    const duration = playing.data.format.duration / 60
+const Track = function ({track}) {
+  if (track) {
+    const duration = track.data.format.duration / 60
     return <div className="col-xs-6 col-sm-2 square square-image square-image-music-2">
       <span className="expand">&bull;&bull;&bull;</span>
       <div className="track">
-        <span className="track-name">{playing.data.metadata.title}</span>
+        <span className="track-name">{track.data.metadata.title}</span>
         <span
           className="track-time">{Math.round(duration) + ':' + Math.round(60 * (duration - Math.round(duration)))}</span>
       </div>

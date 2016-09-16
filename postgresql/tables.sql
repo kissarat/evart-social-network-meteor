@@ -36,9 +36,13 @@ CREATE TABLE blog (
   id     BIGINT PRIMARY KEY,
   domain VARCHAR(24) UNIQUE,
   name   VARCHAR(128),
+  surname   VARCHAR(64),
+  forename   VARCHAR(64),
   type   blog_type NOT NULL,
   playing BIGINT REFERENCES file(id),
   status VARCHAR(140),
+  birthday DATE,
+  data JSON,
   avatar BIGINT REFERENCES file (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
   time   TIMESTAMP NOT NULL DEFAULT current_timestamp

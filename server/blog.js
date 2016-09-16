@@ -40,11 +40,27 @@ Meteor.methods({
       })
   },
 
-  'blog.update' (where, data) {
-    return table('blog')
-      .where(where)
-      .update(data)
-      .promise()
+  'blog.update' (where, changes) {
+    changes = _.pick(changes, 'status', 'name', 'surname', 'forename', 'birthday')
+    if (changes.surname || changes.forename) {
+      changes.name = changes.surname + ' ' + changes.forename
+    }
+    _.forEach(changes, function (value, key) {
+      if ('string' === typeof value) {
+        if (!value.trim()) {
+          changes[key] = null
+        }
+      }
+    })
+    if (_.isEmpty(changes)) {
+      return false
+    }
+    else {
+      return table('blog')
+        .where(where)
+        .update(changes)
+        .promise()
+    }
   },
 
   establish(params) {

@@ -61,3 +61,16 @@ export class ScrollArea extends Component {
     return <ul ref={this.scroll}>{this.props.children}</ul>
   }
 }
+
+export class InputGroup extends Component {
+  render() {
+    const message = this.props.message ? <span className="help-block">{this.props.message}</span> : ''
+    return <div className={'form-group' + (message ? ' has-error' : '')}>
+      <label>{this.props.label}</label>
+      <div className="control-container">
+        {this.props.children}
+        {message}
+      </div>
+    </div>
+  }
+}

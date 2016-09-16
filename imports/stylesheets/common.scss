@@ -50,10 +50,9 @@ header textarea {
   }
 }
 
-.blog-edit {
+.settings {
   .form-group {
     display: flex;
-    align-items: center;
   }
 
   h1 {
@@ -62,14 +61,18 @@ header textarea {
   }
 
   label {
-    min-width: 80px;
-  }
-
-  .form-control {
-
+    line-height: 34px;
+    min-width: 140px;
   }
 
   [type=submit] {
     float: right;
+  }
+
+  .control-container {
+    width: 100%;
+    > * {
+      width: 100%;
+    }
   }
 }

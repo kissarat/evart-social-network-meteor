@@ -12,7 +12,7 @@ import {InviteList} from './list'
 import {Gallery, Visual} from './photo'
 import {VideoList} from './video'
 import {AudioPlaylist} from './audio'
-import {Edit} from './blog/edit'
+import {Edit, ChangePassword, ResetPassword} from './blog/edit'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -82,11 +82,13 @@ export const RootRoute =
       <Route path="player" component={AudioPlaylist}/>
       <Route path="settings" component={Edit}/>
       <Route path="edit/:id" component={Edit}/>
+      <Route path="change-password" component={ChangePassword}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>
       <Route path="login" component={LoginPage}/>
       <Route path="signup" component={Signup}/>
+      <Route path="reset-password" component={ResetPassword}/>
     </Route>
     {AdminRoute}
     {PhoneRoute}

@@ -6,7 +6,7 @@ import {Blog, News} from './blog/article'
 import {Edit, ChangePassword, ResetPassword} from './blog/edit'
 import {FileRoute} from './file'
 import {Gallery, Visual} from './photo'
-import {InviteList, FriendList} from './list'
+import {InviteList, FriendList, GroupsList} from './list'
 import {LoginPage} from './auth/login'
 import {Messenger} from './message'
 import {PhoneRoute} from './phone'
@@ -85,6 +85,8 @@ export const RootRoute =
       <Route path="change-password" component={ChangePassword}/>
       <Route path="friends/:id" component={FriendList}/>
       <Route path="friends" component={FriendList}/>
+      <Route path="groups" component={GroupsList}/>
+      <Route path="groups/:id" component={GroupsList}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

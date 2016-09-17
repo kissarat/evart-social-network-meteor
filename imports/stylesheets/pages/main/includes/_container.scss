@@ -61,8 +61,6 @@ header {
     display: flex;
     flex-wrap: wrap;
     max-width: 780px;
-    padding-top: 50px;
-    padding-bottom: 250px;
     margin: auto;
   }
   &.user-banned {
@@ -70,9 +68,27 @@ header {
   }
 }
 
+@media (max-width: 980px) {
+  header {
+    .group {
+      .audio {
+        order: 1
+      }
+    }
+
+    .tile.empty {
+      display: none;
+    }
+  }
+}
+
+header.group {
+  .blog-info {
+    padding-left: 12px;
+  }
+}
+
 .blog-info {
-  width: 390px;
-  height: 130px;
   font-family: "Panton-Regular", serif;
   color: #ffffff;
   h4 {
@@ -96,13 +112,43 @@ header {
   }
 }
 
+@media (min-width: 901px) {
+  .blog-info {
+    width: 390px;
+    height: 130px;
+  }
+  .tile {
+    $square-size: 130px;
+    height: $square-size;
+    width: $square-size;
+  }
+}
+
+@media (min-width: 769px) {
+  header > div {
+    padding-top: 50px;
+    padding-bottom: 250px;
+  }
+}
+
+@media (max-width: 900px) {
+  .blog-info {
+    width: 300px;
+    height: 100px;
+  }
+
+  .tile {
+    $square-size: 100px;
+    height: $square-size;
+    width: $square-size;
+  }
+}
+
 .tile {
   $square-size: 130px;
   $offset: 2px;
   color: #fff;
   font-family: "Panton-Regular", serif;
-  height: $square-size;
-  width: $square-size;
   display: flex;
   flex-direction: column;
   justify-content: center;

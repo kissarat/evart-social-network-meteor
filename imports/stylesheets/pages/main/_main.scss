@@ -38,8 +38,13 @@ $user-menu-border-color: #ddddde;
   }
 }
 
+@media (min-width: 769px) {
+  main {
+    margin-top: -220px;
+  }
+}
+
 main {
-  margin-top: -220px;
   .user-block {
     padding: 0 40px;
   }

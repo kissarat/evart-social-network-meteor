@@ -105,26 +105,28 @@ header textarea {
   }
 }
 
-@media (orientation: landscape) {
-  @media (min-width: 500px) {
-    .scroll {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-    }
-    @media (max-width: 840px) {
-      #central .contact-list {
-        .contact {
-          width: calc(50% - 8);
+#central {
+  @media (orientation: landscape) {
+    @media (min-width: 500px) {
+      .scroll {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      @media (max-width: 840px) {
+        #central .contact-list {
+          .contact {
+            width: calc(50% - 8);
+          }
         }
       }
     }
-  }
-  @media (min-width: 841px) {
-    #central .contact-list {
-      .contact {
-        width: 30%;
+    @media (min-width: 841px) {
+      #central .contact-list {
+        .contact {
+          width: 30%;
+        }
       }
     }
   }

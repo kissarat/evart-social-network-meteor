@@ -33,7 +33,7 @@ class ListHeader extends Component {
 
 class Contact extends Component {
   render() {
-    const url = '/blog/' + this.props.from
+    const url = '/blog/' + (this.props.from || this.props.id)
     const online = <i className="online"/>
     const more = 'group' === this.props.type ?
       <div>
@@ -159,6 +159,24 @@ export class FriendList extends List {
 
   render() {
     const list = this.renderList(this.getSubscription('invite'))
+    return <div className="contact-list list">
+      <div className="search"></div>
+      {list}
+    </div>
+  }
+}
+
+export class GroupsList extends List {
+  componentWillReceiveProps(props) {
+    const params = {
+      type: 'group',
+      relation: 'follow'
+    }
+    this.subscribe('blog_recipient', params)
+  }
+
+  render() {
+    const list = this.renderList(this.getSubscription('blog_recipient'))
     return <div className="contact-list list">
       <div className="search"></div>
       {list}

@@ -17,7 +17,7 @@ const Track = function ({track, type}) {
     </div>
   }
   else {
-    return <div className="col-xs-6 col-sm-2 square square-image square-image-music-1"/>
+    return <div className="col-xs-6 tile square-image square-image-music-1"/>
   }
 }
 
@@ -95,35 +95,37 @@ class UserHeader extends Component {
 
 class GroupHeader extends Component {
   render() {
-    return <header>
-      <div className="col-sm-2 square square-pink">
-        <p className="count">{this.props.audio}</p>
-        <p className="name">Audio</p>
+    return <header className="group">
+      <div>
+        <div className="tile audio hidable">
+          <p className="count">{this.props.audio}</p>
+          <p className="name">Audio</p>
+        </div>
+        <div className="tile empty"></div>
+        <div className="tile image tile-6"></div>
+        <Title {...this.props}/>
+        <div className="tile image tile-7"></div>
+        <div className="tile subscribers">
+          <p className="count">{this.props.subscribers}</p>
+          <p className="name">Subscribers</p>
+        </div>
+        <div className="tile image tile-8"></div>
+        <div className="tile image tile-9"></div>
+        <div className="tile image tile-10"></div>
+        <div className="tile image tile-11"></div>
+        <div className="tile empty"></div>
+        <div className="tile image tile-12"></div>
+        <Track {...this.props}/>
+        <div className="tile video">
+          <p className="count">{this.props.video}</p>
+          <p className="name">Video</p>
+        </div>
+        <div className="tile photo">
+          <p className="count">{this.props.image}</p>
+          <p className="name">Photo</p>
+        </div>
+        <div className="tile image tile-13"></div>
       </div>
-      <div className="col-sm-2 square"></div>
-      <div className="col-sm-2 square square-image square-image-random-6"></div>
-      <Title {...this.props}/>
-      <div className="col-sm-2 square square-image square-image-random-7"></div>
-      <div className="col-sm-2 square square-skyblue">
-        <p className="count">{this.props.subscribers}</p>
-        <p className="name">Subscribers</p>
-      </div>
-      <div className="col-sm-2 square square-image square-image-random-8"></div>
-      <div className="col-sm-2 square square-image square-image-random-9"></div>
-      <div className="col-sm-2 square square-image square-image-random-10"></div>
-      <div className="col-sm-2 square square-image square-image-random-11"></div>
-      <div className="col-sm-2 square"></div>
-      <div className="col-sm-2 square square-image square-image-random-12"></div>
-      <Track {...this.props}/>
-      <div className="col-sm-2 square square-green">
-        <p className="count">{this.props.video}</p>
-        <p className="name">Video</p>
-      </div>
-      <div className="col-sm-2 square square-blue">
-        <p className="count">{this.props.image}</p>
-        <p className="name">Photo</p>
-      </div>
-      <div className="col-sm-2 square square-image square-image-random-13"></div>
     </header>
   }
 }

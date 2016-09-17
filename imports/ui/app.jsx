@@ -4,6 +4,7 @@ import '/imports/stylesheets/main.scss'
 import {AudioPlaylist} from './audio'
 import {VideoList} from './video'
 import {DialogList, Dialog} from './message'
+import {FriendList} from './list'
 
 class Panel extends Component {
   static generateId() {
@@ -74,6 +75,12 @@ class Aside extends Component {
     else if (c.contains('audio')) {
       this.openPanel(<AudioPlaylist/>)
     }
+    else if (c.contains('friends')) {
+      this.openPanel(<FriendList/>)
+    }
+    else if (c.contains('groups')) {
+      this.openPanel(<FriendList/>)
+    }
     this.setState({menu: false})
   }
 
@@ -92,8 +99,8 @@ class Aside extends Component {
           <li className="messages" onClick={this.onClickMenuItem}>Messages</li>
           <li className="video" onClick={this.onClickMenuItem}>Video</li>
           <li className="audio" onClick={this.onClickMenuItem}>Audio</li>
-          <li className="friends hidden" onClick={this.onClickMenuItem}>Friends</li>
-          <li className="groups hidden" onClick={this.onClickMenuItem}>Groups</li>
+          <li className="friends" onClick={this.onClickMenuItem}>Friends</li>
+          <li className="groups" onClick={this.onClickMenuItem}>Groups</li>
         </ul>
         {this.getPanels()}
       </div>

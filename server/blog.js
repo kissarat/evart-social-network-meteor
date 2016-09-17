@@ -6,7 +6,7 @@ Meteor.publish('blog', function (params = {}) {
 })
 
 Meteor.publish('blog_recipient', function (params = {}) {
-    params.recipient = parseInt(this.userId, 36)
+  params.recipient = parseInt(this.userId, 36)
   return query('blog_recipient', params).cursor()
 })
 
@@ -53,7 +53,8 @@ Meteor.methods({
   },
 
   'blog.update' (where, changes) {
-    changes = _.pick(changes, 'status', 'name', 'surname', 'forename', 'birthday')
+    changes = _.pick(changes, 'status', 'name', 'surname', 'forename', 'birthday',
+      't0', 't1', 't2', 't3', 't4', 't5', 't6')
     if (changes.surname || changes.forename) {
       changes.name = changes.surname + ' ' + changes.forename
     }

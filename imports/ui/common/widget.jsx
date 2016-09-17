@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import _ from 'underscore'
+import {bucketFile, thumb} from '/imports/ui/common/helpers'
+import Dropzone from 'react-dropzone'
 
 export class Subscriber extends Component {
   subscribe(name, state = {}) {
@@ -79,4 +81,50 @@ export class InputGroup extends Component {
   }
 }
 
+export const Avatar = ({avatar, type, className, name, big}) => {
+  if (avatar) {
+    avatar = big ? bucketFile(avatar) : thumb(avatar)
+  }
+  else {
+    if (['user', 'group', 'chat'].indexOf(type) < 0) {
+      type = 'user'
+    }
+    avatar = `/images/${type}.png`
+  }
+  if (!className) {
+    className = 'avatar circle'
+  }
+  return <img src={avatar} name={name} className={className}/>
+}
+
 export const Busy = () => <div className="busy-animation"></div>
+
+export class ImageDropzone extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
+  onDrop = (files, e) => {
+    this.setState({busy: true})
+    this.props.onDrop(files, e).then(() => this.setState({busy: false}))
+  }
+
+  render() {
+    const attrs = _.pick(this.props, 'className')
+    attrs.id = this.props.imageProperty
+    const imageUrl = thumb(this.props.imageId)
+    attrs.style = this.props.imageId ? {
+      background: `url("${imageUrl}") no-repeat center`,
+      backgroundSize: 'cover'
+    } : {}
+    attrs.onDrop = this.onDrop
+    if (!this.state.busy && 'manage' === this.props.relation) {
+      attrs.accept = 'image/*'
+      attrs.className = (attrs.className ? attrs.className + ' ' : '') + 'dropzone image'
+      return <Dropzone {...attrs}>{this.props.children}</Dropzone>
+    }
+    else {
+      return <div {...attrs}>{this.state.busy ? <Busy/> : this.props.children}</div>
+    }
+  }
+}

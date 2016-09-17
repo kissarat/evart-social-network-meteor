@@ -5,6 +5,7 @@ import {AudioPlaylist} from './audio'
 import {VideoList} from './video'
 import {DialogList, Dialog} from './message'
 import {FriendList} from './list'
+import {AlertQueue} from '/imports/ui/common/alert'
 
 class Panel extends Component {
   static generateId() {
@@ -118,9 +119,9 @@ export class App extends Component {
         <div className="bar center-block">
           <Link to="/news" className="menu menu-news" title="News"/>
           <Link to="/profile" className="menu menu-profile" title="Profile"/>
-          <Link to="/notifications" className="menu menu-feedback" title="Feedback" data-content="3"/>
+          <Link to="/unavailable" className="menu menu-feedback" title="Feedback" data-content="3"/>
           <Link to="/messenger" className="menu menu-message" title="Messenger" data-content="123"/>
-          <Link to="/call" className="menu menu-phone" title="Call"/>
+          <Link to="/unavailable" className="menu menu-phone" title="Call"/>
           <Link to="/friends" className="menu menu-friends" title="Friends"/>
           <Link to="/groups" className="menu menu-group" title="Groups"/>
           <Link to={'/gallery/' + Meteor.userIdInt()} className="menu menu-photo" title="Photos"/>

@@ -52,7 +52,18 @@
   border: none;
 }
 
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  buttom: 0;
+  left: 0;
+}
+
 header {
+  position: relative;
   background: url(/images/mypageBack.jpg) no-repeat center / cover;
   border-bottom: 3px solid #e0e0e0;
   display: flex;
@@ -153,11 +164,20 @@ header.group {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 10px;
+  &:hover {
+    text-decoration: none;
+    color: black;
+  }
+  .busy-animation {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+  }
   p {
     text-transform: uppercase;
     font-weight: 400;
     &.count {
+      margin-top: 10px;
       text-align: center;
       font-size: 32px;
     }

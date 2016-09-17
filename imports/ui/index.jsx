@@ -13,6 +13,7 @@ import {PhoneRoute} from './phone'
 import {Route, IndexRoute, browserHistory} from 'react-router'
 import {Signup} from './auth/signup'
 import {VideoList} from './video'
+import {AlertQueue} from '/imports/ui/common/alert'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -66,8 +67,19 @@ class BrowserFeatures extends Component {
   }
 }
 
+class Root extends Component {
+  render() {
+    return <div>
+      {this.props.children}
+      <AlertQueue/>
+    </div>
+  }
+}
+
+const Unavailable = () => <div className="unavailable"/>
+
 export const RootRoute =
-  <Route path='/'>
+  <Route path='/' component={Root}>
     <IndexRoute component={BrowserFeatures}/>
     <Route component={App}>
       <Route path="messenger" component={Messenger}/>
@@ -93,6 +105,7 @@ export const RootRoute =
       <Route path="login" component={LoginPage}/>
       <Route path="signup" component={Signup}/>
       <Route path="reset-password" component={ResetPassword}/>
+      <Route path="unavailable" component={Unavailable}/>
     </Route>
     {AdminRoute}
     {PhoneRoute}

@@ -21,7 +21,7 @@ export function bucketFile(id) {
 }
 
 export function thumb(id) {
-  return `/thumb/${id}.jpg`
+  return `/thumb/${(+id).toString(36)}.jpg`
 }
 
 export function requestUpload(file) {
@@ -32,7 +32,8 @@ export function requestUpload(file) {
   if (file.lastModifiedDate instanceof Date) {
     xhr.setRequestHeader('last-modified', file.lastModifiedDate.toGMTString())
   }
-  xhr.send(file)
+  setTimeout(() => xhr.send(file), 0)
+  return xhr
 }
 
 export function upload(file) {

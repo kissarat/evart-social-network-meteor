@@ -45,6 +45,13 @@ CREATE TABLE blog (
   data JSON,
   avatar BIGINT REFERENCES file (id)
   ON DELETE CASCADE ON UPDATE CASCADE,
+  t0 BIGINT REFERENCES file(id),
+  t1 BIGINT REFERENCES file(id),
+  t2 BIGINT REFERENCES file(id),
+  t3 BIGINT REFERENCES file(id),
+  t4 BIGINT REFERENCES file(id),
+  t5 BIGINT REFERENCES file(id),
+  t6 BIGINT REFERENCES file(id),
   time   TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 

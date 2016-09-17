@@ -4,6 +4,7 @@ import {Subscriber, Busy} from '/imports/ui/common/widget'
 import {BlogLayout} from './layout'
 import {Editor} from './editor'
 import {idToTimeString} from '/imports/ui/common/helpers'
+import {Avatar} from '/imports/ui/common/widget'
 
 class Attitude extends Component {
   onChange = (e) => {
@@ -75,7 +76,7 @@ export class Article extends Component {
       <div className="posted-by">
         <div className="poster-border">
           <div className="poster-wrapper">
-            <img src="/images/profile-image.jpg" alt="..." className="img-circle img-responsive"/>
+            <Avatar {...this.props} className="img-circle img-responsive"/>
             <time>{idToTimeString(this.props.id)}</time>
           </div>
         </div>

@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router'
-import Dropzone from 'react-dropzone'
-import {bucketFile, upload, thumb} from '/imports/ui/common/helpers'
-import {Subscriber} from '/imports/ui/common/widget'
+import {Link, browserHistory} from 'react-router'
+import {upload} from '/imports/ui/common/helpers'
+import {Subscriber, Avatar, ImageDropzone, Busy} from '/imports/ui/common/widget'
 
 const Track = function ({track, type}) {
   if (track) {
@@ -55,39 +54,50 @@ class Title extends Component {
 
 class UserHeader extends Component {
   render() {
-    return <header>
+    const images = _.range(0, 6)
+      .map(i => {
+        const imageProperty = 't' + i
+        return <ImageDropzone
+          imageId={this.props[imageProperty]}
+          imageProperty={imageProperty}
+          className={'tile image tile-' + i}
+          onDrop={this.props.onDrop}
+          relation={this.props.relation}
+        />
+      })
+    return <header id="background">
       <div>
         <Title {...this.props}/>
         <div className="tile audio">
           <p className="count">{this.props.audio}</p>
           <p className="name">Audio</p>
         </div>
-        <div className="tile image tile-1"></div>
+        {images[0]}
         <Track {...this.props}/>
-        <div className="tile friends">
+        <Link to={'/friends/' + this.props.id} className="tile friends">
           <p className="count">{this.props.friends}</p>
           <p className="name">Friends</p>
-        </div>
-        <div className="tile subscribers">
+        </Link>
+        <Link to={'/subscribers/' + this.props.id} className="tile subscribers">
           <p className="count">{this.props.subscribers}</p>
           <p className="name">Subscribers</p>
-        </div>
-        <div className="tile image tile-2"></div>
-        <div className="tile image tile-3"></div>
-        <div className="tile image tile-4"></div>
-        <div className="tile image tile-5"></div>
+        </Link>
+        {images[1]}
+        {images[2]}
+        {images[3]}
+        {images[4]}
         <div className="tile empty"></div>
-        <div className="tile image tile-6"></div>
-        <div className="tile groups">
+        {images[5]}
+        <Link to={'/groups/' + this.props.id} className="tile groups">
           <p className="count">{this.props.groups}</p>
           <p className="name">Groups</p>
-        </div>
+        </Link>
         <div className="tile video">
           <p className="count">{this.props.video}</p>
           <p className="name">Videos</p>
         </div>
         <div className="tile empty"></div>
-        <div className="tile image tile-2"></div>
+        {images[6]}
       </div>
     </header>
   }
@@ -134,11 +144,53 @@ const Communicate = ({id}) => <div key='communicate' className="connect-menu">
   <Link to={'/dialog/' + id}>
     <span className="icon icon-email"/>
   </Link>
-  <a href="#">
+  <Link to="/unavailable">
     <span className="icon icon-call"/>
-  </a>
-  <a href="#">
+  </Link>
+  <Link to="/unavailable">
     <span className="icon icon-video-call"/>
+  </Link>
+</div>
+
+class Friends extends Subscriber {
+  componentWillReceiveProps(props) {
+    this.setState({busy: true})
+    this.subscribe('invite', {
+      id: props.id,
+      type: 'user',
+      relation: 'follow',
+      random: true
+    })
+  }
+
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props)
+  }
+
+  render() {
+    if (this.state.busy) {
+      return <div className="friends"><Busy/></div>
+    }
+    else {
+      const list = this.getSubscription('invite')
+        .map(friend => <Link key={friend.id} className="friend" to={'/blog/' + friend.id}/>)
+      return <div className="friends">
+        {list}
+        <Link to={'/friends/' + this.props.id} className="friend count">More</Link>
+      </div>
+    }
+  }
+}
+
+const ManagerMenu = ({id}) => <div className="connect-menu">
+  <Link to={'/edit/' + id} href="#">
+    <span className="icon icon-post"/>
+  </Link>
+  <Link to="/unavailable">
+    <span className="icon icon-chart"/>
+  </Link>
+  <a href="#" onClick={() => Meteor.logout() && browserHistory.push('/login')}>
+    <span className="icon icon-switch"/>
   </a>
 </div>
 
@@ -172,15 +224,19 @@ export class BlogLayout extends Component {
     this.state = {}
   }
 
-  onDrop(files) {
-    upload(files[0]).then(data => {
-      Meteor.call('blog.update', {id: Meteor.userIdInt()}, {avatar: data.id}, (err, res) => {
-        if (err) {
-          console.error(err)
-        }
-        else {
-          this.setState({avatar: data.id})
-        }
+  onDrop = (files, e) => {
+    const name = e.target.getAttribute('id') || e.target.parentNode.getAttribute('id')
+    return upload(files[0]).then(data => {
+      new Promise((resolve, reject) => {
+        Meteor.call('blog.update', {id: Meteor.userIdInt()}, {[name]: data.id}, (err, res) => {
+          if (err) {
+            reject(err)
+          }
+          else {
+            this.setState({[name]: data.id})
+            resolve(res)
+          }
+        })
       })
     })
   }
@@ -195,12 +251,15 @@ export class BlogLayout extends Component {
 
   render() {
     const header = 'user' === this.props.type
-      ? <UserHeader {...this.props}/>
-      : <GroupHeader {...this.props}/>
+      ? <UserHeader {...this.props} onDrop={this.onDrop}/>
+      : <GroupHeader {...this.props} onDrop={this.onDrop}/>
 
     const relation = 'relation' in this.state ? this.state.relation : this.props.relation
     let follow
-    if ('follow' === relation) {
+    if ('manage' === relation) {
+      follow = <Friends/>
+    }
+    else if ('follow' === relation) {
       follow = <button className="add-friend" onClick={this.onClickFollow}>Unsubscribe</button>
     }
     else if ('user' === this.props.type) {
@@ -209,17 +268,30 @@ export class BlogLayout extends Component {
     else {
       follow = <button className="add-group" id="follow" onClick={this.onClickFollow}>Subscribe</button>
     }
-    const menu = 'user' === this.props.type
-      ? <Communicate id={this.props.id}/>
-      : <Subscribers {...this.props}/>
-    const avatarId = this.state.avatar || this.props.avatar
-    const avatarURL = avatarId ? bucketFile(avatarId) : '/images/profile-image.jpg'
-    const avatar = Meteor.userIdInt() == this.props.id ?
-      <Dropzone style={{}} onDrop={this.onDrop}>
-        <img src={avatarURL} alt="..." className="img-thumbnail"/>
-      </Dropzone>
-      : <img src={avatarURL} alt="..." className="img-thumbnail"/>
 
+    let menu
+    if ('manage' === relation) {
+      menu = <ManagerMenu id={this.props.id}/>
+    }
+    else if ('user' === this.props.type) {
+      menu = <Communicate id={this.props.id}/>
+    }
+    else {
+      menu = <Subscribers {...this.props}/>
+    }
+    const avatarId = this.state.avatar || this.props.avatar
+    const avatar = <ImageDropzone
+      imageProperty="avatar"
+      imageId={avatarId}
+      relation={this.props.relation}
+      onDrop={this.onDrop}>
+      <Avatar
+        avatar={avatarId}
+        type={this.props.type}
+        big={true}
+        className="img-thumbnail"
+      />
+    </ImageDropzone>
     const page = [
       <div key='content' className="col-sm-4">
         <div className="row">

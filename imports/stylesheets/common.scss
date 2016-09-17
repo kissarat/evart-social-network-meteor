@@ -185,3 +185,36 @@ header textarea {
 .circle {
   border-radius: 50%;
 }
+
+.dropzone.image {
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  &:before {
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    content: "\e046";
+    position: absolute;
+    color: white;
+    right: 10px;
+    top: 10px;
+  }
+}
+
+.unavailable {
+  background: url("/images/unavailable.jpg") no-repeat center;
+}
+
+#alert-queue {
+  position: fixed;
+  top: 0;
+  left: calc(50% - 150px);
+  width: 400px;
+  margin: auto;
+  .alert {
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+}

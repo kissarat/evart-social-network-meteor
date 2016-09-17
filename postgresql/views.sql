@@ -9,15 +9,15 @@ CREATE OR REPLACE VIEW member AS
 
 CREATE OR REPLACE VIEW chat_dialog AS
   WITH mm AS (
-    SELECT
-      m.id,
-      r."to"   AS recipient,
-      m."parent" AS peer,
-      m."from",
-      m.type,
-      m.text
-    FROM "message" m
-      JOIN member r ON m."to" = r."from"
+      SELECT
+        m.id,
+        r."to"     AS recipient,
+        m."parent" AS peer,
+        m."from",
+        m.type,
+        m.text
+      FROM "message" m
+        JOIN member r ON m."to" = r."from"
   )
   SELECT
     mm.id,
@@ -216,7 +216,7 @@ CREATE OR REPLACE VIEW file_message AS
 CREATE OR REPLACE VIEW from_list AS
   SELECT
     b.*,
-    r.type AS establish,
+    r.type AS relation,
     r."from"
   FROM blog b
     JOIN relation r ON b.id = r."to";
@@ -224,7 +224,7 @@ CREATE OR REPLACE VIEW from_list AS
 CREATE OR REPLACE VIEW to_list AS
   SELECT
     b.*,
-    r.type AS establish,
+    r.type AS relation,
     r."to"
   FROM blog b
     JOIN relation r ON b.id = r."from";
@@ -232,7 +232,7 @@ CREATE OR REPLACE VIEW to_list AS
 CREATE OR REPLACE VIEW "blog_recipient" AS
   SELECT
     b.*,
-    rec.id            AS recipient,
+    rel.from          AS recipient,
     CASE WHEN b.id = rec.id
       THEN 'manage'
     ELSE rel.type END AS relation

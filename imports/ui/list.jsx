@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Subscriber, ScrollArea} from './common/widget'
+import {Subscriber, ScrollArea, Avatar} from './common/widget'
 import {Link} from 'react-router'
 
 class ListHeader extends Component {
@@ -61,7 +61,7 @@ class Contact extends Component {
       </div> : <div>1<br/>2</div>
     return <div className="contact">
       <Link to={url} className="avatar">
-        <img src="/images/profile-image.jpg" alt="" className="circle"/>
+        <Avatar {...this.props} className="circle"/>
       </Link>
       <div className="info">
         <div>
@@ -86,17 +86,17 @@ class Establish extends Component {
     else if ('-' === e.target.innerHTML) {
       relation = 'reject'
     }
-    Meteor.call('establish', {id: +this.props.from, relation: relation})
+    Meteor.call('relation', {id: +this.props.from, relation: relation})
   }
 
   render() {
     return <div className="switch-friends">
       <input type="radio" value="reject" className="disliked"
-             checked={'reject' === this.props.establish} onChange={this.onChange}/>
+             checked={'reject' === this.props.relation} onChange={this.onChange}/>
       <input type="radio" className="none"
-             checked={!this.props.establish} onChange={this.onChange}/>
+             checked={!this.props.relation} onChange={this.onChange}/>
       <input type="radio" value="follow" className="liked"
-             checked={'follow' === this.props.establish} onChange={this.onChange}/>
+             checked={'follow' === this.props.relation} onChange={this.onChange}/>
       <div className="slider-dislike"></div>
       <button type="button" className="btn minus" onClick={this.onChange}>-</button>
       <button type="button" className="btn plus" onClick={this.onChange}>+</button>
@@ -108,7 +108,7 @@ class Invite extends Component {
   render() {
     return <div className="notification-item">
       <div className="user-info">
-        <img src="/images/profile-image.jpg" alt="" className="img-circle img-responsive"/>
+        <Avatar {...this.props} className="img-circle img-responsive"/>
         <div className="name">{this.props.name}</div>
         <span className="description">{this.props.location}</span>
       </div>
@@ -136,6 +136,7 @@ export class InviteList extends Subscriber {
 
 export class List extends Subscriber {
   componentWillMount() {
+    this.state = {}
     this.componentWillReceiveProps(this.props)
   }
 
@@ -149,7 +150,7 @@ export class FriendList extends List {
   componentWillReceiveProps(props) {
     const params = {
       type: 'user',
-      establish: 'follow'
+      relation: 'follow'
     }
     if (props.params && props.params.id) {
       params.id = +props.params.id
@@ -168,15 +169,16 @@ export class FriendList extends List {
 
 export class GroupsList extends List {
   componentWillReceiveProps(props) {
-    const params = {
-      type: 'group',
-      relation: 'follow'
+    const params = {type: 'group'}
+    if (props.params && props.params.id) {
+      params.from = +props.params.id
+      params.relation = 'follow'
     }
-    this.subscribe('blog_recipient', params)
+    this.subscribe(params.from ? 'from_list' : 'blog', params)
   }
 
   render() {
-    const list = this.renderList(this.getSubscription('blog_recipient'))
+    const list = this.renderList(this.getSubscription(this.state.blog ? 'blog' : 'from_list'))
     return <div className="contact-list list">
       <div className="search"></div>
       {list}

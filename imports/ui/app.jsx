@@ -6,6 +6,10 @@ import {VideoList} from './video'
 import {DialogList, Dialog} from './message'
 
 class Panel extends Component {
+  static generateId() {
+    return '_' + Date.now().toString(36)
+  }
+
   render() {
     return <div className="panel-block" id={this.props.id}>
       <div className="panel-bar">
@@ -22,18 +26,41 @@ class Aside extends Component {
   }
 
   openPanel(content, id) {
-    id = id ? id : '_' + Date.now().toString(36)
-    this.setState({[id]: <Panel key={id} id={id}>{content}</Panel>})
+    this.closeAll()
+    id = id || Panel.generateId()
+    this.setState({[id]: <Panel key={id} id={id} close={() => this.closePanel(id)}>{content}</Panel>})
     return id
   }
 
   openMessages = (peer, panelId) => {
+    panelId = panelId || Panel.generateId()
     if (peer) {
       this.openPanel(<Dialog {...peer}/>, panelId)
     }
     else {
-      this.openPanel(<DialogList open={peer => this.openMessages(peer, panelId)}/>)
+      this.openPanel(<DialogList open={peer => this.openMessages(peer, panelId)}/>, panelId)
     }
+  }
+
+  getPanels() {
+    return _.filter(this.state, (v, k) => v && '_' === k[0])
+  }
+
+  closePanel = (id) => {
+    this.setState({
+      [id]: false,
+      expand: false
+    })
+  }
+
+  closeAll() {
+    const state = {}
+    _.forEach(this.state, (v, k) => {
+      if (v && '_' === k[0]) {
+        state[k] = false
+      }
+    })
+    this.setState(state)
   }
 
   onClickMenuItem = (e) => {
@@ -68,7 +95,7 @@ class Aside extends Component {
           <li className="friends hidden" onClick={this.onClickMenuItem}>Friends</li>
           <li className="groups hidden" onClick={this.onClickMenuItem}>Groups</li>
         </ul>
-        {_.filter(this.state, (v, k) => '_' === k[0])}
+        {this.getPanels()}
       </div>
     </aside>
   }

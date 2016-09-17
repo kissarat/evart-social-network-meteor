@@ -1,5 +1,9 @@
 .scroll {
   overflow-y: auto !important;
+  padding: 0;
+  li {
+    list-style: none;
+  }
   .busy-animation {
     height: 100%;
   }
@@ -20,6 +24,10 @@ textarea:hover, textarea:focus {
 .busy {
   opacity: 0.2;
   //transition: opacity 300ms;
+}
+
+.dock-shrink {
+  height: calc(100% - 112px);
 }
 
 .busy-animation {

@@ -1,22 +1,22 @@
 import React, {Component} from 'react'
-import {browserHistory} from 'react-router'
+import {Link, browserHistory} from 'react-router'
 import {Subscriber, ScrollArea, Busy} from './common/widget'
 import {idToTimeString} from './common/helpers'
 import {Editor} from './blog/editor'
 
 export class LastMessage extends Component {
   onClick = (e) => {
-    this.props.open(+e.target.getAttribute('id'))
+    this.props.open(this.props)
   }
 
   render() {
     const avatar = <img src="/images/profile-image.jpg" alt="" className="img-responsive img-circle"/>
     const count = this.props.count > 0 ? <div className="count">{this.props.count}</div> : ''
+    const info = 'chat' === this.props.type
+      ? <div className="photo">{avatar}{count}</div>
+      : <Link to={'/dialog/' + this.props.id} className="photo">{avatar}{count}</Link>
     return <li>
-      <div className="photo">
-        {avatar}
-        {count}
-      </div>
+      {info}
       <div className="content" id={this.props.id} onClick={this.onClick}>
         <span className="icon icon-close-gray"/>
         <span className="date">{idToTimeString(this.props.message)}</span>
@@ -30,23 +30,25 @@ export class LastMessage extends Component {
 export class Message extends Component {
   render() {
     const me = parseInt(Meteor.userId(), 36)
-    const className = (me == this.props.from ? '' : 'left ') + 'message-container'
-    return <li className={className} ref={element => this.props.onRenderElement(element, this.props)}>
-      <div className="message">
-        <div className="avatar">
-          <img src="/images/profile-image.jpg" alt="..." className="img-responsive img-circle"/>
+    const className = (me == this.props.from ? 'right' : 'left') + ' message-container'
+    return <li>
+      <div className={className}>
+        <div className="message">
+          <div className="avatar">
+            <img src="/images/profile-image.jpg" alt="..." className="img-responsive img-circle"/>
+          </div>
+          <div className="text">{this.props.text}</div>
+          <div className="time">{idToTimeString(this.props.id)}</div>
         </div>
-        <div className="text">{this.props.text}</div>
-        <div className="time">{idToTimeString(this.props.id)}</div>
-      </div>
-      <div className="chbox">
-        <input type="checkbox"/>
-        <label/>
-      </div>
-      <div className="options">
-        <span className="icon icon-dialog-repost-white"/>
-        <span className="icon icon-dialog-trash-white"/>
-        <div className="arrow-down"></div>
+        <div className="chbox">
+          <input type="checkbox"/>
+          <label/>
+        </div>
+        <div className="options">
+          <span className="icon icon-dialog-repost-white"/>
+          <span className="icon icon-dialog-trash-white"/>
+          <div className="arrow-down"></div>
+        </div>
       </div>
     </li>
   }
@@ -114,11 +116,14 @@ export class Dialog extends Subscriber {
 
 export class DialogList extends Subscriber {
   componentWillMount() {
+    this.state = {busy: true}
     this.subscribe('messenger', {})
   }
 
   render() {
-    const peerListView = this.getSubscription('messenger')
+    const peerListView = this.state.busy
+      ? <Busy/>
+      : this.getSubscription('messenger')
       .map(peer => <LastMessage key={peer.id} {...peer} open={this.props.open}/>)
     return <div className="dialogs">
       <ScrollArea>{peerListView}</ScrollArea>
@@ -162,7 +167,7 @@ export class Messenger extends Subscriber {
 
   render() {
     const dialog = this.state.peer ? <Dialog {...this.state.peer}/> : ''
-    return <div className="messenger-container">
+    return <div className="messenger-container dock-shrink">
       <DialogList open={this.open}/>
       {dialog}
     </div>

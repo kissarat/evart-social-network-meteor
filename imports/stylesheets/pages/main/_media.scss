@@ -279,21 +279,6 @@
   }
 }
 
-.messenger-container {
-  display: flex;
-  .dialogs {
-    flex: 1;
-  }
-  .messages {
-    flex: 1.5;
-    .message-container {
-      .message {
-        width: 80%;
-      }
-    }
-  }
-}
-
 @media (max-width: 992px) {
   @include cs-md();
 }

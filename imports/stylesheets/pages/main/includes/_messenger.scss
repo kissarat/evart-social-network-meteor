@@ -7,10 +7,17 @@
 }
 
 .messenger-container {
+  .dialogs {
+    flex: 1;
+  }
+  .messages {
+    flex: 1.5;
+  }
+}
+
+.messenger-container {
+  display: flex;
   width: 100%;
-  height: calc(100vh - 128px);
-  table-layout: fixed;
-  position: relative;
   .online {
     position: relative;
     left: 3px;
@@ -20,8 +27,6 @@
     @include size(10px);
   }
   .message-block {
-    position: absolute;
-    top: calc(100% - 90px);
     width: 98%;
     display: block;
     max-height: 90px;
@@ -213,171 +218,22 @@
 }
 
 .messages {
-  display: table-cell;
-  width: 67%;
-  position: relative;
+  display: flex;
+  flex-direction: column;
   > ul {
+    flex: 1;
     display: flex;
     flex-direction: column-reverse;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
     border-bottom: 1px solid #d9d9d9;
     li {
       list-style: none;
     }
   }
 
-  .message-container {
-    width: 100%;
-    max-width: 100%;
-    position: relative;
-    cursor: pointer;
-    padding: 1px;
-    @include user-select();
-    > div {
-      cursor: auto;
-    }
-    .options {
-      display: none;
-      $background: #aaacad;
-      background-color: $background;
-      border-radius: 5px;
-      position: absolute;
-      height: 20px;
-      width: 75px;
-      text-align: center;
-      top: -22px;
-      right: 3px;
-      .arrow-down {
-        width: 0;
-        height: 0;
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
-        border-top: 8px solid $background;
-        position: absolute;
-        left: 50%;
-        margin-left: -6px;
-      }
-      .icon + .icon {
-        margin-left: 5px;
-        position: relative;
-        top: 1px;
-      }
-    }
-    &:hover {
-      background-color: lighten(#eceff4, 3%);
-      .chbox {
-        display: block;
-        label {
-          opacity: 0.5;
-        }
-
-      }
-    }
-    .message {
-      width: 50%;
-      display: flex;
-      position: relative;
-      float: right;
-      padding: 2px 6px 4px 6px;
-      .avatar {
-        width: 55px;
-        order: 3;
-      }
-      .text {
-        flex: 1;
-        order: 2;
-        background-color: #4aa1d9;
-        border-radius: 5px;
-        position: relative;
-        color: #ffffff;
-        font-family: "Panton-Regular", serif;
-        font-size: 12px;
-        padding: 16px;
-        margin: 12px 15px 0 0;
-        @include user-select(text);
-        &:after {
-          content: "";
-          width: 0;
-          height: 0;
-          position: absolute;
-          right: -10px;
-          top: 10px;
-          border-top: 7px solid transparent;
-          border-bottom: 7px solid transparent;
-          border-left: 10px solid #4aa1d9;
-        }
-      }
-      .time {
-        order: 1;
-        position: absolute;
-        text-align: right;
-        margin-top: 4px;
-        align-self: center;
-        font-family: "Roboto-Regular";
-        font-size: 10px;
-        color: #aaacad;
-        right: 103%;
-      }
-    }
-    &.active {
-      background-color: #eceff4;
-      .chbox {
-        display: block;
-      }
-    }
-    &.left {
-      .message {
-        float: left;
-      }
-      .avatar {
-        order: 1;
-      }
-      .text {
-        order: 2;
-        background-color: #eceff4;
-        margin-right: 0;
-        margin-left: 15px;
-        color: #999999;
-        &:after {
-          right: auto;
-          left: -10px;
-          top: 10px;
-          border-left: none;
-          border-right: 10px solid #eceff4;
-        }
-      }
-      .time {
-        order: 3;
-        text-align: left;
-        margin-top: 4px;
-        right: auto;
-        left: 103%;
-      }
-      .chbox {
-        right: 10px;
-      }
-      .options {
-        left: 2px;
-        right: auto;
-      }
-      &.active {
-        .text {
-          background-color: #fff;
-        }
-      }
-    }
-  }
   .chbox {
-    display: none;
+    visibility: hidden;
+    min-width: 60px;
     @include user-select(none);
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
     input[type="checkbox"] {
       position: absolute;
       left: -9999px;
@@ -398,6 +254,144 @@
   }
 }
 
+aside .messages .chbox {
+  display: none;
+}
+
+.message-container:first-child {
+  padding-bottom: 8px;
+}
+
+.message-container {
+  display: flex;
+  cursor: pointer;
+  padding: 1px;
+  @include user-select();
+  > div {
+    cursor: auto;
+  }
+  .options {
+    display: none;
+    $background: #aaacad;
+    background-color: $background;
+    border-radius: 5px;
+    position: absolute;
+    height: 20px;
+    width: 75px;
+    text-align: center;
+    top: -22px;
+    right: 3px;
+    .arrow-down {
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid $background;
+      position: absolute;
+      left: 50%;
+      margin-left: -6px;
+    }
+    .icon + .icon {
+      margin-left: 5px;
+      position: relative;
+      top: 1px;
+    }
+  }
+  &:hover {
+    background-color: lighten(#eceff4, 3%);
+    .chbox {
+      visibility: hidden;
+      label {
+        opacity: 0.5;
+      }
+
+    }
+  }
+  .message {
+    flex: 1;
+    display: flex;
+    padding: 2px 6px 4px 6px;
+    .avatar {
+      width: 55px;
+    }
+    .text {
+      flex: 1;
+      background-color: #4aa1d9;
+      border-radius: 5px;
+      position: relative;
+      color: #ffffff;
+      font-family: "Panton-Regular", serif;
+      font-size: 12px;
+      padding: 16px;
+      margin: 12px 15px 0 0;
+      @include user-select(text);
+      &:after {
+        content: "";
+        width: 0;
+        height: 0;
+        position: absolute;
+        right: -10px;
+        top: 10px;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-left: 10px solid #4aa1d9;
+      }
+    }
+    .time {
+      margin: 4px 8px;
+      align-self: center;
+      font-family: "Roboto-Regular", serif;
+      font-size: 10px;
+      color: #aaacad;
+    }
+  }
+  &.active {
+    background-color: #eceff4;
+    .chbox {
+      display: block;
+    }
+  }
+  &.right {
+    flex-direction: row-reverse;
+    .message {
+      flex-direction: row-reverse;
+    }
+  }
+  &.left {
+    .text {
+      background-color: #eceff4;
+      margin-right: 0;
+      margin-left: 15px;
+      color: #999999;
+      &:after {
+        right: auto;
+        left: -10px;
+        top: 10px;
+        border-left: none;
+        border-right: 10px solid #eceff4;
+      }
+    }
+    .time {
+      text-align: left;
+      margin-top: 4px;
+      right: auto;
+      left: 103%;
+    }
+    .chbox {
+      right: 10px;
+    }
+    .options {
+      left: 2px;
+      right: auto;
+    }
+    &.active {
+      .text {
+        background-color: #fff;
+      }
+    }
+  }
+}
+
 .messenger-container > .dialogs {
   flex-direction: column;
 }
@@ -407,7 +401,7 @@ aside .dialogs {
 }
 
 .dialogs {
-  height: inherit;
+  height: 100%;
   display: flex;
   align-items: stretch;
   .wrap-many {
@@ -458,6 +452,7 @@ aside .dialogs {
         display: block;
         overflow: hidden;
         position: relative;
+        cursor: pointer;
         text-decoration: none;
         padding: 15px 0 0 5px;
         .name {

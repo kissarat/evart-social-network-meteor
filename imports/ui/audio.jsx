@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Subscriber} from './common/widget'
 import Dropzone from 'react-dropzone'
 import {upload, bucketFile} from './common/helpers'
+import {Busy} from './common/widget'
 
 class Audio extends Component {
   render() {
@@ -18,22 +19,13 @@ class Audio extends Component {
 }
 
 class Player extends Component {
-  setup(props) {
-    this.audio.src = bucketFile(props.id)
-  }
-
   componentWillMount() {
     this.state = {}
     const audio = document.createElement('audio')
-    this.setup(this.props)
   }
 
-  componentWillReceiveProps(props) {
-    this.setup(props)
-  }
-
-  onTimeUpdate = () => {
-    this.setState({time: this.audio.currentTime})
+  onTimeUpdate = (e) => {
+    this.setState({time: e.target.currentTime})
   }
 
   onLoadedMetadata = () => {
@@ -117,7 +109,7 @@ class Player extends Component {
       </div>
     }
     else {
-      return <div></div>
+      return <Busy/>
     }
   }
 }
@@ -128,7 +120,7 @@ export class AudioPlaylist extends Subscriber {
     this.subscribe('file', {type: 'audio', order: {id: -1}})
   }
 
-  onClickAdd = (e) => {
+  onClickAdd = () => {
     this.setState({upload: true})
   }
 
@@ -137,17 +129,19 @@ export class AudioPlaylist extends Subscriber {
   }
 
   render() {
+    console.log(this.state.active)
+    const player = this.state.active ? <Player {...this.state.active}/> : ''
     const files = this.getSubscription('file').map(file =>
       <Audio
-        key={file.id}
         {...file}
-        onClick={() => this.setState({active: file})}
-        active={file == this.state.active}/>)
-    const player = this.state.active ? <Player {...this.state.active}/> : ''
-    return <div className="player container audio">
+        key={file.id}
+        active={file === this.state.active}
+        onClick={() => this.setState({active: file})}/>
+    )
+    return <div className="player audio">
       {player}
       <div className="playlist-container">
-        <div className="input-group">
+        <div className="input-group search">
           <span className="input-group-addon">
             <i className="icon icon-search"/>
           </span>

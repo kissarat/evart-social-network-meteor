@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import _ from 'underscore'
 
 export class Subscriber extends Component {
   subscribe(name, state = {}) {
@@ -13,7 +14,10 @@ export class Subscriber extends Component {
       subscription = new PgSubscription(name, state)
       this.subscription[name] = subscription
     }
-    subscription.addEventListener('updated', () => this.setState({[name]: state}))
+    subscription.addEventListener('updated', () => this.setState({
+      [name]: state,
+      busy: false
+    }))
     return subscription
   }
 
@@ -74,3 +78,5 @@ export class InputGroup extends Component {
     </div>
   }
 }
+
+export const Busy = () => <div className="busy-animation"></div>

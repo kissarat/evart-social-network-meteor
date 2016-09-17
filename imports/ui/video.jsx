@@ -79,10 +79,9 @@ export class VideoList extends Subscriber {
       <p>{file.name}</p>
     </li>)
     const add = this.state.add ? <AddExternalVideo done={this.videoAdded}/> : ''
-    return <div className="container">
-      <div className="playlist-container">
+    return <div className="video player">
         {current}
-        <div className="input-group">
+        <div className="input-group search">
           <span className="input-group-addon">
             <i className="icon icon-search"/>
           </span>
@@ -92,10 +91,9 @@ export class VideoList extends Subscriber {
           </span>
         </div>
         {add}
-        <div className="playlist">
-          <ul>{videos}</ul>
+        <div className="playlist-container">
+          <ul className="playlist">{videos}</ul>
         </div>
       </div>
-    </div>
   }
 }

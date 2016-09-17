@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
 import Dropzone from 'react-dropzone'
-import {bucketFile, upload} from '/imports/ui/common/helpers'
+import {bucketFile, upload, thumb} from '/imports/ui/common/helpers'
 import {Subscriber} from '/imports/ui/common/widget'
 
-const Track = function ({track}) {
+const Track = function ({track, type}) {
   if (track) {
     const duration = track.data.format.duration / 60
-    return <div className="col-xs-6 col-sm-2 square square-image square-image-music-2">
-      <span className="expand">&bull;&bull;&bull;</span>
+    return <div className={`tile image ${type}-track`}>
+      <div className="expand">&bull;&bull;&bull;</div>
       <div className="track">
         <span className="track-name">{track.data.metadata.title}</span>
         <span
@@ -45,7 +45,7 @@ class Title extends Component {
                   onChange={this.onChangeStatus}
                   onBlur={this.onBlurStatus}/>
       : <p>{status}</p>
-    return <div className="col-sm-6 user-info">
+    return <div className="blog-info">
       {name}
       {geo}
       {status}
@@ -56,37 +56,39 @@ class Title extends Component {
 class UserHeader extends Component {
   render() {
     return <header>
-      <Title {...this.props}/>
-      <div className="col-xs-6 col-sm-2 square square-pink">
-        <p className="count">{this.props.audio}</p>
-        <p className="name">Audio</p>
+      <div>
+        <Title {...this.props}/>
+        <div className="tile audio">
+          <p className="count">{this.props.audio}</p>
+          <p className="name">Audio</p>
+        </div>
+        <div className="tile image tile-1"></div>
+        <Track {...this.props}/>
+        <div className="tile friends">
+          <p className="count">{this.props.friends}</p>
+          <p className="name">Friends</p>
+        </div>
+        <div className="tile subscribers">
+          <p className="count">{this.props.subscribers}</p>
+          <p className="name">Subscribers</p>
+        </div>
+        <div className="tile image tile-2"></div>
+        <div className="tile image tile-3"></div>
+        <div className="tile image tile-4"></div>
+        <div className="tile image tile-5"></div>
+        <div className="tile empty"></div>
+        <div className="tile image tile-6"></div>
+        <div className="tile groups">
+          <p className="count">{this.props.groups}</p>
+          <p className="name">Groups</p>
+        </div>
+        <div className="tile video">
+          <p className="count">{this.props.video}</p>
+          <p className="name">Videos</p>
+        </div>
+        <div className="tile empty"></div>
+        <div className="tile image tile-2"></div>
       </div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-random-1"></div>
-      <Track {...this.props}/>
-      <div className="col-xs-6 col-sm-2 square square-darkblue">
-        <p className="count">{this.props.friends}</p>
-        <p className="name">Friends</p>
-      </div>
-      <div className="col-xs-6 col-sm-2 square square-skyblue">
-        <p className="count">{this.props.subscribers}</p>
-        <p className="name">Subscribers</p>
-      </div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-random-2"></div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-random-3"></div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-random-4"></div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-random-5"></div>
-      <div className="col-xs-6 col-sm-2 square"></div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-random-6"></div>
-      <div className="col-xs-6 col-sm-2 square square-orange">
-        <p className="count">{this.props.groups}</p>
-        <p className="name">Groups</p>
-      </div>
-      <div className="col-xs-6 col-sm-2 square square-green">
-        <p className="count">{this.props.video}</p>
-        <p className="name">Videos</p>
-      </div>
-      <div className="col-xs-6 col-sm-2 square"></div>
-      <div className="col-xs-6 col-sm-2 square square-image square-image-random-2"></div>
     </header>
   }
 }
@@ -154,7 +156,7 @@ class Subscribers extends Subscriber {
 
   render() {
     const subscribers = this.getSubscription('to_list').map(
-      blog => <img src={thumb(blog.avatar)} alt="..." className="img-circle"/>
+      blog => <img key={blog.id} src={thumb(blog.avatar)} alt="..." className="img-circle"/>
     )
     return <div key='followers' className="subscribers">
       <div className="text-center"><a href="#">{this.props.subscribers}</a> Subscribers</div>
@@ -237,16 +239,11 @@ export class BlogLayout extends Component {
     if ('user' !== this.props.type) {
       page.reverse()
     }
-    return <div className={'container blog' + (this.props.busy ? ' busy' : '')}>
-      <div className="row">
-        {header}
-      </div>
-
-      <div className="row wrap">
-        <main>
-          {page}
-        </main>
-      </div>
+    return <div className={'blog' + (this.props.busy ? ' busy' : '')}>
+      {header}
+      <main>
+        {page}
+      </main>
     </div>
   }
 }

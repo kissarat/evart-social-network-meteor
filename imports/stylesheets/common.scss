@@ -1,9 +1,11 @@
 .scroll {
   overflow-y: auto !important;
+  .busy-animation {
+    height: 100%;
+  }
 }
 
 .blog main {
-  margin-top: -220px;
   margin-bottom: 400px;
 }
 
@@ -18,6 +20,17 @@ textarea:hover, textarea:focus {
 .busy {
   opacity: 0.2;
   //transition: opacity 300ms;
+}
+
+.busy-animation {
+  background: url("/images/busy.gif") center no-repeat;
+  min-height: 64px;
+  min-width: 64px;
+}
+
+#central > .busy-animation {
+  min-width: 400px;
+  height: 100vh;
 }
 
 .add-external-video {

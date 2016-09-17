@@ -3,6 +3,7 @@ import {Link} from 'react-router'
 import {BlogLayout} from './blog/layout'
 import {Profile, Children} from './blog/article'
 import {bucketImage} from '/imports/ui/common/helpers'
+import {Busy} from '/imports/ui/common/widget'
 
 export class Gallery extends Profile {
   setupState(state) {
@@ -28,7 +29,7 @@ export class Gallery extends Profile {
       </BlogLayout>
     }
     else {
-      return <div>Loading...</div>
+      return <Busy/>
     }
   }
 }

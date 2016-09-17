@@ -1,18 +1,18 @@
-.container{
+.central-container {
   width: 100%;
   max-width: 1100px;
   padding: 0 85px;
   .mCSB_scrollTools {
     right: 62px;
     $bar-color: #aaacad;
-    .mCSB_dragger{
-      .mCSB_dragger_bar{
+    .mCSB_dragger {
+      .mCSB_dragger_bar {
         width: 12px;
         height: 48px;
         background-color: lighten($bar-color, 15%);
       }
-      &.mCSB_dragger_onDrag{
-        .mCSB_dragger_bar{
+      &.mCSB_dragger_onDrag {
+        .mCSB_dragger_bar {
           background-color: $bar-color;
         }
       }
@@ -20,7 +20,8 @@
 
   }
 }
-#content{
+
+#content {
   height: 100vh;
   margin-right: auto;
   margin-left: auto;
@@ -29,14 +30,14 @@
   > .mCSB_scrollTools {
     right: 62px;
     $bar-color: #aaacad;
-    .mCSB_dragger{
-      .mCSB_dragger_bar{
+    .mCSB_dragger {
+      .mCSB_dragger_bar {
         width: 12px;
         height: 48px;
         background-color: lighten($bar-color, 15%);
       }
-      &.mCSB_dragger_onDrag{
-        .mCSB_dragger_bar{
+      &.mCSB_dragger_onDrag {
+        .mCSB_dragger_bar {
           background-color: $bar-color;
         }
       }
@@ -44,83 +45,98 @@
 
   }
 }
-.img-thumbnail{
+
+.img-thumbnail {
   border-radius: 0;
   padding: 5px;
   border: none;
 }
 
-header{
-  padding: 50px 90px 250px 90px;
+header {
   background: url(/images/mypageBack.jpg) no-repeat center / cover;
-  overflow: hidden;
   border-bottom: 3px solid #e0e0e0;
-  &.user-banned{
-    padding: 50px 90px 200px 90px;
+  display: flex;
+  justify-content: center;
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 780px;
+    padding-top: 50px;
+    padding-bottom: 250px;
+    margin: auto;
   }
-  .user-info{
-    height: 130px;
-    font-family: "Panton-Regular";
-    color: #ffffff;
-    h4{
-      font-size:24px;
-      margin-top: 10px;
-      margin-bottom: 0;
-    }
-    div{
-      font-size: 14px;
-      color: #fff;
-      margin-bottom: 25px;
-      opacity: .65;
-    }
-    span{
-      margin-right: 5px;
-      position: relative;
-      top: 3px;
-    }
-    p{
-      font-size: 12px;
-    }
+  &.user-banned {
+    padding: 50px 90px 200px 90px;
   }
 }
 
-.square{
+.blog-info {
+  width: 390px;
+  height: 130px;
+  font-family: "Panton-Regular", serif;
+  color: #ffffff;
+  h4 {
+    font-size: 24px;
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+  div {
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 25px;
+    opacity: .65;
+  }
+  span {
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+  }
+  p {
+    font-size: 12px;
+  }
+}
+
+.tile {
   $square-size: 130px;
   $offset: 2px;
   color: #fff;
-  font-family: "Panton-Regular";
+  font-family: "Panton-Regular", serif;
   height: $square-size;
-  position: relative;
-  p{
+  width: $square-size;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+  p {
     text-transform: uppercase;
     font-weight: 400;
-    text-align: center;
-    &.name{
-      font-size: 12px;
-    }
-    &.count{
-      padding-top: 35%;
+    &.count {
       text-align: center;
       font-size: 32px;
     }
+    &.name {
+      font-size: 12px;
+    }
   }
-  .expand{
+  &.user-track, &.group-track {
+    position: relative;
+  }
+  .expand {
     @include user-select();
+    position: absolute;
+    top: 0;
+    right: 5px;
     cursor: pointer;
     font-size: 25px;
-    position: absolute;
-    right: 5px;
-    top: 0;
     transform: rotate(90deg);
     letter-spacing: -2px;
   }
-  .track{
+  .track {
     position: absolute;
-    left: 5px;
-    right: 5px;
     bottom: 0;
   }
-  .track-name{
+  .track-name {
     display: block;
     font-family: "Panton-Bold";
     font-size: 12px;
@@ -128,90 +144,90 @@ header{
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  .track-time{
+  .track-time {
     display: block;
     font-family: "Panton-Regular";
     font-size: 18px;
   }
 
-  &.square-pink{
+  &.audio {
     background-color: #f12a61;
   }
-  &.square-blue{
+  &.photo {
     background-color: #1080f3;
   }
-  &.square-skyblue{
+  &.subscribers {
     background-color: #25aae1;
   }
-  &.square-darkblue{
+  &.friends {
     background-color: #30336d;
   }
-  &.square-orange{
+  &.groups {
     background-color: #f1592a;
   }
-  &.square-green{
+  &.video {
     background-color: #8dc63f;
   }
-  &.square-image {
+  &.image {
     background: url(/images/squareImage.png) no-repeat center;
 
-    &.square-image-music-1 {
+    &.user-track {
       @include spriteMax(-3px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-music-2 {
+    &.group-track {
       @include spriteMax(-142px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-1 {
+    &.tile-1 {
       @include spriteMax(-281px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-2 {
+    &.tile-2 {
       @include spriteMax(-977px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-3 {
+    &.tile-3 {
       @include spriteMax(-1117px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-4 {
+    &.tile-4 {
       @include spriteMax(-1257px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-5 {
+    &.tile-5 {
       @include spriteMax(-1397px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-6 {
+    &.tile-6 {
       @include spriteMax(-1537px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-7 {
+    &.tile-7 {
       @include spriteMax(-1677px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-8 {
+    &.tile-8 {
       @include spriteMax(-1816px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-9 {
+    &.tile-9 {
       @include spriteMax(-1955px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-10 {
+    &.tile-10 {
       @include spriteMax(-421px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-11 {
+    &.tile-11 {
       @include spriteMax(-560px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-12 {
+    &.tile-12 {
       @include spriteMax(-699px - $offset, -3px - $offset, $square-size);
     }
 
-    &.square-image-random-13 {
+    &.tile-13 {
       @include spriteMax(-838px - $offset, -3px - $offset, $square-size);
     }
   }

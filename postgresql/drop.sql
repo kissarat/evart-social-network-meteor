@@ -1,15 +1,21 @@
+DROP VIEW IF EXISTS "informer";
+DROP VIEW IF EXISTS "to_list";
+DROP VIEW IF EXISTS "from_list";
+DROP VIEW IF EXISTS "file_message";
 DROP VIEW IF EXISTS "convert_progress";
 DROP VIEW IF EXISTS "convert_file";
 DROP VIEW IF EXISTS "blog_recipient";
 DROP VIEW IF EXISTS "child";
 DROP VIEW IF EXISTS "news";
 DROP VIEW IF EXISTS "wall";
+DROP VIEW IF EXISTS "invite";
 DROP VIEW IF EXISTS "comments_count";
 DROP VIEW IF EXISTS "message_attitude_recipient";
 DROP VIEW IF EXISTS "repost_count";
 DROP VIEW IF EXISTS "message_attitude";
 DROP VIEW IF EXISTS "messenger";
 DROP VIEW IF EXISTS "last";
+DROP VIEW IF EXISTS "chat_dialog";
 DROP VIEW IF EXISTS "dialog";
 DROP VIEW IF EXISTS "member";
 

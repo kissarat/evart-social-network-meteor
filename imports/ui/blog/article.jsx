@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
-import {Subscriber} from '/imports/ui/common/widget'
+import {Subscriber, Busy} from '/imports/ui/common/widget'
 import {BlogLayout} from './layout'
 import {Editor} from './editor'
 import {idToTimeString} from '/imports/ui/common/helpers'
 
 class Attitude extends Component {
   onChange = (e) => {
-    const attitude = 'checkbox' == e.target.getAttribute('type')
+    const attitude = 'checkbox' === e.target.getAttribute('type')
       ? e.target.checked && 'like'
       : e.nativeEvent.target.value || false
     Meteor.call('estimate', {id: this.props.id, attitude: attitude}, (err, res) => {
@@ -127,7 +127,8 @@ export class NewsItem extends Component {
 }
 
 export class Profile extends Subscriber {
-  setup(props) {
+  componentWillReceiveProps(props) {
+    this.setState({busy: true})
     if (props.id) {
       this.setupState(props)
     }
@@ -138,7 +139,6 @@ export class Profile extends Subscriber {
           console.error(err)
         }
         else {
-          state.busy = false
           this.setupState(state)
         }
       })
@@ -146,12 +146,7 @@ export class Profile extends Subscriber {
   }
 
   componentWillMount() {
-    this.setup(this.props)
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({busy: true})
-    this.setup(props)
+    this.componentWillReceiveProps(this.props)
   }
 }
 
@@ -162,16 +157,16 @@ export class Blog extends Profile {
   }
 
   render() {
-    if (this.state) {
+    if (this.state.busy) {
+      return <Busy/>
+    }
+    else {
       const articles = this.getSubscription('message')
         .map(message => <Article key={message.id} {...message}/>)
       return <BlogLayout {...this.state}>
         <Editor type='wall' id={this.state.id}/>
         <div className="posts">{articles}</div>
       </BlogLayout>
-    }
-    else {
-      return <div>Loading...</div>
     }
   }
 }
@@ -192,11 +187,15 @@ export class Children extends Subscriber {
 
 export class News extends Subscriber {
   componentWillMount() {
+    this.state = {busy: true}
     this.subscribe('message', {type: 'news'})
   }
 
   render() {
-    if (this.state) {
+    if (this.state.busy) {
+      return <Busy/>
+    }
+    else {
       const items = this.getSubscription('message')
         .map(message => <NewsItem key={message.id} {...message}/>)
       return <div className="container">
@@ -204,9 +203,6 @@ export class News extends Subscriber {
           <div id="news">{items}</div>
         </div>
       </div>
-    }
-    else {
-      return <div>Loading...</div>
     }
   }
 }

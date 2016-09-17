@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import {Link, browserHistory} from 'react-router'
 import {DateField} from 'react-date-picker'
 import 'react-date-picker/index.css'
-import {InputGroup} from '/imports/ui/common/widget'
-import _ from 'underscore'
+import {InputGroup, Busy} from '/imports/ui/common/widget'
 
 class UserEdit extends Component {
   componentWillReceiveProps(props) {
@@ -199,7 +198,7 @@ export class Edit extends Component {
       }
     }
     else {
-      return <div>Loading...</div>
+      return <Busy/>
     }
   }
 }

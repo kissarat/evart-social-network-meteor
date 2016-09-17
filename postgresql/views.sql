@@ -7,19 +7,31 @@ CREATE OR REPLACE VIEW member AS
   FROM relation r
     JOIN blog b ON r."from" = b.id;
 
-CREATE OR REPLACE VIEW dialog AS
+CREATE OR REPLACE VIEW chat_dialog AS
   WITH mm AS (
     SELECT
       m.id,
       r."to"   AS recipient,
-      m."from" AS peer,
+      m."parent" AS peer,
       m."from",
       m.type,
       m.text
     FROM "message" m
       JOIN member r ON m."to" = r."from"
-    WHERE r.blog_type = 'chat'
-    UNION
+  )
+  SELECT
+    mm.id,
+    mm."from",
+    mm.peer,
+    mm.recipient,
+    b.name,
+    b.avatar,
+    mm.text
+  FROM mm
+    JOIN blog b ON mm."from" = b.id;
+
+CREATE OR REPLACE VIEW dialog AS
+  WITH mm AS (
     SELECT
       m.id,
       m."to"   AS recipient,
@@ -52,11 +64,34 @@ CREATE OR REPLACE VIEW dialog AS
     JOIN blog b ON mm."from" = b.id;
 
 CREATE OR REPLACE VIEW "last" AS
+  WITH mm AS (
+    SELECT
+      m.id,
+      r."to"   AS recipient,
+      m."from" AS peer
+    FROM "message" m
+      JOIN member r ON m."to" = r."from"
+    WHERE r.blog_type = 'chat'
+    UNION
+    SELECT
+      m.id,
+      m."to"   AS recipient,
+      m."from" AS peer
+    FROM "message" m
+    WHERE m.type = 'dialog'
+    UNION
+    SELECT
+      m.id,
+      m."from" AS recipient,
+      m."to"   AS peer
+    FROM "message" m
+    WHERE m.type = 'dialog'
+  )
   SELECT
     max(id) AS id,
     peer,
     recipient
-  FROM dialog
+  FROM mm
   WHERE peer <> recipient
   GROUP BY peer, recipient;
 

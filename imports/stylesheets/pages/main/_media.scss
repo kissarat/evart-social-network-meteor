@@ -1,86 +1,86 @@
-@mixin cs-md{
-  .square{
+@mixin cs-md {
+  .square {
     height: 110px;
     > p {
       margin: 0 -15px;
     }
   }
-  header{
-    .user-info{
+  header {
+    .user-info {
       height: auto;
-      p{
+      p {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
       }
-      div{
+      div {
         margin-bottom: 5px;
       }
     }
   }
-  #menu{
-    .bar{
+  #menu {
+    .bar {
       max-width: 768px;
-      .menu{
+      .menu {
         $icon-width: 60px;
         $icon-offset: 1.4px;
         background-size: 734px;
         width: $icon-width;
         height: 62px;
-        &.menu-profile{
+        &.menu-profile {
           background-position: -($icon-width+$icon-offset) 0;
         }
-        &.menu-feedback{
+        &.menu-feedback {
           background-position: -(($icon-width+$icon-offset)*2) 0;
         }
-        &.menu-message{
+        &.menu-message {
           background-position: -(($icon-width+$icon-offset)*3) 0;
         }
-        &.menu-phone{
+        &.menu-phone {
           background-position: -(($icon-width+$icon-offset)*4) 0;
         }
-        &.menu-friends{
-          background-position: -(($icon-width+$icon-offset)*5)  0;
+        &.menu-friends {
+          background-position: -(($icon-width+$icon-offset)*5) 0;
         }
-        &.menu-group{
-          background-position: -(($icon-width+$icon-offset)*6)  0;
+        &.menu-group {
+          background-position: -(($icon-width+$icon-offset)*6) 0;
         }
-        &.menu-photo{
-          background-position: -(($icon-width+$icon-offset)*7)  0;
+        &.menu-photo {
+          background-position: -(($icon-width+$icon-offset)*7) 0;
         }
-        &.menu-video{
-          background-position: -(($icon-width+$icon-offset)*8)  0;
+        &.menu-video {
+          background-position: -(($icon-width+$icon-offset)*8) 0;
         }
-        &.menu-movie{
-          background-position: -(($icon-width+$icon-offset)*9)  0;
+        &.menu-movie {
+          background-position: -(($icon-width+$icon-offset)*9) 0;
         }
-        &.menu-music{
-          background-position: -(($icon-width+$icon-offset)*10)  0;
+        &.menu-music {
+          background-position: -(($icon-width+$icon-offset)*10) 0;
         }
-        &.menu-settings{
-          background-position: -(($icon-width+$icon-offset)*11)  0;
+        &.menu-settings {
+          background-position: -(($icon-width+$icon-offset)*11) 0;
         }
       }
     }
   }
-  #news{
-    .about{
-      .connect-menu{
-        a{
-          .icon{
+  #news {
+    .about {
+      .connect-menu {
+        a {
+          .icon {
             background-size: 570px;
           }
-          .icon-email{
+          .icon-email {
             background-position: -272px -1px;
             width: 30px;
             height: 20px;
           }
-          .icon-call{
+          .icon-call {
             background-position: -55px -1px;
             width: 25px;
             height: 23px;
           }
-          .icon-video-call{
+          .icon-video-call {
             background-position: -505px 0px;
             width: 35px;
             height: 22px;
@@ -89,11 +89,11 @@
       }
     }
   }
-  main{
-    .subscribers{
-      .last-subscribers{
-        img{
-          &:nth-child(n+5){
+  main {
+    .subscribers {
+      .last-subscribers {
+        img {
+          &:nth-child(n+5) {
             display: none;
           }
         }
@@ -107,100 +107,100 @@
   }
 }
 
-@mixin cs-sm{
-  #content{
+@mixin cs-sm {
+  #content {
     > .mCSB_scrollTools {
       right: 37px;
     }
   }
   .img
-  header{
+  header {
     padding: 50px 80px 250px 80px;
   }
-  .square{
+  .square {
     height: 90px;
     max-width: 130px;
-    p{
-      &.count{
+    p {
+      &.count {
         padding-top: 20%;
       }
     }
   }
 
-  main{
-    .user-block{
+  main {
+    .user-block {
       padding: 0 15px;
     }
-    .subscribers{
+    .subscribers {
       margin-right: -5px;
       margin-left: -5px;
     }
 
-    .photo-container{
-      .photos{
-        .item{
+    .photo-container {
+      .photos {
+        .item {
           width: 24%;
         }
       }
     }
   }
 
-  [id*="container-add"]{
+  [id*="container-add"] {
     width: 45px;
-    &:after{
+    &:after {
       font-size: 70px;
     }
   }
-  .container{
+  .central-container {
     padding: 0 60px;
   }
 }
 
-@mixin cs-xs{
-  header{
+@mixin cs-xs {
+  header {
     padding: 50px 40px 165px 40px;
-    .user-info{
-      h4{
+    .user-info {
+      h4 {
         font-size: 18px;
         margin-top: 0;
       }
-      div{
+      div {
         font-size: 10px;
       }
-      p{
+      p {
         font-size: 11px;
       }
     }
   }
-  .square{
+  .square {
     height: 75px;
-    p{
-      &.count{
+    p {
+      &.count {
         padding-top: 30%;
         font-size: 20px;
       }
-      &.name{
+      &.name {
         font-size: 10px;
       }
     }
   }
-  .user-block{
-    .connect-menu.friends-page{
-      a{
-        .icon{
+  .user-block {
+    .connect-menu.friends-page {
+      a {
+        .icon {
           background-size: 570px;
         }
-        .icon-email{
+        .icon-email {
           background-position: -272px -1px;
           width: 30px;
           height: 20px;
         }
-        .icon-call{
+        .icon-call {
           background-position: -55px -1px;
           width: 25px;
           height: 23px;
         }
-        .icon-video-call{
+        .icon-video-call {
           background-position: -505px 0px;
           width: 35px;
           height: 22px;
@@ -210,64 +210,64 @@
   }
   main {
     margin-top: -135px;
-    .friends{
+    .friends {
       height: 75px;
-      .friend{
+      .friend {
         height: 40px;
-        &.count{
+        &.count {
           line-height: 40px;
         }
       }
     }
-    .user-container{
-      > .posts{
-        > article{
-          .posted-by{
+    .user-container {
+      > .posts {
+        > article {
+          .posted-by {
             display: table-caption;
             width: 100%;
             height: 35px;
-            img{
+            img {
               padding: 5px;
               height: 100%;
             }
           }
-          > .posted-by{
+          > .posted-by {
             display: table-caption;
             height: 40px;
             width: 100%;
-            div{
+            div {
               height: 100%;
             }
-            .poster-border{
+            .poster-border {
               padding-bottom: 0;
-              .poster-wrapper{
+              .poster-wrapper {
                 padding: 0 5px;
-                img{
+                img {
                   display: inline-block;
                   height: 100%;
                 }
-                time{
+                time {
                   display: inline-block;
                   vertical-align: bottom;
                 }
               }
             }
           }
-          .post-content{
-            .content-head{
+          .post-content {
+            .content-head {
               width: 90%;
               top: -35px;
               left: 10%;
             }
-            p{
+            p {
               margin-top: -15px;
             }
           }
-          > .post-content{
-            > p{
+          > .post-content {
+            > p {
               margin-top: -15px;
             }
-            > .content-head{
+            > .content-head {
               top: -45px;
               width: 89%;
               left: 11%;
@@ -277,41 +277,42 @@
       }
     }
   }
-  #messenger{
-    .messenger-container{
-      .dialogs{
-        width: 45%;
-      }
-      .messages{
-        width: 55%;
-        .message-container{
-          .message{
-            width: 80%;
-          }
-        }
+}
+
+.messenger-container {
+  display: flex;
+  .dialogs {
+    flex: 1;
+  }
+  .messages {
+    flex: 1.5;
+    .message-container {
+      .message {
+        width: 80%;
       }
     }
   }
 }
 
-@media (max-width: 992px){
+@media (max-width: 992px) {
   @include cs-md();
 }
 
-@media (max-width: 900px){
+@media (max-width: 900px) {
   @include cs-sm();
 }
-@media (max-width: 850px){
-  header{
+
+@media (max-width: 850px) {
+  header {
     padding: 50px 60px 250px 60px;
   }
 }
 
 @media (max-width: 768px) {
-  [id*="container-add-"]{
+  [id*="container-add-"] {
     display: none;
   }
-  .container {
+  .central-container {
     padding: 0 15px;
   }
 
@@ -323,8 +324,8 @@
   }
   main {
     margin-top: -50px;
-    .user-block{
-      > img{
+    .user-block {
+      > img {
         float: left;
         margin-right: 30px;
         @media (max-width: 568px) {
@@ -332,28 +333,28 @@
         }
       }
     }
-    .wrapper{
+    .wrapper {
       box-shadow: none;
     }
   }
 }
 
-.content-size-md{
-  #content, #messenger-content{
+.content-size-md {
+  #content, #messenger-content {
     width: 992px;
   }
   @include cs-md();
 }
 
-.content-size-sm{
-  #content, #messenger-content{
+.content-size-sm {
+  #content, #messenger-content {
     width: 850px;
   }
   @include cs-sm();
 }
 
-.content-size-xs{
-  #content, #messenger-content{
+.content-size-xs {
+  #content, #messenger-content {
     width: 645px;
   }
   @include cs-xs();

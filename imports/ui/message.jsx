@@ -1,10 +1,14 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router'
-import {Subscriber, ScrollArea} from './common/widget'
+import {browserHistory} from 'react-router'
+import {Subscriber, ScrollArea, Busy} from './common/widget'
 import {idToTimeString} from './common/helpers'
 import {Editor} from './blog/editor'
 
 export class LastMessage extends Component {
+  onClick = (e) => {
+    this.props.open(+e.target.getAttribute('id'))
+  }
+
   render() {
     const avatar = <img src="/images/profile-image.jpg" alt="" className="img-responsive img-circle"/>
     const count = this.props.count > 0 ? <div className="count">{this.props.count}</div> : ''
@@ -13,12 +17,12 @@ export class LastMessage extends Component {
         {avatar}
         {count}
       </div>
-      <Link to={'/dialog/' + this.props.id} className="content">
+      <div className="content" id={this.props.id} onClick={this.onClick}>
         <span className="icon icon-close-gray"/>
         <span className="date">{idToTimeString(this.props.message)}</span>
         <div className="name">{this.props.name || 'Untitled'}</div>
         <div className="last">{this.props.text}</div>
-      </Link>
+      </div>
     </li>
   }
 }
@@ -49,19 +53,16 @@ export class Message extends Component {
 }
 
 export class Dialog extends Subscriber {
-  setupSubscription(props) {
+  componentWillReceiveProps(props) {
+    this.setState({busy: true})
     this.subscribe('message', {
       type: props.type,
-      ['dialog' === props.type ? 'peer' : 'parent']: +props.id
+      peer: +props.id
     })
   }
 
   componentWillMount() {
-    this.setupSubscription(this.props)
-  }
-
-  componentWillReceiveProps(props) {
-    this.setupSubscription(props)
+    this.componentWillReceiveProps(this.props)
   }
 
   onRenderMessageElement(array, i, element, message) {
@@ -71,10 +72,14 @@ export class Dialog extends Subscriber {
   }
 
   render() {
-    const messages = this.getSubscription('message').map((message, i, array) => <Message
-      key={message.id}
-      {...message}
-      onRenderElement={this.onRenderMessageElement.bind(this, array, i)}/>)
+    const messages = this.state.busy
+      ? <Busy/>
+      : this.getSubscription('message').map((message, i, array) =>
+      <Message
+        key={message.id}
+        {...message}
+        onRenderElement={this.onRenderMessageElement.bind(this, array, i)}/>
+    )
     return <div className="messages">
       <ScrollArea>{messages}</ScrollArea>
       <Editor {...this.props}/>
@@ -107,63 +112,59 @@ export class Dialog extends Subscriber {
   }
 }
 
+export class DialogList extends Subscriber {
+  componentWillMount() {
+    this.subscribe('messenger', {})
+  }
+
+  render() {
+    const peerListView = this.getSubscription('messenger')
+      .map(peer => <LastMessage key={peer.id} {...peer} open={this.props.open}/>)
+    return <div className="dialogs">
+      <ScrollArea>{peerListView}</ScrollArea>
+      <div className="search">
+        <input type="search" placeholder="Search dialog"/>
+        <button type="button">
+          <span className="icon icon-search"/>
+        </button>
+      </div>
+    </div>
+  }
+}
+
 export class Messenger extends Subscriber {
-  setupTarget() {
-    if (this.props.params.peer) {
-      const peer = this.getSubscription('messenger').find(peer => peer.id === this.props.params.peer)
-      if (peer) {
-        this.setState({peer})
-      }
-      else {
-        Meteor.call('blog.get', {id: this.props.params.peer}, (err, res) => {
-          if (err) {
-            console.error(err)
-          }
-          else {
-            this.setState({
-              peer: {
-                id: +res.id,
-                type: 'chat' === res.type ? 'chat' : 'dialog'
-              }
-            })
-          }
-        })
-      }
+  componentWillReceiveProps(props) {
+    if (props.params.peer) {
+      Meteor.call('blog.get', {id: props.params.peer}, (err, res) => {
+        if (err) {
+          console.error(err)
+        }
+        else {
+          this.setState({
+            peer: {
+              id: +res.id,
+              type: 'chat' === res.type ? 'chat' : 'dialog'
+            }
+          })
+        }
+      })
     }
   }
 
   componentWillMount() {
     this.state = {}
-    this.subscribe('messenger', {})
-    this.setupTarget()
+    this.componentWillReceiveProps(this.props)
   }
 
-  componentWillReceiveProps() {
-    this.setupTarget()
+  open = (lastMessage) => {
+    browserHistory.push('/dialog/' + lastMessage.id)
   }
 
   render() {
-    const peerListView = this.getSubscription('messenger').map(peer => <LastMessage key={peer.id} {...peer}/>)
     const dialog = this.state.peer ? <Dialog {...this.state.peer}/> : ''
-    return <div className="container">
-      <div className="row wrap">
-        <div id="messenger">
-          <div className="messenger-container">
-            <div className="dialogs">
-              <ScrollArea>{peerListView}</ScrollArea>
-              <div className="  find">
-                <div className="input-group">
-                  <input type="text" className="form-control" placeholder="Search dialog"/>
-                  <span className="input-group-addon">
-                    <i className="icon icon-search"/>
-                  </span>
-                </div>
-              </div>
-            </div>
-            {dialog}
-          </div>
-        </div>
-      </div>
+    return <div className="messenger-container">
+      <DialogList open={this.open}/>
+      {dialog}
     </div>
   }
 }

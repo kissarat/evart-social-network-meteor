@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import {Subscriber} from './common/widget'
-import {Route} from 'react-router'
+import {Subscriber, ScrollArea} from './common/widget'
+import {Link} from 'react-router'
 
-class List extends Component {
+class ListHeader extends Component {
   render() {
     return <div className="container">
       <div className="row wrap">
@@ -33,12 +33,11 @@ class List extends Component {
 
 class Contact extends Component {
   render() {
-    return <div className="user-info user-all">
-      <img src="/images/profile-image.jpg" alt="" className="img-circle img-responsive"/>
-      <div className="name">Random User <i className="online"/></div>
-      <span className="description">Ukraine, Kiev</span>
-      <div className="about">
-        <div className="connect-menu center-block">
+    const url = '/blog/' + this.props.from
+    const online = <i className="online"/>
+    const more = 'group' === this.props.type ?
+      <div>
+        <div className="communicate">
           <a href="#">
             <span className="icon icon-email"/>
           </a>
@@ -58,6 +57,17 @@ class Contact extends Component {
         </p>
         <div className="delete">
           <span className="icon icon-trash"/>
+        </div>
+      </div> : <div>1<br/>2</div>
+    return <div className="contact">
+      <Link to={url} className="avatar">
+        <img src="/images/profile-image.jpg" alt="" className="circle"/>
+      </Link>
+      <div className="info">
+        <div>
+          <Link to={url} className="name">{this.props.name}</Link>
+          <span className="location">{this.props.location}</span>
+          <div className="more">{more}</div>
         </div>
       </div>
     </div>
@@ -99,8 +109,8 @@ class Invite extends Component {
     return <div className="notification-item">
       <div className="user-info">
         <img src="/images/profile-image.jpg" alt="" className="img-circle img-responsive"/>
-        <div className="name">Random User</div>
-        <span className="description">Ukraine, Kiev</span>
+        <div className="name">{this.props.name}</div>
+        <span className="description">{this.props.location}</span>
       </div>
       <div className="user-content">
       </div>
@@ -118,6 +128,40 @@ export class InviteList extends Subscriber {
 
   render() {
     const invites = this.getSubscription('invite').map(invite => <Invite key={invite.from} {...invite}/>)
-    return <List><div className="tab_invite">{invites}</div></List>
+    return <ListHeader>
+      <div className="tab_invite">{invites}</div>
+    </ListHeader>
+  }
+}
+
+export class List extends Subscriber {
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props)
+  }
+
+  renderList(list) {
+    list = list.map(contact => <Contact key={contact.id} {...contact}/>)
+    return <ScrollArea>{list}</ScrollArea>
+  }
+}
+
+export class FriendList extends List {
+  componentWillReceiveProps(props) {
+    const params = {
+      type: 'user',
+      establish: 'follow'
+    }
+    if (props.params && props.params.id) {
+      params.id = +props.params.id
+    }
+    this.subscribe('invite', params)
+  }
+
+  render() {
+    const list = this.renderList(this.getSubscription('invite'))
+    return <div className="contact-list list">
+      <div className="search"></div>
+      {list}
+    </div>
   }
 }

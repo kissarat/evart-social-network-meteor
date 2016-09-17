@@ -6,13 +6,20 @@ Meteor.publish('blog', function (params = {}) {
 })
 
 Meteor.publish('invite', function (params = {}) {
-  params.recipient = parseInt(this.userId, 36)
+  if (!params.recipient) {
+    params.recipient = parseInt(this.userId, 36)
+  }
   return query('invite', params).cursor()
 })
 
 Meteor.publish('to_list', function (params = {}) {
   params.to = parseInt(this.userId, 36)
   return query('to_list', params).cursor()
+})
+
+Meteor.publish('from_list', function (params = {}) {
+  params.from = parseInt(this.userId, 36)
+  return query('from_list', params).cursor()
 })
 
 Meteor.methods({

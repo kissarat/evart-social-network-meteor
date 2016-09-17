@@ -1,18 +1,18 @@
 import React, {Component} from 'react'
 import {AdminRoute} from './admin/index'
 import {App} from './app'
+import {AudioPlaylist} from './audio'
+import {Blog, News} from './blog/article'
+import {Edit, ChangePassword, ResetPassword} from './blog/edit'
 import {FileRoute} from './file'
+import {Gallery, Visual} from './photo'
+import {InviteList, FriendList} from './list'
 import {LoginPage} from './auth/login'
 import {Messenger} from './message'
 import {PhoneRoute} from './phone'
 import {Route, IndexRoute, browserHistory} from 'react-router'
 import {Signup} from './auth/signup'
-import {Blog, News} from './blog/article'
-import {InviteList} from './list'
-import {Gallery, Visual} from './photo'
 import {VideoList} from './video'
-import {AudioPlaylist} from './audio'
-import {Edit, ChangePassword, ResetPassword} from './blog/edit'
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -75,7 +75,7 @@ export const RootRoute =
       <Route path="dialog/:peer" component={Messenger}/>
       <Route path="profile" component={Blog}/>
       <Route path="blog/:id" component={Blog}/>
-      <Route path="friends" component={InviteList}/>
+      <Route path="invites" component={InviteList}/>
       <Route path="gallery/:id" component={Gallery}/>
       <Route path="image/:id" component={Visual}/>
       <Route path="video-search" component={VideoList}/>
@@ -83,6 +83,8 @@ export const RootRoute =
       <Route path="settings" component={Edit}/>
       <Route path="edit/:id" component={Edit}/>
       <Route path="change-password" component={ChangePassword}/>
+      <Route path="friends/:id" component={FriendList}/>
+      <Route path="friends" component={FriendList}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

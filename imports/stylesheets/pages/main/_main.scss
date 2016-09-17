@@ -30,6 +30,7 @@ $user-menu-border-color: #ddddde;
 #central {
   max-width: 1100px;
   overflow-y: auto;
+  flex: 1;
   > * {
     width: inherit;
     max-width: none;

@@ -97,3 +97,89 @@ header textarea {
     }
   }
 }
+
+.list {
+  height: 100%;
+  .scroll {
+    height: 100%;
+  }
+}
+
+@media (orientation: landscape) {
+  @media (min-width: 500px) {
+    .scroll {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 840px) {
+      #central .contact-list {
+        .contact {
+          width: calc(50% - 8);
+        }
+      }
+    }
+  }
+  @media (min-width: 841px) {
+    #central .contact-list {
+      .contact {
+        width: 30%;
+      }
+    }
+  }
+}
+
+.contact {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  min-width: 240px;
+
+  .info {
+    position: relative;
+    flex: 1;
+  }
+
+  .info > div {
+    position: absolute;
+    padding: 8px;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: inherit;
+    border: 1px solid transparent;
+    .more {
+      display: none;
+    }
+  }
+
+  .info:hover > div {
+    background-color: #f5f5f5;
+    border-color: #e0e0e0;
+    z-index: 1;
+    .more {
+      display: block;
+    }
+  }
+
+  .avatar > img {
+    margin: 8px;
+    max-width: 54px;
+  }
+
+  .name {
+    padding-top: 5px;
+    font-size: 16px;
+    color: #656a6e;
+  }
+
+  .location {
+    padding-left: 10px;
+    color: #b8b8b8;
+    font-size: 12px;
+  }
+}
+
+.circle {
+  border-radius: 50%;
+}

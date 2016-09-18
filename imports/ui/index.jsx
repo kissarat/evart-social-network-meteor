@@ -99,13 +99,13 @@ export const RootRoute =
       <Route path="friends" component={FriendList}/>
       <Route path="groups" component={GroupsList}/>
       <Route path="groups/:id" component={GroupsList}/>
+      <Route path="unavailable" component={Unavailable}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>
       <Route path="login" component={LoginPage}/>
       <Route path="signup" component={Signup}/>
       <Route path="reset-password" component={ResetPassword}/>
-      <Route path="unavailable" component={Unavailable}/>
     </Route>
     {AdminRoute}
     {PhoneRoute}

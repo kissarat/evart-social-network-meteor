@@ -2,8 +2,8 @@ CREATE OR REPLACE VIEW member AS
   SELECT
     "from",
     "to",
-    r.type AS relation_type,
-    b.type AS blog_type
+    r.type AS relation,
+    b.type AS type
   FROM relation r
     JOIN blog b ON r."from" = b.id;
 
@@ -71,7 +71,7 @@ CREATE OR REPLACE VIEW "last" AS
       m."from" AS peer
     FROM "message" m
       JOIN member r ON m."to" = r."from"
-    WHERE r.blog_type = 'chat'
+    WHERE r.type = 'chat'
     UNION
     SELECT
       m.id,
@@ -229,16 +229,19 @@ CREATE OR REPLACE VIEW to_list AS
   FROM blog b
     JOIN relation r ON b.id = r."from";
 
+CREATE OR REPLACE VIEW blog_cross AS
+  SELECT
+    t.*,
+    f.id AS "recipient"
+  FROM blog f CROSS JOIN blog t;
+
 CREATE OR REPLACE VIEW "blog_recipient" AS
   SELECT
-    b.*,
-    rel.from          AS recipient,
-    CASE WHEN b.id = rec.id
+    j.*,
+    CASE WHEN j.id = j.recipient
       THEN 'manage'
-    ELSE rel.type END AS relation
-  FROM "blog" rec CROSS JOIN blog b
-    LEFT JOIN relation rel ON rel."to" = b.id AND rel."from" = rec.id
-  WHERE rec.type = 'user';
+    ELSE r.type END AS relation
+  FROM blog_cross j LEFT JOIN relation r ON j.recipient = r."from" AND j.id = r."to";
 
 CREATE OR REPLACE VIEW informer AS
   SELECT

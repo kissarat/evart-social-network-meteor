@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Link, browserHistory} from 'react-router'
 import {Subscriber, ScrollArea, Busy} from './common/widget'
+import {Avatar} from './common/widget'
 import {idToTimeString} from './common/helpers'
 import {Editor} from './blog/editor'
 
@@ -10,7 +11,7 @@ export class LastMessage extends Component {
   }
 
   render() {
-    const avatar = <img src="/images/profile-image.jpg" alt="" className="img-responsive img-circle"/>
+    const avatar = <Avatar {...this.props} className="img-responsive img-circle"/>
     const count = this.props.count > 0 ? <div className="count">{this.props.count}</div> : ''
     const info = 'chat' === this.props.type
       ? <div className="photo">{avatar}{count}</div>
@@ -35,7 +36,7 @@ export class Message extends Component {
       <div className={className}>
         <div className="message">
           <div className="avatar">
-            <img src="/images/profile-image.jpg" alt="..." className="img-responsive img-circle"/>
+            <Avatar {...this.props} className="img-responsive img-circle"/>
           </div>
           <div className="text">{this.props.text}</div>
           <div className="time">{idToTimeString(this.props.id)}</div>

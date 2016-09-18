@@ -159,7 +159,8 @@ class Friends extends Subscriber {
       id: props.id,
       type: 'user',
       relation: 'follow',
-      random: true
+      random: true,
+      limit: 3
     })
   }
 
@@ -173,10 +174,18 @@ class Friends extends Subscriber {
     }
     else {
       const list = this.getSubscription('invite')
-        .map(friend => <Link key={friend.id} className="friend" to={'/blog/' + friend.id}/>)
+        .map(friend => {
+          const avatar = friend.avatar ? thumb(friend.avatar) : '/images/user.png'
+          return <Link key={friend.from}
+                       className="friend avatar"
+                       to={'/blog/' + friend.from}
+                       title={friend.name}
+                       style={{backgroundImage: `url("${avatar}")`}}
+          />
+        })
       return <div className="friends">
         {list}
-        <Link to={'/friends/' + this.props.id} className="friend count">More</Link>
+        <Link key='url' to={'/friends/' + this.props.id} className="friend count">More</Link>
       </div>
     }
   }

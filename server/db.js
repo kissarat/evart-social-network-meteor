@@ -309,6 +309,17 @@ _.extend(_knex.Client.prototype.QueryBuilder.prototype, {
 
   many: function () {
     return this.promise().then(result => result)
+  },
+
+  search: function (string) {
+    if ('string' === typeof string) {
+      string.trim().split(/\s+/).forEach(token => {
+        if (token) {
+          this.where('name', 'ilike', `%${token}%`)
+        }
+      })
+    }
+    return this
   }
 })
 
@@ -374,11 +385,7 @@ function query(table, params = {}) {
       q.orderBy(name, direction > 0 ? 'asc' : 'desc')
     })
   }
-  if (params.search && params.search.trim()) {
-    params.search.split(/\s+/).forEach(function (token) {
-      q.where('name', 'ilike', `%${token}%`)
-    })
-  }
+  q.search(params.search)
   if (params.limit) {
     q.limit(params.limit)
   }

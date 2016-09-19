@@ -1,4 +1,4 @@
-import {query, table, errors, timeId, log, liveSQL} from './db'
+import {query, table, errors, timeId, log, knex} from './db'
 import _ from 'underscore'
 
 Meteor.publish('blog', function (params = {}) {
@@ -39,14 +39,14 @@ Meteor.publish('member', function (params = {}) {
 })
 
 Meteor.publish('candidate', function ({from, limit, search}) {
-  const where = search ? 'WHERE b.name ilike $4::VARCHAR(64)' : ''
-  const recipient = parseInt(this.userId, 36)
-  return liveSQL(`SELECT b.* FROM (
-  (SELECT "to" AS id FROM relation WHERE "from" = $1::BIGINT
+  return knex.select('blog.*')
+    .from('blog').join(knex.raw(`((SELECT "to" AS id FROM relation WHERE "from" = ?
   UNION SELECT id FROM blog WHERE type = 'user')
-  EXCEPT SELECT "to" AS id FROM relation WHERE "from" = $2::BIGINT) t
-JOIN blog b ON b.id = t.id ${where}
-ORDER BY t.id DESC LIMIT $3`, [recipient, +from, limit || 200, `%${search}%`])
+  EXCEPT SELECT "to" AS id FROM relation WHERE "from" = ?) AS t
+`, [parseInt(this.userId, 36), +from]), 'blog.id', 't.id')
+    .search(search)
+    .limit(+limit || 100)
+    .cursor()
 })
 
 Meteor.methods({

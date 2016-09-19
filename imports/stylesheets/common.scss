@@ -17,10 +17,6 @@
   min-height: 256px;
 }
 
-textarea:hover, textarea:focus {
-  border: none !important;
-}
-
 .busy {
   opacity: 0.2;
   //transition: opacity 300ms;
@@ -58,16 +54,22 @@ textarea:hover, textarea:focus {
   }
 }
 
-header textarea {
-  background-color: transparent;
-  border: 1px solid transparent;
-  width: 100%;
-  &:focus {
-    border-color: white;
+header {
+  textarea {
+    background-color: transparent;
+    border: 1px solid transparent;
+    width: 100%;
+    &:focus {
+      border-color: white;
+    }
+
+    &::-webkit-input-placeholder, &::-moz-placeholder, &:-moz-placeholder, &:-ms-input-placeholder {
+      color: white;
+    }
   }
 
-  &::-webkit-input-placeholder, &::-moz-placeholder, &:-moz-placeholder, &:-ms-input-placeholder {
-    color: white;
+  textarea:hover, textarea:focus {
+    border: none !important;
   }
 }
 

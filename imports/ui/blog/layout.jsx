@@ -3,7 +3,7 @@ import {Link, browserHistory} from 'react-router'
 import {upload} from '/imports/ui/common/helpers'
 import {Subscriber, Avatar, ImageDropzone, Busy} from '/imports/ui/common/widget'
 
-const Track = function ({track, type}) {
+export const Track = function ({track, type}) {
   if (track) {
     const duration = track.data.format.duration / 60
     return <div className={`tile image ${type}-track`}>
@@ -20,7 +20,7 @@ const Track = function ({track, type}) {
   }
 }
 
-class Title extends Component {
+export class Title extends Component {
   componentWillMount() {
     this.state = {}
   }
@@ -39,7 +39,8 @@ class Title extends Component {
       <div><span className="icon icon-location"/>{this.props.geo.replace('\t', ',')}</div> : ''
     let status = this.state.status || this.props.status
     status = 'manage' === this.props.relation
-      ? <textarea value={status} rows="3"
+      ? <textarea value={status}
+                  rows={Meteor.isMobile ? 1 : 3}
                   placeholder="Status"
                   onChange={this.onChangeStatus}
                   onBlur={this.onBlurStatus}/>
@@ -52,50 +53,63 @@ class Title extends Component {
   }
 }
 
-class UserHeader extends Component {
+export class Informer extends Component {
   render() {
-    const images = _.range(0, 6)
+    const props = this.props
+    return <Link to={`/${props.name}/${props.id}`} className={'tile ' + props.name}>
+      <p className="count">{props.count}</p>
+      <p className="name">{props.label}</p>
+    </Link>
+  }
+
+  static all(props) {
+    return {
+      audio: <Informer name="audio" count={props.audio} label="Audio" id={props.id}/>,
+      friends: <Informer name="friends" count={props.friends} label="Friends" id={props.id}/>,
+      subscribers: <Informer name="subscribers" count={props.subscribers} label="Subscribers" id={props.id}/>,
+      groups: <Informer name="groups" count={props.groups} label="Groups" id={props.id}/>,
+      video: <Informer name="video" count={props.video} label="Video" id={props.id}/>,
+    }
+  }
+}
+
+class ImageTile extends ImageDropzone {
+  static all(props) {
+    return _.range(0, 6)
       .map(i => {
         const imageProperty = 't' + i
         return <ImageDropzone
-          imageId={this.props[imageProperty]}
+          imageId={props[imageProperty]}
           imageProperty={imageProperty}
           className={'tile image tile-' + i}
-          onDrop={this.props.onDrop}
-          relation={this.props.relation}
+          onDrop={props.onDrop}
+          relation={props.relation}
         />
       })
-    return <header id="background">
+  }
+}
+
+
+class UserHeader extends Component {
+  render() {
+    const informers = Informer.all(this.props)
+    const images = ImageTile.all(this.props)
+    return <header className="user">
       <div>
         <Title {...this.props}/>
-        <div className="tile audio">
-          <p className="count">{this.props.audio}</p>
-          <p className="name">Audio</p>
-        </div>
+        {informers.audio}
         {images[0]}
         <Track {...this.props}/>
-        <Link to={'/friends/' + this.props.id} className="tile friends">
-          <p className="count">{this.props.friends}</p>
-          <p className="name">Friends</p>
-        </Link>
-        <Link to={'/subscribers/' + this.props.id} className="tile subscribers">
-          <p className="count">{this.props.subscribers}</p>
-          <p className="name">Subscribers</p>
-        </Link>
+        {informers.friends}
+        {informers.subscribers}
         {images[1]}
         {images[2]}
         {images[3]}
         {images[4]}
         <div className="tile empty"></div>
         {images[5]}
-        <Link to={'/groups/' + this.props.id} className="tile groups">
-          <p className="count">{this.props.groups}</p>
-          <p className="name">Groups</p>
-        </Link>
-        <div className="tile video">
-          <p className="count">{this.props.video}</p>
-          <p className="name">Videos</p>
-        </div>
+        {informers.groups}
+        {informers.video}
         <div className="tile empty"></div>
         {images[6]}
       </div>
@@ -105,36 +119,26 @@ class UserHeader extends Component {
 
 class GroupHeader extends Component {
   render() {
+    const informers = Informer.all(this.props)
+    const images = ImageTile.all(this.props)
     return <header className="group">
       <div>
-        <div className="tile audio hidable">
-          <p className="count">{this.props.audio}</p>
-          <p className="name">Audio</p>
-        </div>
+        {informers.audio}
         <div className="tile empty"></div>
-        <div className="tile image tile-6"></div>
+        {images[0]}
         <Title {...this.props}/>
-        <div className="tile image tile-7"></div>
-        <div className="tile subscribers">
-          <p className="count">{this.props.subscribers}</p>
-          <p className="name">Subscribers</p>
-        </div>
-        <div className="tile image tile-8"></div>
-        <div className="tile image tile-9"></div>
-        <div className="tile image tile-10"></div>
-        <div className="tile image tile-11"></div>
+        {images[1]}
+        {informers.subscribers}
+        {images[2]}
+        {images[3]}
+        {images[4]}
+        {images[5]}
         <div className="tile empty"></div>
-        <div className="tile image tile-12"></div>
+        {images[6]}
         <Track {...this.props}/>
-        <div className="tile video">
-          <p className="count">{this.props.video}</p>
-          <p className="name">Video</p>
-        </div>
-        <div className="tile photo">
-          <p className="count">{this.props.image}</p>
-          <p className="name">Photo</p>
-        </div>
-        <div className="tile image tile-13"></div>
+        {informers.video}
+        {informers.photo}
+        {images[7]}
       </div>
     </header>
   }
@@ -236,7 +240,7 @@ export class BlogLayout extends Component {
   onDrop = (files, e) => {
     const name = e.target.getAttribute('id') || e.target.parentNode.getAttribute('id')
     return upload(files[0]).then(data => {
-      new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         Meteor.call('blog.update', {id: Meteor.userIdInt()}, {[name]: data.id}, (err, res) => {
           if (err) {
             reject(err)
@@ -259,74 +263,79 @@ export class BlogLayout extends Component {
   }
 
   render() {
-    const header = 'user' === this.props.type
-      ? <UserHeader {...this.props} onDrop={this.onDrop}/>
-      : <GroupHeader {...this.props} onDrop={this.onDrop}/>
-
-    const relation = 'relation' in this.state ? this.state.relation : this.props.relation
-    let follow
-    if ('manage' === relation) {
-      follow = <Friends/>
-    }
-    else if ('follow' === relation) {
-      follow = <button className="add-friend" onClick={this.onClickFollow}>Unsubscribe</button>
-    }
-    else if ('user' === this.props.type) {
-      follow = <button className="add-friend" id="follow" onClick={this.onClickFollow}>Add friend</button>
+    if (Meteor.isMobile) {
+      return <main>{this.props.children}</main>
     }
     else {
-      follow = <button className="add-group" id="follow" onClick={this.onClickFollow}>Subscribe</button>
-    }
+      const header = 'user' === this.props.type
+        ? <UserHeader {...this.props} onDrop={this.onDrop}/>
+        : <GroupHeader {...this.props} onDrop={this.onDrop}/>
 
-    let menu
-    if ('manage' === relation) {
-      menu = <ManagerMenu id={this.props.id}/>
-    }
-    else if ('user' === this.props.type) {
-      menu = <Communicate id={this.props.id}/>
-    }
-    else {
-      menu = <Subscribers {...this.props}/>
-    }
-    const avatarId = this.state.avatar || this.props.avatar
-    const avatar = <ImageDropzone
-      imageProperty="avatar"
-      imageId={avatarId}
-      relation={this.props.relation}
-      onDrop={this.onDrop}>
-      <Avatar
-        avatar={avatarId}
-        type={this.props.type}
-        big={true}
-        className="img-thumbnail"
-      />
-    </ImageDropzone>
-    const page = [
-      <div key='content' className="col-sm-4">
-        <div className="row">
-          <div className="user-block">
-            {avatar}
-            {follow}
-            {menu}
+      const relation = 'relation' in this.state ? this.state.relation : this.props.relation
+      let follow
+      if ('manage' === relation) {
+        follow = <Friends/>
+      }
+      else if ('follow' === relation) {
+        follow = <button className="add-friend" onClick={this.onClickFollow}>Unsubscribe</button>
+      }
+      else if ('user' === this.props.type) {
+        follow = <button className="add-friend" id="follow" onClick={this.onClickFollow}>Add friend</button>
+      }
+      else {
+        follow = <button className="add-group" id="follow" onClick={this.onClickFollow}>Subscribe</button>
+      }
+
+      let menu
+      if ('manage' === relation) {
+        menu = <ManagerMenu id={this.props.id}/>
+      }
+      else if ('user' === this.props.type) {
+        menu = <Communicate id={this.props.id}/>
+      }
+      else {
+        menu = <Subscribers {...this.props}/>
+      }
+      const avatarId = this.state.avatar || this.props.avatar
+      const avatar = <ImageDropzone
+        imageProperty="avatar"
+        imageId={avatarId}
+        relation={this.props.relation}
+        onDrop={this.onDrop}>
+        <Avatar
+          avatar={avatarId}
+          type={this.props.type}
+          big={true}
+          className="img-thumbnail"
+        />
+      </ImageDropzone>
+      const page = [
+        <div key='content' className="col-sm-4">
+          <div className="row">
+            <div className="user-block">
+              {avatar}
+              {follow}
+              {menu}
+            </div>
+          </div>
+        </div>,
+        <div key='panel' className="col-sm-8">
+          <div className="row">
+            <div className="wrapper">
+              <div className="user-container">{this.props.children}</div>
+            </div>
           </div>
         </div>
-      </div>,
-      <div key='panel' className="col-sm-8">
-        <div className="row">
-          <div className="wrapper">
-            <div className="user-container">{this.props.children}</div>
-          </div>
-        </div>
+      ]
+      if ('user' !== this.props.type) {
+        page.reverse()
+      }
+      return <div className={'blog' + (this.props.busy ? ' busy' : '')}>
+        {header}
+        <main>
+          {page}
+        </main>
       </div>
-    ]
-    if ('user' !== this.props.type) {
-      page.reverse()
     }
-    return <div className={'blog' + (this.props.busy ? ' busy' : '')}>
-      {header}
-      <main>
-        {page}
-      </main>
-    </div>
   }
 }

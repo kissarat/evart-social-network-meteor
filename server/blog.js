@@ -17,6 +17,13 @@ Meteor.publish('invite', function (params = {}) {
   return query('invite', params).cursor()
 })
 
+Meteor.publish('subscription', function (params = {}) {
+  if (!params.recipient) {
+    params.recipient = parseInt(this.userId, 36)
+  }
+  return query('subscription', params).cursor()
+})
+
 Meteor.publish('to_list', function (params = {}) {
   params.to = parseInt(this.userId, 36)
   return query('to_list', params).cursor()
@@ -54,7 +61,7 @@ Meteor.methods({
 
   'blog.update' (where, changes) {
     changes = _.pick(changes, 'status', 'name', 'surname', 'forename', 'birthday',
-      't0', 't1', 't2', 't3', 't4', 't5', 't6')
+      'avatar', 't0', 't1', 't2', 't3', 't4', 't5', 't6')
     if (changes.surname || changes.forename) {
       changes.name = changes.surname + ' ' + changes.forename
     }

@@ -5,9 +5,13 @@
   footer{
     display: none;
   }
+
+  #desktop main {
+    background: url(/images/join-back-cover.png);
+  }
+
   main {
     position: relative;
-    background: url(/images/join-back-cover.png);
     .central-container{
       display: flex;
       flex-flow: column;

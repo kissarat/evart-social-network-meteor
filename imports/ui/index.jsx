@@ -1,19 +1,24 @@
 import React, {Component} from 'react'
 import {AdminRoute} from './admin/index'
-import {App} from './app'
 import {AudioPlaylist} from './audio'
 import {Blog, News} from './blog/article'
 import {Edit, ChangePassword, ResetPassword} from './blog/edit'
 import {FileRoute} from './file'
 import {Gallery, Visual} from './photo'
-import {InviteList, FriendList, GroupsList} from './list'
+import {InviteList, FriendList, GroupsList, Subscriptions} from './list'
 import {LoginPage} from './auth/login'
 import {Messenger} from './message'
 import {PhoneRoute} from './phone'
-import {Route, IndexRoute, browserHistory} from 'react-router'
+import {Route, IndexRoute} from 'react-router'
 import {Signup} from './auth/signup'
 import {VideoList} from './video'
 import {AlertQueue} from '/imports/ui/common/alert'
+import '/imports/stylesheets/main.scss'
+
+Meteor.isMobile = Meteor.isCordova
+  || navigator.userAgent.indexOf('iOS') > 0
+  || navigator.userAgent.indexOf('Android') > 0
+const app = Meteor.isMobile ? require('/imports/ui/mobile/app') : require('/imports/ui/app')
 
 const NoIndex = ({children, menu}) =>
   <noindex>{children}</noindex>
@@ -69,7 +74,7 @@ class BrowserFeatures extends Component {
 
 class Root extends Component {
   render() {
-    return <div>
+    return <div id={Meteor.isMobile ? 'mobile' : 'desktop'}>
       {this.props.children}
       <AlertQueue/>
     </div>
@@ -81,7 +86,7 @@ const Unavailable = () => <div className="unavailable"/>
 export const RootRoute =
   <Route path='/' component={Root}>
     <IndexRoute component={BrowserFeatures}/>
-    <Route component={App}>
+    <Route component={app.App}>
       <Route path="messenger" component={Messenger}/>
       <Route path="news" component={News}/>
       <Route path="dialog/:peer" component={Messenger}/>
@@ -98,6 +103,8 @@ export const RootRoute =
       <Route path="friends/:id" component={FriendList}/>
       <Route path="friends" component={FriendList}/>
       <Route path="groups" component={GroupsList}/>
+      <Route path="subscriptions" component={Subscriptions}/>
+      <Route path="subscriptions/:id" component={Subscriptions}/>
       <Route path="groups/:id" component={GroupsList}/>
       <Route path="unavailable" component={Unavailable}/>
       {FileRoute}

@@ -363,7 +363,7 @@ function retrySQL(sql, bindings, codes) {
 
 function query(table, params = {}) {
   const q = knex.table(table)
-  q.where(_.pick(params, 'id', 'recipient', 'peer', 'parent', 'type', 'owner', 'from', 'to', 'establish'))
+  q.where(_.pick(params, 'id', 'recipient', 'peer', 'parent', 'type', 'owner', 'from', 'to', 'relation'))
   if (params.random) {
     q.orderBy(knex.raw('random()'))
   }

@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
-import '/imports/stylesheets/main.scss'
 import {AudioPlaylist} from './audio'
 import {VideoList} from './video'
 import {DialogList, Dialog} from './message'

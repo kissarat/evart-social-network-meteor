@@ -185,23 +185,30 @@ CREATE OR REPLACE VIEW convert_progress AS
 CREATE OR REPLACE VIEW invite AS
   WITH inv AS (
       SELECT
+        r2.id,
         r2."from",
         r2."to" AS recipient,
-        r1.type AS establish
+        r1.type AS relation
       FROM relation r1 RIGHT
         JOIN relation r2 ON r2."from" = r1."to" AND r2."to" = r1."from"
       WHERE r2.type = 'follow'
   )
   SELECT
+    inv.id,
     b.type,
     b.name,
     b.domain,
     b.avatar,
     inv.from,
-    inv.establish,
+    inv.relation,
     inv.recipient
   FROM blog b
     JOIN inv ON b.id = inv.from;
+
+CREATE OR REPLACE VIEW subscription AS
+  SELECT *
+  FROM invite
+  WHERE relation IS NULL OR relation = 'reject' AND type = 'user';
 
 CREATE OR REPLACE VIEW file_message AS
   SELECT
@@ -249,7 +256,7 @@ CREATE OR REPLACE VIEW informer AS
     (SELECT count(*)
      FROM invite
      WHERE
-       (establish IS NULL OR establish = 'reject')
+       (relation IS NULL OR relation = 'reject')
        AND type = 'user'
        AND recipient = b.id)                    AS subscribers,
     (SELECT count(*)
@@ -257,7 +264,7 @@ CREATE OR REPLACE VIEW informer AS
      WHERE
        recipient = b.id
        AND type = 'user'
-       AND establish = 'follow')                AS friends,
+       AND relation = 'follow')                 AS friends,
     (SELECT count(*)
      FROM from_list
      WHERE "from" = b.id AND type = 'group')    AS groups,

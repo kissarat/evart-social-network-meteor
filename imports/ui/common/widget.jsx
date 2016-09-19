@@ -94,7 +94,12 @@ export const Avatar = ({avatar, type, className, name, big}) => {
   if (!className) {
     className = 'avatar circle'
   }
-  return <img src={avatar} name={name} className={className}/>
+  if (className.indexOf('back') >= 0) {
+    return <div style={{backgroundImage: `url("${avatar}")`}} className={className} title={name} />
+  }
+  else {
+    return <img src={avatar} alt={name} title={name} className={className}/>
+  }
 }
 
 export const Busy = () => <div className="busy-animation"></div>

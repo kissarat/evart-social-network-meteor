@@ -33,7 +33,8 @@ class ListHeader extends Component {
 
 class Contact extends Component {
   render() {
-    const url = '/blog/' + (this.props.from || this.props.id)
+    const id = this.props.id
+    const url = '/blog/' + id
     const online = <i className="online"/>
     const more = 'group' === this.props.type ?
       <div>
@@ -86,7 +87,7 @@ class Establish extends Component {
     else if ('-' === e.target.innerHTML) {
       relation = 'reject'
     }
-    Meteor.call('relation', {id: +this.props.from, relation: relation})
+    Meteor.call('establish', {id: +this.props.from, relation: relation})
   }
 
   render() {
@@ -127,7 +128,7 @@ export class InviteList extends Subscriber {
   }
 
   render() {
-    const invites = this.getSubscription('invite').map(invite => <Invite key={invite.from} {...invite}/>)
+    const invites = this.getSubscription('invite').map(invite => <Invite key={invite.id} {...invite}/>)
     return <ListHeader>
       <div className="tab_invite">{invites}</div>
     </ListHeader>
@@ -153,7 +154,7 @@ export class FriendList extends List {
       relation: 'follow'
     }
     if (props.params && props.params.id) {
-      params.id = +props.params.id
+      params.recipient = +props.params.id
     }
     this.subscribe('invite', params)
   }
@@ -165,6 +166,28 @@ export class FriendList extends List {
       {list}
     </div>
   }
+}
+
+export class Subscriptions extends List {
+  componentWillReceiveProps(props) {
+    const params = {}
+    if (props.params && props.params.id) {
+      params.recipient = +props.params.id
+    }
+    this.subscribe('subscriptions', params)
+  }
+
+  render() {
+    const list = this.renderList(this.getSubscription('subscriptions'))
+    return <div className="contact-list list">
+      <div className="search"></div>
+      {list}
+    </div>
+  }
+}
+
+export class Followers extends List {
+
 }
 
 export class GroupsList extends List {

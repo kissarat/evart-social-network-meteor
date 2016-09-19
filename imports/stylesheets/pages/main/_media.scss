@@ -5,7 +5,8 @@
       margin: 0 -15px;
     }
   }
-  header {
+
+#desktop header {
     .user-info {
       height: auto;
       p {
@@ -114,7 +115,8 @@
     }
   }
   .img
-  header {
+
+#desktop header {
     padding: 50px 80px 250px 80px;
   }
   .square {
@@ -157,7 +159,8 @@
 }
 
 @mixin cs-xs {
-  header {
+
+#desktop header {
     padding: 50px 40px 165px 40px;
     .user-info {
       h4 {
@@ -288,7 +291,8 @@
 }
 
 @media (max-width: 850px) {
-  header {
+
+#desktop header {
     padding: 50px 60px 250px 60px;
   }
 }
@@ -304,7 +308,8 @@
   #content > .mCSB_scrollTools {
     right: 0px;
   }
-  header {
+
+#desktop header {
     padding: 50px 15px 70px;
   }
   main {

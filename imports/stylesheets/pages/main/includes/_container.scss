@@ -62,7 +62,7 @@
   left: 0;
 }
 
-header {
+#desktop header {
   position: relative;
   background: url(/images/mypageBack.jpg) no-repeat center / cover;
   border-bottom: 3px solid #e0e0e0;
@@ -80,7 +80,7 @@ header {
 }
 
 @media (max-width: 980px) {
-  header {
+  #desktop header {
     .group {
       .audio {
         order: 1
@@ -90,12 +90,6 @@ header {
     .tile.empty {
       display: none;
     }
-  }
-}
-
-header.group {
-  .blog-info {
-    padding-left: 12px;
   }
 }
 
@@ -109,9 +103,6 @@ header.group {
   }
   div {
     font-size: 14px;
-    color: #fff;
-    margin-bottom: 25px;
-    opacity: .65;
   }
   span {
     margin-right: 5px;
@@ -124,34 +115,105 @@ header.group {
 }
 
 @media (min-width: 901px) {
-  .blog-info {
-    width: 390px;
-    height: 130px;
-  }
-  .tile {
-    $square-size: 130px;
-    height: $square-size;
-    width: $square-size;
+  #desktop {
+    .blog-info {
+      width: 390px;
+      height: 130px;
+    }
+    .tile {
+      $square-size: 130px;
+      height: $square-size;
+      width: $square-size;
+    }
   }
 }
 
 @media (min-width: 769px) {
-  header > div {
+  #desktop header > div {
     padding-top: 50px;
     padding-bottom: 250px;
   }
 }
 
 @media (max-width: 900px) {
+  #desktop {
+    .blog-info {
+      width: 300px;
+      height: 100px;
+    }
+
+    .tile {
+      $square-size: 100px;
+      height: $square-size;
+      width: $square-size;
+    }
+  }
+}
+
+#desktop header {
   .blog-info {
-    width: 300px;
-    height: 100px;
+    div {
+      margin-bottom: 25px;
+      color: #fff;
+      opacity: .65;
+    }
+  }
+  &.group {
+    .blog-info {
+      padding-left: 12px;
+    }
+  }
+}
+
+#mobile {
+  .mobile-container > * {
+    display: flex;
+    > *:last-child {
+      flex: 1;
+    }
+  }
+
+  nav {
+    background-color: #25aae1;
+    display: flex;
+    flex-direction: column;
+    #scroll-top {
+      flex: 1;
+    }
+  }
+
+  nav.collapsed {
+    .tile {
+      width: 20px;
+      transition: width 300ms;
+      > * {
+        display: none;
+      }
+    }
+  }
+
+  header {
+    .blog-info {
+      padding: 6px 6px 0 12px;
+      background-color: #25aae1;
+      textarea {
+        margin-top: 6px;
+      }
+    }
+  }
+
+  #main {
+    main {
+      margin-top: 0;
+      padding: 8px;
+    }
   }
 
   .tile {
     $square-size: 100px;
     height: $square-size;
     width: $square-size;
+    transition: width 300ms;
   }
 }
 

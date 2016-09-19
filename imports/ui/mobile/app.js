@@ -4,7 +4,7 @@ import {Title, Track, Informer} from '/imports/ui/blog/layout'
 
 export class App extends Component {
   componentWillMount() {
-    Meteor.call('blog.get', {id: Meteor.userIdInt()}, (err, state) => {
+    Meteor.call('blog.get', {id: Meteor.userId()}, (err, state) => {
       if (!err) {
         this.setState(state)
         setTimeout(() => this.setState({collapsed: true}), 2000)

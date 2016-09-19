@@ -10,7 +10,7 @@ Tracker.autorun(function () {
       disconnectedAlert.close()
       disconnectedAlert = null
     }
-    Meteor.dispatcher.dispatch({type: 'success', message: 'Connected', timeout: 3000})
+    // Meteor.dispatcher.dispatch({type: 'success', message: 'Connected', timeout: 3000})
   }
   else if (!disconnectedAlert) {
     Meteor.dispatcher.dispatch({

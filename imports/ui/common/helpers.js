@@ -17,11 +17,11 @@ export function idToTimeString(id) {
 }
 
 export function bucketFile(id) {
-  return `https://${config.aws.endpoint}/${config.aws.params.Bucket}/${(+id).toString(36)}`
+  return `https://${config.aws.endpoint}/${config.aws.params.Bucket}/${id}`
 }
 
 export function thumb(id) {
-  return `/.thumb/${(+id).toString(36)}.jpg`
+  return `/thumb/${id}.jpg`
 }
 
 export function requestUpload(file) {

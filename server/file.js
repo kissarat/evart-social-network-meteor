@@ -117,7 +117,7 @@ Meteor.methods({
           .insert({
             id: file.id,
             type: 'file',
-            from: parseInt(Meteor.userId(), 36),
+            from: +Meteor.userId(),
             text: file.name
           })
           .single()

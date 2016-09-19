@@ -171,7 +171,7 @@ export class ResetPassword extends Component {
 
 export class Edit extends Component {
   componentWillReceiveProps(props) {
-    const id = props.params && props.params.id ? +props.params.id : Meteor.userIdInt()
+    const id = props.params && props.params.id ? +props.params.id : Meteor.userId()
     Meteor.call('blog.get', {id: id, table: 'blog'}, (err, state) => {
       if (!err) {
         this.setState(state)

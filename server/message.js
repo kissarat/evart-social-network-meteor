@@ -5,7 +5,7 @@ Meteor.publish('message', function (params = {}) {
     params.order = {id: -1}
   }
   let type = params.type
-  params.recipient = parseInt(this.userId, 36)
+  params.recipient = +this.userId
   if ('chat' === type) {
     type = 'chat_dialog'
   }
@@ -16,7 +16,7 @@ Meteor.publish('message', function (params = {}) {
 })
 
 Meteor.publish('messenger', function ({search}) {
-  return query('messenger', {recipient: parseInt(this.userId, 36), search})
+  return query('messenger', {recipient: +this.userId, search})
     .orderBy('message', 'desc')
     .cursor()
 })
@@ -24,7 +24,7 @@ Meteor.publish('messenger', function ({search}) {
 Meteor.methods({
   'message.create'(message) {
     message.id = timeId()
-    message.from = parseInt(Meteor.userId(), 36)
+    message.from = +Meteor.userId()
     return query('message')
       .insert(message)
       .promise()
@@ -33,7 +33,7 @@ Meteor.methods({
   estimate(params) {
     const attitude = params.attitude
     const data = {
-      from: parseInt(Meteor.userId(), 36),
+      from: +Meteor.userId(),
       message: +params.id
     }
     const q = table('attitude')
@@ -60,7 +60,7 @@ Meteor.methods({
       if (message) {
         message.original = id
         message.id = timeId()
-        message.from = parseInt(Meteor.userId(), 36)
+        message.from = +Meteor.userId()
         message.parent = message.from
         return table('message').insert(message).promise()
       }

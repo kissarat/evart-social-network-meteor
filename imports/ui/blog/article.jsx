@@ -22,7 +22,7 @@ class Attitude extends Component {
   }
 
   render() {
-    return Meteor.userIdInt() == this.props.from
+    return Meteor.userId() == this.props.from
       ?
       <label className="switch">
         <input type="checkbox" value="like" checked={'like' === this.props.attitude} onChange={this.onChange}/>
@@ -134,7 +134,7 @@ export class Profile extends Subscriber {
       this.setupState(props)
     }
     else {
-      const id = props.params && props.params.id ? +props.params.id : Meteor.userIdInt()
+      const id = props.params && props.params.id ? +props.params.id : Meteor.userId()
       Meteor.call('blog.get', {id: id}, (err, state) => {
         if (err) {
           console.error(err)

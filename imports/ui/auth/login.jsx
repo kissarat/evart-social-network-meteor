@@ -13,8 +13,9 @@ export class Login extends Component {
     e.preventDefault()
     Meteor.loginWithPassword(this.state.login, this.state.password, () => {
       if (Meteor.userId()) {
-        const blog = {id: parseInt(Meteor.userId(), 36)}
+        const blog = {id: Meteor.userId()}
         Meteor.call('blog.get', blog, (err1, res1) => {
+          console.log(err1, res1)
           if (res1) {
             this.setState(blog)
             browserHistory.push('/profile')

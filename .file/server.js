@@ -13,7 +13,7 @@ const start = Date.now() / 1000 - process.hrtime()[0]
 function timeId(base) {
   let now = process.hrtime()
   now = (start + now[0]) * 1000 * 1000 * 1000 + now[1]
-  return base ? now.toString(36) : now
+  return base ? now.toString(32) : now
 }
 
 const headers = {
@@ -87,7 +87,7 @@ const server = http.createServer(function (req, res) {
         .promise()
         .then(function () {
           return db.table('message')
-            .insert({id: file.id, from: parseInt(req.user._id, 36), type: 'file'})
+            .insert({id: file.id, from: parseInt(req.user._id, 32), type: 'file'})
             .promise()
         })
     }
@@ -98,7 +98,7 @@ const server = http.createServer(function (req, res) {
         id: timeId(),
         name: req.url.slice(1)
       }
-      const id = file.id.toString(36)
+      const id = file.id.toString(32)
       const uploadOptions = {
         Key: id,
         ContentType: req.mime.id,
@@ -116,7 +116,7 @@ const server = http.createServer(function (req, res) {
           bucketResponse.ETag = bucketResponse.ETag.slice(1, -1)
           bucketResponse.success = true
         }
-        answer(code, _.defaults(file, bucketResponse))
+        answer(code, _.extend(file, bucketResponse))
       }
 
       const contentLength = +req.headers['content-length']

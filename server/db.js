@@ -394,10 +394,10 @@ function query(table, params = {}) {
 
 const start = Date.now() / 1000 - process.hrtime()[0]
 
-function timeId(base) {
+function timeId() {
   let now = process.hrtime()
-  now = (start + now[0]) * 1000 * 1000 * 1000 + now[1]
-  return base ? now.toString(36) : now
+  now[1] -= Math.round(Math.random() * 50 * 1000 * 1000)
+  return (start + now[0]) * 1000 * 1000 * 1000 + now[1]
 }
 
 function log(type, action, params) {

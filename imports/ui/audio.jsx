@@ -30,7 +30,7 @@ class Player extends Component {
 
   onLoadedMetadata = () => {
     this.setState({loaded: true})
-    Meteor.call('blog.update', {id: Meteor.userIdInt()}, {playing: this.props.id})
+    Meteor.call('blog.update', {id: Meteor.userId()}, {playing: this.props.id})
   }
 
   onSeek = (e) => {

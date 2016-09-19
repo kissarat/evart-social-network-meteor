@@ -241,7 +241,7 @@ export class BlogLayout extends Component {
     const name = e.target.getAttribute('id') || e.target.parentNode.getAttribute('id')
     return upload(files[0]).then(data => {
       return new Promise((resolve, reject) => {
-        Meteor.call('blog.update', {id: Meteor.userIdInt()}, {[name]: data.id}, (err, res) => {
+        Meteor.call('blog.update', {id: Meteor.userId()}, {[name]: data.id}, (err, res) => {
           if (err) {
             reject(err)
           }

@@ -32,7 +32,7 @@ export class AlertQueue extends Component {
   static seq = 0
 
   static createId() {
-    return 'alert_' + (++AlertQueue.seq).toString(36)
+    return 'alert_' + (++AlertQueue.seq)
   }
 
   close = (id) => {

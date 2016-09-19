@@ -6,31 +6,31 @@ Meteor.publish('blog', function (params = {}) {
 })
 
 Meteor.publish('blog_recipient', function (params = {}) {
-  params.recipient = parseInt(this.userId, 36)
+  params.recipient = +this.userId
   return query('blog_recipient', params).cursor()
 })
 
 Meteor.publish('invite', function (params = {}) {
   if (!params.recipient) {
-    params.recipient = parseInt(this.userId, 36)
+    params.recipient = +this.userId
   }
   return query('invite', params).cursor()
 })
 
 Meteor.publish('subscription', function (params = {}) {
   if (!params.recipient) {
-    params.recipient = parseInt(this.userId, 36)
+    params.recipient = +this.userId
   }
   return query('subscription', params).cursor()
 })
 
 Meteor.publish('to_list', function (params = {}) {
-  params.to = parseInt(this.userId, 36)
+  params.to = +this.userId
   return query('to_list', params).cursor()
 })
 
 Meteor.publish('from_list', function (params = {}) {
-  params.from = parseInt(this.userId, 36)
+  params.from = +this.userId
   return query('from_list', params).cursor()
 })
 
@@ -43,7 +43,7 @@ Meteor.publish('candidate', function ({from, limit, search}) {
     .from('blog').join(knex.raw(`((SELECT "to" AS id FROM relation WHERE "from" = ?
   UNION SELECT id FROM blog WHERE type = 'user')
   EXCEPT SELECT "to" AS id FROM relation WHERE "from" = ?) AS t
-`, [parseInt(this.userId, 36), +from]), 'blog.id', 't.id')
+`, [this.userId, +from]), 'blog.id', 't.id')
     .search(search)
     .limit(+limit || 100)
     .cursor()
@@ -56,14 +56,14 @@ Meteor.methods({
 
   'blog.get' (params) {
     const where = _.pick(params, 'id', 'domain')
-    where.recipient = parseInt(Meteor.userId(), 36)
+    where.recipient = Meteor.userId()
     return table('informer')
       .where(where)
       .single()
   },
 
   'blog.create' (params) {
-    params = _.pick(params, 'domain', 'name', 'type')
+    params = _.pick(params, 'id', 'domain', 'name', 'type')
     return table('blog')
       .insert(params, ['id', 'time'])
       .single()
@@ -108,7 +108,7 @@ Meteor.methods({
 
   establish(params) {
     const where = {
-      from: parseInt(Meteor.userId(), 36),
+      from: Meteor.userId(),
       to: +params.id
     }
     const q = table('relation')

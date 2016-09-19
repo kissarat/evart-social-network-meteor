@@ -30,7 +30,7 @@ export class LastMessage extends Component {
 
 export class Message extends Component {
   render() {
-    const me = parseInt(Meteor.userId(), 36)
+    const me = Meteor.userId()
     const className = (me == this.props.from ? 'right' : 'left') + ' message-container'
     return <li>
       <div className={className}>
@@ -79,7 +79,7 @@ export class Dialog extends Subscriber {
       browserHistory.push(`/chat/${this.props.id}/edit`)
     }
     else {
-      Meteor.call('chat.create', {manager: Meteor.userIdInt(), follower: +this.props.id}, (err, chat) => {
+      Meteor.call('chat.create', {manager: Meteor.userId(), follower: +this.props.id}, (err, chat) => {
         if (!err) {
           browserHistory.push(`/chat/${chat.id}/edit`)
         }
@@ -88,6 +88,8 @@ export class Dialog extends Subscriber {
   }
 
   render() {
+    const addMembers = 'dialog' === this.props.type || ('chat' === this.props.type && 'manage' === this.props.relation)
+      ? this.add : null
     const messages = this.state.busy
       ? <Busy/>
       : this.getSubscription('message').map((message, i, array) =>
@@ -98,7 +100,7 @@ export class Dialog extends Subscriber {
     )
     return <div className="messages">
       <ScrollArea>{messages}</ScrollArea>
-      <Editor add={this.add} {...this.props}/>
+      <Editor add={addMembers} {...this.props}/>
     </div>
   }
 }
@@ -136,7 +138,8 @@ export class Messenger extends Subscriber {
           this.setState({
             peer: {
               id: +res.id,
-              type: 'chat' === res.type ? 'chat' : 'dialog'
+              type: 'chat' === res.type ? 'chat' : 'dialog',
+              relation: res.relation
             }
           })
         }

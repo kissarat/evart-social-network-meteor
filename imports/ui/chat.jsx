@@ -79,7 +79,7 @@ export class MemberList extends Subscriber {
 
 export class Chat extends Component {
   componentWillReceiveProps(props) {
-    Meteor.call('blog.get', {id: +props.params.id}, (err, state) => {
+    Meteor.call('blog.get', {id: props.params.id}, (err, state) => {
       if (!err) {
         this.setState(state)
       }
@@ -104,7 +104,7 @@ export class Chat extends Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-    const id = +this.props.params.id
+    const id = this.props.params.id
     Meteor.call('blog.update', {id}, _.pick(this.state, 'name'), err => {
       if (!err) {
         browserHistory.push('/dialog/' + id)
@@ -114,7 +114,7 @@ export class Chat extends Component {
 
   onDrop = (files) => upload(files[0]).then(data => {
     return new Promise((resolve, reject) => {
-      Meteor.call('blog.update', {id: Meteor.userIdInt()}, {avatar: data.id}, (err, res) => {
+      Meteor.call('blog.update', {id: +this.props.params.id}, {avatar: data.id}, (err, res) => {
         if (err) {
           reject(err)
         }

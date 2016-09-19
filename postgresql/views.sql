@@ -249,10 +249,13 @@ CREATE OR REPLACE VIEW blog_cross AS
 CREATE OR REPLACE VIEW "blog_recipient" AS
   SELECT
     j.*,
-    CASE WHEN j.id = j.recipient
-      THEN 'manage'
+    CASE
+    WHEN j.id = j.recipient OR 'manage' = rv.type THEN 'manage'
+      WHEN r.type = 'follow' AND rv.type = 'follow' THEN 'friend'
     ELSE r.type END AS relation
-  FROM blog_cross j LEFT JOIN relation r ON j.recipient = r."from" AND j.id = r."to";
+  FROM blog_cross j
+    LEFT JOIN relation r ON j.recipient = r."from" AND j.id = r."to"
+    LEFT JOIN relation rv ON j.recipient = rv."to" AND j.id = rv."from";
 
 CREATE OR REPLACE VIEW informer AS
   SELECT

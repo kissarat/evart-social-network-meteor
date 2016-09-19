@@ -8,7 +8,7 @@ import {AlertQueue} from '/imports/ui/common/alert'
 
 class Panel extends Component {
   static generateId() {
-    return '_' + Date.now().toString(36)
+    return '_' + Date.now()
   }
 
   render() {
@@ -123,8 +123,7 @@ export class App extends Component {
           <Link to="/unavailable" className="menu menu-phone" title="Call"/>
           <Link to="/friends" className="menu menu-friends" title="Friends"/>
           <Link to="/groups" className="menu menu-group" title="Groups"/>
-          <Link to={'/gallery/' + Meteor.userIdInt()} className="menu menu-photo" title="Photos"/>
-          <Link to="/video-search" className="menu menu-video" title="Videos"/>
+          <Link to={'/gallery/' + Meteor.userId()} className="menu menu-photo" title="Photos"/>
           <Link to="/video" className="menu menu-movie" title="Movies"/>
           <Link to="/player" className="menu menu-music" title="Music"/>
           <Link to="/settings" className="menu menu-settings" title="Settings"/>
@@ -133,4 +132,7 @@ export class App extends Component {
     </section>
   }
 }
+
+// <Link to="/video-search" className="menu menu-video" title="Videos"/>
+
 

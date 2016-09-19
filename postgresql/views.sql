@@ -2,7 +2,7 @@ CREATE OR REPLACE VIEW member AS
   SELECT
     "from",
     r.type AS relation,
-    "to" as id,
+    "to"   AS id,
     b.type AS type,
     b.name,
     b.avatar
@@ -19,7 +19,8 @@ CREATE OR REPLACE VIEW chat_dialog AS
         m.type,
         m.text
       FROM "message" m
-        JOIN relation r ON m."to" = r."from"
+        JOIN relation r ON m."parent" = r."from"
+      WHERE m.type = 'chat'
   )
   SELECT
     mm.id,
@@ -69,8 +70,8 @@ CREATE OR REPLACE VIEW "last" AS
   WITH mm AS (
     SELECT
       m.id,
-      r."to"   AS recipient,
-      m."from" AS peer
+      r."to"     AS recipient,
+      m."parent" AS peer
     FROM "message" m
       JOIN relation r ON m."parent" = r."from"
       JOIN blog b ON m."parent" = b.id

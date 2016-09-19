@@ -25,3 +25,4 @@ twbs:bootstrap
 underscore@1.0.9
 wolves:bourbon
 static-html
+autopublish

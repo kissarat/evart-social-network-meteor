@@ -18,7 +18,7 @@ from '/imports/startup/client/base'
 
 export const RootRoute = <Route path='/' component={Root}>
     <IndexRoute component={BrowserFeatures}/>
-    <Route component={app.App}>
+    <Route component={App}>
       <Route path="messenger" component={Messenger}/>
       <Route path="news" component={News}/>
       <Route path="dialog/:peer" component={Messenger}/>

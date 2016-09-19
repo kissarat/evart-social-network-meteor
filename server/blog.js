@@ -148,6 +148,7 @@ Meteor.methods({
     params.manager = +params.manager
     params.follower = +params.follower
     return table('blog')
+      .select('name')
       .where('type', 'user')
       .whereIn('id', [params.manager, params.follower])
       .many(function (members) {

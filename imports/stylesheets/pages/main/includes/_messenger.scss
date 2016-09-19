@@ -482,25 +482,26 @@ aside .dialogs {
       }
     }
   }
-  .search {
-    display: flex;
-    > * {
-      height: 45px;
-    }
-    input {
-      background-color: #eceff4;
-      flex: 1;
-      padding-left: 12px;
-      border-color: #eceff4;
-    }
-    button {
-      background-color: #e0e0e0;
-      border: none;
-      width: 45px;
-      padding: 0;
-      .icon {
-        vertical-align: middle;
-      }
+}
+
+.search {
+  display: flex;
+  > * {
+    height: 45px;
+  }
+  input[type="search"] {
+    background-color: #eceff4;
+    flex: 1;
+    padding-left: 12px;
+    border-color: #eceff4;
+  }
+  button {
+    background-color: #e0e0e0;
+    border: none;
+    width: 45px;
+    padding: 0;
+    .icon {
+      vertical-align: middle;
     }
   }
 }

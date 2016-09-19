@@ -15,8 +15,8 @@ Meteor.publish('message', function (params = {}) {
     .cursor()
 })
 
-Meteor.publish('messenger', function () {
-  return query('messenger', {recipient: parseInt(this.userId, 36)})
+Meteor.publish('messenger', function ({search}) {
+  return query('messenger', {recipient: parseInt(this.userId, 36), search})
     .orderBy('message', 'desc')
     .cursor()
 })

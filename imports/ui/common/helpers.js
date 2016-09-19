@@ -21,7 +21,7 @@ export function bucketFile(id) {
 }
 
 export function thumb(id) {
-  return `/thumb/${(+id).toString(36)}.jpg`
+  return `/.thumb/${(+id).toString(36)}.jpg`
 }
 
 export function requestUpload(file) {

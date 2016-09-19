@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link, browserHistory} from 'react-router'
-import {Subscriber, ScrollArea, Busy} from './common/widget'
+import {Subscriber, ScrollArea, Search, Busy} from './common/widget'
 import {Avatar} from './common/widget'
 import {idToTimeString} from './common/helpers'
 import {Editor} from './blog/editor'
@@ -109,6 +109,10 @@ export class DialogList extends Subscriber {
     this.subscribe('messenger', {})
   }
 
+  search = (string) => {
+    this.subscribe('messenger', {search: string})
+  }
+
   render() {
     const peerListView = this.state.busy
       ? <Busy/>
@@ -116,12 +120,7 @@ export class DialogList extends Subscriber {
       .map(peer => <LastMessage key={peer.id} {...peer} open={this.props.open}/>)
     return <div className="dialogs">
       <ScrollArea>{peerListView}</ScrollArea>
-      <div className="search">
-        <input type="search" placeholder="Search dialog"/>
-        <button type="button">
-          <span className="icon icon-search"/>
-        </button>
-      </div>
+      <Search search={this.search} label="Search dialogs..."/>
     </div>
   }
 }

@@ -95,7 +95,7 @@ export const Avatar = ({avatar, type, className, name, big}) => {
     className = 'avatar circle'
   }
   if (className.indexOf('back') >= 0) {
-    return <div style={{backgroundImage: `url("${avatar}")`}} className={className} title={name} />
+    return <div style={{backgroundImage: `url("${avatar}")`}} className={className} title={name}/>
   }
   else {
     return <img src={avatar} alt={name} title={name} className={className}/>
@@ -111,7 +111,7 @@ export class ImageDropzone extends Component {
 
   onDrop = (files, e) => {
     this.setState({busy: true})
-    this.props.onDrop(files, e).then(() => this.setState({busy: false}))
+    this.props.onDrop(files, e).then(() => {this.setState({busy: false})})
   }
 
   render() {
@@ -131,5 +131,34 @@ export class ImageDropzone extends Component {
     else {
       return <div {...attrs}>{this.state.busy ? <Busy/> : this.props.children}</div>
     }
+  }
+}
+
+export class Search extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
+  search = _.debounce((string) => this.props.search(string), 300)
+
+  onChange = (e) => {
+    const string = (e.target.value || '').trim().replace(/\s+/g, ' ')
+    this.search(string)
+    this.setState({value: string})
+  }
+
+  render() {
+    return <div className="search">
+      <button type="button">
+        <span className="icon icon-search"/>
+      </button>
+      <input
+        type="search"
+        value={this.state.value || ''}
+        placeholder={this.props.label || ''}
+        onChange={this.onChange}
+      />
+      {this.props.children}
+    </div>
   }
 }

@@ -74,6 +74,19 @@ export class Dialog extends Subscriber {
     }
   }
 
+  add = () => {
+    if ('chat' === this.props.type) {
+      browserHistory.push(`/chat/${this.props.id}/edit`)
+    }
+    else {
+      Meteor.call('chat.create', {manager: Meteor.userIdInt(), follower: +this.props.id}, (err, chat) => {
+        if (!err) {
+          browserHistory.push(`/chat/${chat.id}/edit`)
+        }
+      })
+    }
+  }
+
   render() {
     const messages = this.state.busy
       ? <Busy/>
@@ -85,32 +98,7 @@ export class Dialog extends Subscriber {
     )
     return <div className="messages">
       <ScrollArea>{messages}</ScrollArea>
-      <Editor {...this.props}/>
-      <div className="addblock hidden">
-        <div className="head">
-          <span>Public chat</span>
-          <span className="icon icon-dialog-menu"/>
-        </div>
-        <div className="content">
-        </div>
-        <div className="footer find">
-          <div className="input-group">
-            <input type="text" className="form-control" placeholder="Search"/>
-            <span className="input-group-addon">
-              <i className="icon icon-dialog-search"/>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="addmenu hidden">
-        <ul>
-          <li><a href="#">Change chat name</a></li>
-          <li><a href="#">Add chat icon</a></li>
-          <li><a href="#">Show members</a></li>
-          <li><a href="#">Leave conversation</a></li>
-          <li><a href="#">Delete conversation</a></li>
-        </ul>
-      </div>
+      <Editor add={this.add} {...this.props}/>
     </div>
   }
 }

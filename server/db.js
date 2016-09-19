@@ -260,7 +260,9 @@ _knex.Client.prototype.QueryBuilder.prototype.toSQL = function () {
       return 'string' === typeof value ? `'${value}'` : value
     })
   }
-  console.log(raw)
+  if (raw.indexOf('"log"') < 0) {
+    console.log(raw)
+  }
   return q
 }
 
@@ -391,6 +393,20 @@ function timeId(base) {
   return base ? now.toString(36) : now
 }
 
+function log(type, action, params) {
+  const record = {
+    type,
+    action,
+    id: timeId(),
+    ip: Meteor.call('ip'),
+    actor: parseInt(Meteor.userId(), 36)
+  }
+  if (!_.isEmpty(params)) {
+    record.data = params
+  }
+  return knex.table('log').insert(record).promise()
+}
+
 module.exports = {
   knex,
   table: name => knex.table(name),
@@ -399,5 +415,6 @@ module.exports = {
   liveSQL,
   timeId,
   errors,
-  retrySQL
+  retrySQL,
+  log
 }

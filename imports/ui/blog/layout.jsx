@@ -144,7 +144,7 @@ class GroupHeader extends Component {
   }
 }
 
-const Communicate = ({id}) => <div key='communicate' className="connect-menu">
+export const Communicate = ({id}) => <div key='communicate' className="connect-menu">
   <Link to={'/dialog/' + id}>
     <span className="icon icon-email"/>
   </Link>

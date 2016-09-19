@@ -8,6 +8,7 @@ DROP VIEW IF EXISTS "blog_recipient";
 DROP VIEW IF EXISTS "child";
 DROP VIEW IF EXISTS "news";
 DROP VIEW IF EXISTS "wall";
+DROP VIEW IF EXISTS "subscription";
 DROP VIEW IF EXISTS "invite";
 DROP VIEW IF EXISTS "comments_count";
 DROP VIEW IF EXISTS "message_attitude_recipient";

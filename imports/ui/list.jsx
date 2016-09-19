@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Subscriber, ScrollArea, Avatar} from './common/widget'
+import {Communicate} from './blog/layout'
 import {Link} from 'react-router'
 
 class ListHeader extends Component {
@@ -33,32 +34,13 @@ class ListHeader extends Component {
 
 class Contact extends Component {
   render() {
-    const id = this.props.id
+    const id = +this.props.id
     const url = '/blog/' + id
     const online = <i className="online"/>
-    const more = 'group' === this.props.type ?
+    const more = 'user' === this.props.type ?
       <div>
-        <div className="communicate">
-          <a href="#">
-            <span className="icon icon-email"/>
-          </a>
-          <a href="#">
-            <span className="icon icon-call"/>
-          </a>
-          <a href="#">
-            <span className="icon icon-video-call"/>
-          </a>
-        </div>
-        <p className="center-block">
-          Июль 16, 1988<br/>
-          Украина. Киев<br/>
-          не женат<br/>
-          Русский, Украинский,<br/>
-          Английский
-        </p>
-        <div className="delete">
-          <span className="icon icon-trash"/>
-        </div>
+        <Communicate id={id}/>
+        <p className="center-block">{this.props.birthday}</p>
       </div> : <div>1<br/>2</div>
     return <div className="contact">
       <Link to={url} className="avatar">
@@ -67,10 +49,25 @@ class Contact extends Component {
       <div className="info">
         <div>
           <Link to={url} className="name">{this.props.name}</Link>
-          <span className="location">{this.props.location}</span>
+          <div className="location">{this.props.location}</div>
           <div className="more">{more}</div>
         </div>
       </div>
+    </div>
+  }
+}
+
+export class Member extends Component {
+  render() {
+    return <div className="member">
+      <div>
+        <Avatar {...this.props} className="avatar back circle small"/>
+      </div>
+      <div className="info">
+        <h4>{this.props.name}</h4>
+        <div className="location">{this.props.location}</div>
+      </div>
+      <div className="actions">{this.props.children}</div>
     </div>
   }
 }

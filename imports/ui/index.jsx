@@ -3,6 +3,7 @@ import {AdminRoute} from './admin/index'
 import {AudioPlaylist} from './audio'
 import {Blog, News} from './blog/article'
 import {Edit, ChangePassword, ResetPassword} from './blog/edit'
+import {Chat} from './blog/editor'
 import {FileRoute} from './file'
 import {Gallery, Visual} from './photo'
 import {InviteList, FriendList, GroupsList, Subscriptions} from './list'
@@ -107,6 +108,7 @@ export const RootRoute =
       <Route path="subscriptions/:id" component={Subscriptions}/>
       <Route path="groups/:id" component={GroupsList}/>
       <Route path="unavailable" component={Unavailable}/>
+      <Route path="chat/:id/edit" component={Chat}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

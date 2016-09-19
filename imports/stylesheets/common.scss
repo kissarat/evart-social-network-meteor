@@ -23,7 +23,7 @@
 }
 
 .dock-shrink {
-  height: calc(100% - 112px);
+  height: calc(100vh - 112px);
 }
 
 .busy-animation {
@@ -74,6 +74,7 @@ header {
 }
 
 .settings {
+  padding: 0 16px;
   .form-group {
     display: flex;
   }
@@ -110,7 +111,7 @@ header {
 #central {
   @media (orientation: landscape) {
     @media (min-width: 500px) {
-      .list .scroll {
+      .contact-list {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -154,6 +155,12 @@ header {
     border: 1px solid transparent;
     .more {
       display: none;
+      .connect-menu {
+        height: 40px;
+        > * {
+          zoom: 0.8;
+        }
+      }
     }
   }
 
@@ -225,5 +232,92 @@ header {
 
 .avatar {
   background-position: center;
+  background-size: cover;
   background-repeat: no-repeat;
+}
+
+.editor {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  > * {
+    margin-left: 8px;
+  }
+  textarea {
+    flex: 1;
+    border-color: transparent;
+  }
+  [for="file"] {
+    position: relative;
+    display: block;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    cursor: pointer;
+    div.icon {
+      margin: auto;
+    }
+    input {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+  [type="submit"] {
+    background-color: #3892cd;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-top: -6px;
+    margin-right: 8px;
+    .icon {
+      margin-top: 8px;
+      margin-left: 5px;
+    }
+  }
+}
+
+.member {
+  $border: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  width: 100%;
+  border-bottom: $border;
+  &:first-child {
+    border-top: $border;
+  }
+  .info {
+    margin-left: 8px;
+    flex: 1;
+  }
+  .actions {
+    display: flex;
+    > * {
+      margin-right: 12px;
+    }
+  }
+}
+
+.avatar.small {
+  width: 60px;
+  height: 60px;
+}
+
+.edit-chat {
+  display: flex;
+  flex-direction: column;
+  [type="submit"] {
+    float: right;
+  }
+  .list {
+    flex: 1;
+    margin-top: 8px;
+    .scroll {
+      height: 100%;
+    }
+  }
 }

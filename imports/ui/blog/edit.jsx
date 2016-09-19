@@ -31,7 +31,7 @@ class UserEdit extends Component {
   }
 
   render() {
-    return <form className="container blog-edit settings" onSubmit={this.onSave} method="post">
+    return <form className="blog-edit settings" onSubmit={this.onSave} method="post">
       <h1>Settings</h1>
       <div className="form-group">
         <label>Last Name</label>

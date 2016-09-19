@@ -111,3 +111,12 @@ CREATE TABLE channel (
   "to"   BIGINT REFERENCES blog (id),
   "text" VARCHAR(8000)                NOT NULL
 );
+
+CREATE TABLE log (
+  id BIGINT PRIMARY KEY,
+  type VARCHAR(16) NOT NULL,
+  action VARCHAR(32) NOT NULL,
+  ip INET,
+  actor BIGINT REFERENCES blog(id),
+  data JSON
+)

@@ -499,9 +499,13 @@ aside .dialogs {
     background-color: #e0e0e0;
     border: none;
     width: 45px;
+    color: #c7c7c7;
     padding: 0;
     .icon {
       vertical-align: middle;
     }
+  }
+  .add {
+    font-size: 40px;
   }
 }

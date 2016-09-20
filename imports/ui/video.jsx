@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Subscriber} from '/imports/ui/common/widget'
+import {Subscriber, Search, ScrollArea} from '/imports/ui/common/widget'
 
 class AddExternalVideo extends Component {
   componentWillMount() {
@@ -55,8 +55,8 @@ export class VideoList extends Subscriber {
     this.setState({add: false})
   }
 
-  onSearch = (e) => {
-    this.subscribe('file', {type: 'video', order: {id: -1}, search: e.target.value})
+  search = (string) => {
+    this.subscribe('file', {type: 'video', order: {id: -1}, search: string})
   }
 
   componentWillMount() {
@@ -81,18 +81,12 @@ export class VideoList extends Subscriber {
     const add = this.state.add ? <AddExternalVideo done={this.videoAdded}/> : ''
     return <div className="video player">
         {current}
-        <div className="input-group search">
-          <span className="input-group-addon">
-            <i className="icon icon-search"/>
-          </span>
-          <input type="search" className="form-control" placeholder="Search video..." onChange={this.onSearch}/>
-          <span className="input-group-addon">
-            <span className="addfile" onClick={this.onClickAdd}>+</span>
-          </span>
-        </div>
+        <Search search={this.search} label="Search video...">
+          <button className="add" onClick={this.onClickAdd}>+</button>
+        </Search>
         {add}
         <div className="playlist-container">
-          <ul className="playlist">{videos}</ul>
+          <ScrollArea>{videos}</ScrollArea>
         </div>
       </div>
   }

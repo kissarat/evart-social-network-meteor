@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Subscriber} from './common/widget'
+import {Subscriber, Search, ScrollArea} from './common/widget'
 import Dropzone from 'react-dropzone'
 import {upload, bucketFile} from './common/helpers'
 import {Busy} from './common/widget'
@@ -128,6 +128,10 @@ export class AudioPlaylist extends Subscriber {
     Promise.all(files.map(upload)).then(() => this.setState({upload: false}))
   }
 
+  search = (string) => {
+    this.subscribe('file', {type: 'audio', order: {id: -1}, search: string})
+  }
+
   render() {
     console.log(this.state.active)
     const player = this.state.active ? <Player {...this.state.active}/> : ''
@@ -141,15 +145,9 @@ export class AudioPlaylist extends Subscriber {
     return <div className="player audio">
       {player}
       <div className="playlist-container">
-        <div className="input-group search">
-          <span className="input-group-addon">
-            <i className="icon icon-search"/>
-          </span>
-          <input type="text" className="form-control" placeholder="Search music..." onChange={this.onChange}/>
-          <span className="input-group-addon">
-            <span className="addfile" onClick={this.onClickAdd}>+</span>
-          </span>
-        </div>
+        <Search label="Search music..." search={this.search}>
+          <button className="add" onClick={this.onClickAdd}>+</button>
+        </Search>
         <div className="playlist">
           <Dropzone className={'uploader' + (this.state.upload ? '' : ' hide')} onDrop={this.onDrop}>
             <div className="upload-zone">
@@ -180,7 +178,7 @@ export class AudioPlaylist extends Subscriber {
               </div>
             </div>
           </Dropzone>
-          <ul>{files}</ul>
+          <ScrollArea>{files}</ScrollArea>
         </div>
       </div>
     </div>

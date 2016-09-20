@@ -30,9 +30,15 @@ class Attachment extends Component {
       <div className="attachment-list"></div>
       <div className="attachment-bar">
         <div className="menu">
-          <div className="glyphicon glyphicon-picture" data-name="image" onClick={this.onClickMenu}/>
-          <div className="glyphicon glyphicon-play-circle" data-name="video" onClick={this.onClickMenu}/>
-          <div className="glyphicon glyphicon-music" data-name="audio" onClick={this.onClickMenu}/>
+          <div className={"glyphicon glyphicon-picture " + ('image' === this.state.type ? 'active' : '')}
+               data-name="image"
+               onClick={this.onClickMenu}/>
+          <div className={"glyphicon glyphicon-play-circle "  + ('video' === this.state.type ? 'active' : '')}
+               data-name="video"
+               onClick={this.onClickMenu}/>
+          <div className={"glyphicon glyphicon-music " + ('audio' === this.state.type ? 'active' : '')}
+               data-name="audio"
+               onClick={this.onClickMenu}/>
         </div>
         <div className="attachment-widget">{widget}</div>
       </div>

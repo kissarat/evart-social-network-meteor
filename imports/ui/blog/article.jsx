@@ -189,7 +189,7 @@ export class Children extends Subscriber {
 export class News extends Subscriber {
   componentWillMount() {
     this.state = {busy: true}
-    this.subscribe('message', {type: 'news'})
+    this.subscribe('message', {type: 'news', limit: 50})
   }
 
   render() {

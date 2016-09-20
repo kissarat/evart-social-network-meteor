@@ -119,6 +119,7 @@ export class App extends Component {
           <Link to="/news" className="menu menu-news" title="News"/>
           <Link to="/profile" className="menu menu-profile" title="Profile"/>
           <Link to="/messenger" className="menu menu-message" title="Messenger"/>
+          <Link to="/invites" className="menu menu-feedback" title="Feedback" />
           <Link to="/unavailable" className="menu menu-phone" title="Call"/>
           <Link to="/friends" className="menu menu-friends" title="Friends"/>
           <Link to="/groups" className="menu menu-group" title="Groups"/>
@@ -133,5 +134,5 @@ export class App extends Component {
   }
 }
 
-// <Link to="/unavailable" className="menu menu-feedback" title="Feedback" data-content="3"/>
+//
 // <Link to="/video" className="menu menu-movie" title="Movies"/>

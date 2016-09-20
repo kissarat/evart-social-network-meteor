@@ -73,8 +73,8 @@ CREATE OR REPLACE VIEW "last" AS
       r."to"     AS recipient,
       m."parent" AS peer
     FROM "message" m
-      JOIN relation r ON m."parent" = r."from"
-      JOIN blog b ON m."parent" = b.id
+      RIGHT JOIN relation r ON m."parent" = r."from"
+      RIGHT JOIN blog b ON m."parent" = b.id
     WHERE b.type = 'chat'
     UNION
     SELECT
@@ -212,7 +212,7 @@ CREATE OR REPLACE VIEW invite AS
 CREATE OR REPLACE VIEW subscription AS
   SELECT *
   FROM invite
-  WHERE relation IS NULL OR relation = 'reject' AND type = 'user';
+  WHERE relation <> 'follow' AND type = 'user';
 
 CREATE OR REPLACE VIEW file_message AS
   SELECT

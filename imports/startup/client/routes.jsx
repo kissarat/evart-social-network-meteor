@@ -35,8 +35,8 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="friends/:id" component={FriendList}/>
       <Route path="friends" component={FriendList}/>
       <Route path="groups" component={GroupsList}/>
-      <Route path="subscriptions" component={Subscriptions}/>
-      <Route path="subscriptions/:id" component={Subscriptions}/>
+      <Route path="subscribers" component={Subscriptions}/>
+      <Route path="subscribers/:id" component={Subscriptions}/>
       <Route path="groups/:id" component={GroupsList}/>
       <Route path="unavailable" component={Unavailable}/>
       <Route path="chat/:id/edit" component={Chat}/>

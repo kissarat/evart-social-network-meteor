@@ -119,6 +119,10 @@
       color: #b8b8b8;
       text-decoration: underline;
     }
+    .search {
+      width: 340px;
+      margin: 8px auto;
+    }
     .notification-tabs {
       display: flex;
       max-width: 340px;
@@ -145,28 +149,6 @@
         }
       }
 
-    }
-    .search {
-      width: 340px;
-      margin-top: 10px;
-      span {
-        height: 45px;
-        background: #e0e0e0;
-        border: none;
-        border-radius: 0;
-      }
-      input {
-        font-family: "Panton-Regular";
-        font-size: 13px;
-        background: #eceff4;
-        border: none;
-        outline: none;
-        border-radius: 0;
-        height: 45px;
-        @include placeholder {
-          color: #aaacad
-        }
-      }
     }
   }
 

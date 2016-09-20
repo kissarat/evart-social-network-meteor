@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Subscriber, ScrollArea, Avatar} from './common/widget'
+import {Subscriber, ScrollArea, Avatar, Search} from './common/widget'
 import {Communicate} from './blog/layout'
 import {Link} from 'react-router'
 
@@ -14,14 +14,7 @@ class ListHeader extends Component {
               <span className="response" data-id="tab_important">Important</span>
               <span className="stats" data-id="tab_all">All</span>
             </div>
-            <div className="search center-block">
-              <div className="input-group">
-                  <span className="input-group-addon">
-                      <i className="icon icon-search"/>
-                  </span>
-                <input type="text" className="form-control" placeholder="Username" aria-describedby="basic-addon1"/>
-              </div>
-            </div>
+            <Search search={this.props.search}/>
           </div>
           <div className="tabs">
             {this.props.children}
@@ -41,16 +34,18 @@ class Contact extends Component {
       <div>
         <Communicate id={id}/>
         <p className="center-block">{this.props.birthday}</p>
-      </div> : <div>1<br/>2</div>
-    return <div className="contact">
-      <Link to={url} className="avatar">
-        <Avatar {...this.props} className="circle"/>
-      </Link>
-      <div className="info">
-        <div>
-          <Link to={url} className="name">{this.props.name}</Link>
-          <div className="location">{this.props.location}</div>
-          <div className="more">{more}</div>
+      </div> : ''
+    return <div className={'contact ' + this.props.type}>
+      <div>
+        <Link to={url} className="avatar">
+          <Avatar {...this.props} className="circle"/>
+        </Link>
+        <div className="info">
+          <div>
+            <Link to={url} className="name">{this.props.name}</Link>
+            <div className="location">{this.props.location}</div>
+            <div className="more">{more}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -124,9 +119,13 @@ export class InviteList extends Subscriber {
     this.subscribe('invite', {type: 'user'})
   }
 
+  search = (string) => {
+    this.subscribe('invite', {type: 'user', search: string})
+  }
+
   render() {
     const invites = this.getSubscription('invite').map(invite => <Invite key={invite.id} {...invite}/>)
-    return <ListHeader>
+    return <ListHeader search={this.search}>
       <div className="tab_invite">{invites}</div>
     </ListHeader>
   }
@@ -156,12 +155,23 @@ export class FriendList extends List {
     this.subscribe('invite', params)
   }
 
+  search = (string) => {
+    const params = this.state.invite
+    params.search = string
+    this.subscribe('invite', params)
+  }
+
   render() {
     const list = this.renderList(this.getSubscription('invite'))
-    return <div className="contact-list list">
-      <div className="search"></div>
-      {list}
-    </div>
+    if (this.props.tiny) {
+      return <div className="contact-list list">
+        <Search search={this.search}/>
+        {list}
+      </div>
+    }
+    else {
+      return <ListHeader search={this.search}>{list}</ListHeader>
+    }
   }
 }
 
@@ -171,12 +181,12 @@ export class Subscriptions extends List {
     if (props.params && props.params.id) {
       params.recipient = +props.params.id
     }
-    this.subscribe('subscriptions', params)
+    this.subscribe('subscription', params)
   }
 
   render() {
-    const list = this.renderList(this.getSubscription('subscriptions'))
-    return <div className="contact-list list">
+    const list = this.renderList(this.getSubscription('subscription'))
+    return <div className="contact-list list subscriptions user">
       <div className="search"></div>
       {list}
     </div>
@@ -197,10 +207,17 @@ export class GroupsList extends List {
     this.subscribe(params.from ? 'from_list' : 'blog', params)
   }
 
+  search = (string) => {
+    const name = this.state.blog ? 'blog' : 'from_list'
+    const params = this.state[name]
+    params.search = string
+    this.subscribe(name, params)
+  }
+
   render() {
     const list = this.renderList(this.getSubscription(this.state.blog ? 'blog' : 'from_list'))
-    return <div className="contact-list list">
-      <div className="search"></div>
+    return <div className="contact-list list group">
+      <Search search={this.search} />
       {list}
     </div>
   }

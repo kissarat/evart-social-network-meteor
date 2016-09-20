@@ -112,13 +112,15 @@ header {
   @media (orientation: landscape) {
     @media (min-width: 500px) {
       .contact-list {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-wrap: wrap;
+        .scroll {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
       }
       @media (max-width: 840px) {
-        #central .contact-list {
+        .contact-list {
           .contact {
             width: calc(50% - 8);
           }
@@ -126,16 +128,18 @@ header {
       }
     }
     @media (min-width: 841px) {
-      #central .contact-list {
+      .contact-list {
         .contact {
           width: 30%;
+          display: inline-block;
+          margin: 0 8px;
         }
       }
     }
   }
 }
 
-.contact {
+.contact > div {
   display: flex;
   border-bottom: 1px solid #e0e0e0;
   min-width: 240px;
@@ -153,24 +157,6 @@ header {
     left: 0;
     width: inherit;
     border: 1px solid transparent;
-    .more {
-      display: none;
-      .connect-menu {
-        height: 40px;
-        > * {
-          zoom: 0.8;
-        }
-      }
-    }
-  }
-
-  .info:hover > div {
-    background-color: #f5f5f5;
-    border-color: #e0e0e0;
-    z-index: 1;
-    .more {
-      display: block;
-    }
   }
 
   .avatar > img {
@@ -188,6 +174,29 @@ header {
     padding-left: 10px;
     color: #b8b8b8;
     font-size: 12px;
+  }
+}
+
+.contact.user {
+  .info {
+    > div .more {
+      display: none;
+      .connect-menu {
+        height: 40px;
+        > * {
+          zoom: 0.8;
+        }
+
+      }
+    }
+  }
+  .info:hover > div {
+    background-color: #f5f5f5;
+    border-color: #e0e0e0;
+    z-index: 1;
+    .more {
+      display: block;
+    }
   }
 }
 

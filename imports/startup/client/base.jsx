@@ -3,6 +3,10 @@ import {Blog, News} from '../../ui/blog/article'
 import {AlertQueue} from '/imports/ui/common/alert'
 import '/imports/stylesheets/main.scss'
 
+Meteor.isMobile = Meteor.isCordova
+  || navigator.userAgent.indexOf('iOS') > 0
+  || navigator.userAgent.indexOf('Android') > 0
+
 const app = Meteor.isMobile ? require('/imports/ui/mobile/app') : require('/imports/ui/app')
 export const App = app.App
 

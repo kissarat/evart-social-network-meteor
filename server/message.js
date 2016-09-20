@@ -5,13 +5,12 @@ Meteor.publish('message', function (params = {}) {
     params.order = {id: -1}
   }
   let type = params.type
-  params.recipient = +this.userId
+  params.recipient = this.userId
   if ('chat' === type) {
     type = 'chat_dialog'
   }
   delete params.type
   return query(type, params)
-    .limit(200)
     .cursor()
 })
 

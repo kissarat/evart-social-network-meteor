@@ -212,7 +212,8 @@ CREATE OR REPLACE VIEW invite AS
 CREATE OR REPLACE VIEW subscription AS
   SELECT *
   FROM invite
-  WHERE relation <> 'follow' AND type = 'user';
+  WHERE (relation IS NULL OR relation = 'reject')
+        AND type = 'user';
 
 CREATE OR REPLACE VIEW file_message AS
   SELECT
@@ -250,8 +251,10 @@ CREATE OR REPLACE VIEW "blog_recipient" AS
   SELECT
     j.*,
     CASE
-    WHEN j.id = j.recipient OR 'manage' = rv.type THEN 'manage'
-      WHEN r.type = 'follow' AND rv.type = 'follow' THEN 'friend'
+    WHEN j.id = j.recipient OR 'manage' = rv.type
+      THEN 'manage'
+    WHEN r.type = 'follow' AND rv.type = 'follow'
+      THEN 'friend'
     ELSE r.type END AS relation
   FROM blog_cross j
     LEFT JOIN relation r ON j.recipient = r."from" AND j.id = r."to"

@@ -56,7 +56,8 @@ export class Title extends Component {
 export class Informer extends Component {
   render() {
     const props = this.props
-    return <Link to={`/${props.name}/${props.id}`} className={'tile ' + props.name}>
+    const url = props.url || `/${props.name}/${props.id}`
+    return <Link to={url} className={'tile ' + props.name}>
       <p className="count">{props.count}</p>
       <p className="name">{props.label}</p>
     </Link>
@@ -64,11 +65,14 @@ export class Informer extends Component {
 
   static all(props) {
     return {
-      audio: <Informer name="audio" count={props.audio} label="Audio" id={props.id}/>,
       friends: <Informer name="friends" count={props.friends} label="Friends" id={props.id}/>,
-      subscribers: <Informer name="subscribers" count={props.subscribers} label="Subscribers" id={props.id}/>,
       groups: <Informer name="groups" count={props.groups} label="Groups" id={props.id}/>,
-      video: <Informer name="video" count={props.video} label="Video" id={props.id}/>,
+      subscribers: <Informer name="subscribers" count={props.subscribers} label="Subscribers" id={props.id}
+                             url={`/subscribers/${props.id}`}/>,
+      audio: <Informer name="audio" count={props.audio} label="Audio" id={props.id}
+                       url={`/blog/${props.id}/audio`}/>,
+      video: <Informer name="video" count={props.video} label="Video" id={props.id}
+                       url={`/blog/${props.id}/video`}/>,
     }
   }
 }

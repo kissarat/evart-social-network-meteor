@@ -76,7 +76,7 @@ class Aside extends Component {
       this.openPanel(<AudioPlaylist/>)
     }
     else if (c.contains('friends')) {
-      this.openPanel(<FriendList/>)
+      this.openPanel(<FriendList tiny={true}/>)
     }
     else if (c.contains('groups')) {
       this.openPanel(<FriendList/>)
@@ -121,12 +121,11 @@ export class App extends Component {
           <Link to="/messenger" className="menu menu-message" title="Messenger"/>
           <Link to="/invites" className="menu menu-feedback" title="Feedback" />
           <Link to="/unavailable" className="menu menu-phone" title="Call"/>
-          <Link to="/friends" className="menu menu-friends" title="Friends"/>
-          <Link to="/groups" className="menu menu-group" title="Groups"/>
+          <Link to={'/friends/' + Meteor.userId()} className="menu menu-friends" title="Friends"/>
+          <Link to={'/groups/' + Meteor.userId()} className="menu menu-group" title="Groups"/>
           <Link to={'/gallery/' + Meteor.userId()} className="menu menu-photo" title="Photos"/>
-          <Link to="/video-search" className="menu menu-video" title="Videos"/>
-
-          <Link to="/player" className="menu menu-music" title="Music"/>
+          <Link to={`/blog/${Meteor.userId()}/video`} className="menu menu-video" title="Videos"/>
+          <Link to={`/blog/${Meteor.userId()}/audio`} className="menu menu-music" title="Music"/>
           <Link to="/settings" className="menu menu-settings" title="Settings"/>
         </div>
       </nav>

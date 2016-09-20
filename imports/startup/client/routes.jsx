@@ -6,7 +6,7 @@ import {Edit, ChangePassword, ResetPassword} from '/imports/ui/blog/edit'
 import {Chat} from '/imports/ui/chat'
 import {FileRoute} from '/imports/ui/file'
 import {Gallery, Visual} from '/imports/ui/photo'
-import {InviteList, FriendList, GroupsList, Subscriptions} from '/imports/ui/list'
+import {InviteList, FriendList, GroupsList, SubscriberList} from '/imports/ui/list'
 import {LoginPage} from '/imports/ui/auth/login'
 import {Messenger} from '/imports/ui/message'
 import {PhoneRoute} from '/imports/ui/phone'
@@ -27,16 +27,17 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="invites" component={InviteList}/>
       <Route path="gallery/:id" component={Gallery}/>
       <Route path="image/:id" component={Visual}/>
-      <Route path="video-search" component={VideoList}/>
-      <Route path="player" component={AudioPlaylist}/>
+      <Route path="blog/:id/video" component={VideoList}/>
+      <Route path="blog/:id/audio" component={AudioPlaylist}/>
       <Route path="settings" component={Edit}/>
       <Route path="edit/:id" component={Edit}/>
       <Route path="change-password" component={ChangePassword}/>
       <Route path="friends/:id" component={FriendList}/>
       <Route path="friends" component={FriendList}/>
+      <Route path="important" component={FriendList}/>
       <Route path="groups" component={GroupsList}/>
-      <Route path="subscribers" component={Subscriptions}/>
-      <Route path="subscribers/:id" component={Subscriptions}/>
+      <Route path="subscribers" component={SubscriberList}/>
+      <Route path="subscribers/:id" component={SubscriberList}/>
       <Route path="groups/:id" component={GroupsList}/>
       <Route path="unavailable" component={Unavailable}/>
       <Route path="chat/:id/edit" component={Chat}/>

@@ -397,7 +397,7 @@ const start = Date.now() / 1000 - process.hrtime()[0]
 function timeId() {
   let now = process.hrtime()
   now[1] -= Math.round(Math.random() * 50 * 1000 * 1000)
-  return (start + now[0]) * 1000 * 1000 * 1000 + now[1]
+  return ((start + now[0]) * 1000 * 1000 * 1000 + now[1]).toString()
 }
 
 function log(type, action, params) {
@@ -406,7 +406,7 @@ function log(type, action, params) {
     action,
     id: timeId(),
     ip: Meteor.call('ip'),
-    actor: parseInt(Meteor.userId(), 36)
+    actor: Meteor.userId()
   }
   if (!_.isEmpty(params)) {
     record.data = params

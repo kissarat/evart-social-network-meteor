@@ -10,10 +10,10 @@ const qs = require('querystring')
 
 const start = Date.now() / 1000 - process.hrtime()[0]
 
-function timeId(base) {
+function timeId() {
   let now = process.hrtime()
   now = (start + now[0]) * 1000 * 1000 * 1000 + now[1]
-  return base ? now.toString(32) : now
+  return now.toString()
 }
 
 const headers = {
@@ -57,7 +57,7 @@ function resizeImage(id, resize) {
   return promise.then(function () {
     const options = {
       src: filename,
-      dst: __dirname + `/../public/.thumb/${id}.jpg`,
+      dst: __dirname + `/../public/thumb/${id}.jpg`,
       width: config.image.thumb.width,
       height: config.image.thumb.height,
       quality: config.image.thumb.quality
@@ -87,7 +87,7 @@ const server = http.createServer(function (req, res) {
         .promise()
         .then(function () {
           return db.table('message')
-            .insert({id: file.id, from: parseInt(req.user._id, 32), type: 'file'})
+            .insert({id: file.id, from: req.user._id, type: 'file'})
             .promise()
         })
     }
@@ -98,7 +98,7 @@ const server = http.createServer(function (req, res) {
         id: timeId(),
         name: req.url.slice(1)
       }
-      const id = file.id.toString(32)
+      const id = file.id
       const uploadOptions = {
         Key: id,
         ContentType: req.mime.id,
@@ -165,7 +165,7 @@ const server = http.createServer(function (req, res) {
           })
           .then(function (data) {
             bucketResponse = data
-            file.thumb = `/.thumb/${id}.jpg`
+            file.thumb = `/thumb/${id}.jpg`
             return insert(file)
           })
           .then(function () {

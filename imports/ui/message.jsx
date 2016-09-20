@@ -79,7 +79,7 @@ export class Dialog extends Subscriber {
       browserHistory.push(`/chat/${this.props.id}/edit`)
     }
     else {
-      Meteor.call('chat.create', {manager: Meteor.userId(), follower: +this.props.id}, (err, chat) => {
+      Meteor.call('chat.create', {manager: Meteor.userId(), follower: this.props.id}, (err, chat) => {
         if (!err) {
           browserHistory.push(`/chat/${chat.id}/edit`)
         }

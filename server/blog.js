@@ -40,6 +40,7 @@ Meteor.publish('member', function (params = {}) {
 
 Meteor.publish('candidate', function ({from, limit, search}) {
   return knex.select('blog.*')
+    .where('type', 'user')
     .from('blog').join(knex.raw(`((SELECT "to" AS id FROM relation WHERE "from" = ?
   UNION SELECT id FROM blog WHERE type = 'user')
   EXCEPT SELECT "to" AS id FROM relation WHERE "from" = ?) AS t

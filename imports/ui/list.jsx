@@ -171,12 +171,12 @@ export class FriendList extends List {
   render() {
     const list = this.renderList(this.getSubscription('invite'))
     const searchBar = this.props.tiny ? <Search search={this.search}/> : ''
-    return <ListHeader search={this.search}>
+    const content =
       <div className="contact-list list">
         {searchBar}
         {list}
       </div>
-    </ListHeader>
+    return this.props.tiny ? content : <ListHeader search={this.search}>{content}</ListHeader>
   }
 }
 

@@ -1,10 +1,9 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
-import {Subscriber, Busy} from '/imports/ui/common/widget'
+import {Subscriber, Busy, Avatar} from '/imports/ui/common/widget'
 import {BlogLayout} from './layout'
 import {Editor} from './editor'
 import {idToTimeString} from '/imports/ui/common/helpers'
-import {Avatar} from '/imports/ui/common/widget'
 
 class Attitude extends Component {
   onChange = (e) => {
@@ -111,7 +110,7 @@ export class NewsItem extends Component {
         </div>
       </div>
       <article>
-        <img src="/images/profile-image.jpg" alt="..." className="img-circle img-responsive"/>
+        <Avatar {...this.props} className="img-circle img-responsive" />
         <h3>{this.props.name || 'Untitled'} <span>{idToTimeString(this.props.id)}</span></h3>
         <p>{this.props.text}</p>
         <div className="article-footer">

@@ -3,7 +3,7 @@ import {Link} from 'react-router'
 import {AudioPlaylist} from './audio'
 import {VideoList} from './video'
 import {DialogList, Dialog} from './message'
-import {FriendList} from './list'
+import {FriendList, GroupsList} from './list'
 import {AlertQueue} from '/imports/ui/common/alert'
 
 class Panel extends Component {
@@ -79,7 +79,7 @@ class Aside extends Component {
       this.openPanel(<FriendList tiny={true}/>)
     }
     else if (c.contains('groups')) {
-      this.openPanel(<FriendList/>)
+      this.openPanel(<GroupsList params={{id: Meteor.userId()}}/>)
     }
     this.setState({menu: false})
   }

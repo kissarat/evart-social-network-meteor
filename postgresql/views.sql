@@ -134,9 +134,11 @@ CREATE OR REPLACE VIEW repost_count AS
 CREATE OR REPLACE VIEW "message_attitude_recipient" AS
   SELECT
     m.*,
+    author.name,
+    author.avatar,
     b.id   AS recipient,
     a.type AS attitude
-  FROM "blog" b CROSS JOIN repost_count m
+  FROM "blog" b CROSS JOIN repost_count m JOIN blog author ON m."from" = author.id
     LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
   WHERE b.type = 'user';
 
@@ -148,7 +150,7 @@ CREATE OR REPLACE VIEW "wall" AS
 CREATE OR REPLACE VIEW "news" AS
   SELECT w.*
   FROM relation r
-    JOIN wall w ON r.to = w.parent
+    JOIN wall w ON r.to = w.parent AND r."from" = w.recipient
   WHERE r.type = 'follow';
 
 CREATE OR REPLACE VIEW "child" AS

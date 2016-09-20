@@ -1,47 +1,45 @@
-@media(max-width: 767px){
-  html, body, main{
+@media(max-width: 767px) {
+  html, body, main {
     min-height: 100vh;
   }
-  footer{
+
+  footer {
     display: none;
   }
 
-  #desktop main {
-    background: url(/images/join-back-cover.png);
-  }
-
   main {
+    background: url(/images/join-back-cover.png);
     position: relative;
-    .central-container{
+    .central-container {
       display: flex;
       flex-flow: column;
-      .row{
+      .row {
         order: 1;
-        &:first-of-type{
+        &:first-of-type {
           order: 2
         }
-        &:last-of-type{
+        &:last-of-type {
           order: 3;
         }
 
       }
     }
-    #welcome{
+    #welcome {
       max-width: 429px;
       margin: 25px auto;
     }
-    #loginform{
+    #loginform {
       margin: 75px 0 0;
       padding: 0;
       background-color: transparent;
       border: none;
       border-radius: 0;
       box-shadow: none;
-      .form-group{
+      .form-group {
         width: 100%;
         padding: 0;
         position: relative;
-        .visible-xs-block{
+        .visible-xs-block {
           width: 20px;
           height: 20px;
           position: absolute;
@@ -51,7 +49,7 @@
           text-align: center;
         }
       }
-      button{
+      button {
         width: 100%;
         font-size: 20px;
         height: 60px;
@@ -63,7 +61,7 @@
         position: relative;
         top: 35px;
       }
-      input{
+      input {
         height: auto;
         line-height: 30px;
         background-color: rgba(233, 234, 244, 0.2);
@@ -73,26 +71,26 @@
         font-size: 15px;
         color: #ffffff;
         padding: 6px 50px 6px 12px;
-        @include placeholder{
-          color: rgba(255,255,255,.6);
+        @include placeholder {
+          color: rgba(255, 255, 255, .6);
         }
       }
-      .mt{
+      .mt {
         text-align: center;
         position: relative;
         top: -72px;
-        .form-group{
+        .form-group {
           width: 45%;
           display: inline-block;
-          &+.form-group{
-            a{
+          & + .form-group {
+            a {
               text-decoration: underline;
             }
           }
         }
       }
     }
-    .btn-join{
+    .btn-join {
       margin-top: 0;
       margin-bottom: 10px;
       font-size: 20px;

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Login, Footer} from './login'
-import '/imports/stylesheets/registration.scss'
+import '/imports/stylesheets/signup.scss'
 
 export const Signup = () => <div id="signup-page">
   <main>

@@ -25,7 +25,7 @@ function convert(file) {
 
   return new Promise(function (resolve, reject) {
     const fileId = +file.id
-    const inputFilename = config.file.temp + '/' + fileId.toString(36)
+    const inputFilename = config.file.temp + '/' + fileId.toString()
     const outputFilename = inputFilename + '.m4a'
     ffmpeg()
       .addInput(inputFilename)
@@ -61,7 +61,7 @@ function processTask() {
         let file
         const record = result.rows[0]
         const fileId = +record.file
-        const fileIdString = fileId.toString(36)
+        const fileIdString = fileId.toString()
         db.retrySQL('SELECT * FROM file WHERE id = $1::BIGINT', [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
           .then(function (result) {
             file = result.rows[0]
@@ -69,7 +69,7 @@ function processTask() {
           })
           .then(function () {
             const options = {
-              Key: fileId.toString(36),
+              Key: fileId.toString(),
               filename: config.file.temp + '/' + fileIdString + '.m4a',
               ContentType: 'audio/aac',
               Metadata: {
@@ -92,12 +92,8 @@ function processTask() {
               [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
           })
           .then(function () {
-            return db.table('file')
-              .where('id', fileId)
-              .update({
-                time: db.knex.raw('current_timestamp'),
-                mime: 'audio/aac'
-              }).promise()
+            return db.retrySQL(`UPDATE file SET time = current_timestamp, mime = 'audio/aac' WHERE id = $1::BIGINT`,
+              [fileId], [db.errors.IN_FAILED_SQL_TRANSACTION])
           })
           .then(processTask)
           .catch(error)

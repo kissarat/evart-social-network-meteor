@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link, browserHistory} from 'react-router'
-import '/imports/stylesheets/join.scss'
+import '/imports/stylesheets/signup.scss'
 
 export class Login extends Component {
   onChange = (e) => {
@@ -37,36 +37,24 @@ export class Login extends Component {
   }
 
   render() {
-    return <form className="form-inline center-block" id="loginform">
-      <div className="form-group">
-        <label className="sr-only" htmlFor="login">Email address</label>
-        <input type="text" className="form-control" id="login" name="login" placeholder="Login"
-               onChange={this.onChange}/>
-        <span className="visible-xs-block">
-          <span className="join join-mail"/>
-        </span>
-      </div>
-      <div className="form-group">
-        <label className="sr-only" htmlFor="password">Password</label>
-        <input type="password" className="form-control" id="password" name="password" placeholder="Password"
-               onChange={this.onChange}/>
-        <span className="visible-xs-block">
-          <span className="join join-lock"/>
-        </span>
-      </div>
-      <button type="submit" className="btn" onClick={this.onSubmit}>Sign in</button>
-      <div className="mt">
-        <div className="form-group">
-          <div className="chbox">
-            <input type="checkbox" id="checkbox"/>
-            <label htmlFor="checkbox">
-              Remember me
-            </label>
-          </div>
+    return <form className="login" method="post" onSubmit={this.onSubmit}>
+      <div>
+        <div className="credentials">
+          <input type="text" className="form-control" name="login" placeholder="Login"
+                 onChange={this.onChange}/>
+          <input type="password" className="form-control" name="password" placeholder="Password"
+                 onChange={this.onChange}/>
         </div>
-        <div className="form-group">
+        <div className="options">
+          <div>
+            <input type="checkbox" id="checkbox"/>
+            Remember me
+          </div>
           <Link to="/recovery">Forgot password?</Link>
         </div>
+      </div>
+      <div>
+        <button type="submit" className="login-page-button" onClick={this.onSubmit}>Sign in</button>
       </div>
     </form>
   }
@@ -98,25 +86,11 @@ export const Footer = () =>
     </div>
   </footer>
 
-export const LoginPage = () => <div id="login-page">
+export const LoginPage = () => <div id="login-page" className="auth">
   <main>
-    <div className="container">
-      <div className="row">
-        <div className="col-sm-offset-4 col-sm-8 col-md-offset-6 col-md-6 col-lg-7 col-lg-5">
-          <Login/>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-sm-offset-4 col-sm-8 col-md-offset-6 col-md-6 col-lg-7 col-lg-5">
-          <img id="welcome" src="/images/join-welcome.png" className="img-responsive"/>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-sm-offset-4 col-sm-8 col-md-offset-6 col-md-6 col-lg-7 col-lg-5">
-          <Link className="btn-join" to="/signup">Join now</Link>
-        </div>
-      </div>
-    </div>
+    <Login/>
+    <img id="welcome" src="/images/join-welcome.png"/>
+    <Link className="btn-join login-page-button" to="/signup">Join now</Link>
   </main>
   <Footer/>
 </div>

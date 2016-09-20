@@ -20,7 +20,6 @@ class Audio extends Component {
 
 class Player extends Component {
   componentWillMount() {
-    this.state = {}
     const audio = document.createElement('audio')
   }
 
@@ -29,7 +28,6 @@ class Player extends Component {
   }
 
   onLoadedMetadata = () => {
-    this.setState({loaded: true})
     Meteor.call('blog.update', {id: Meteor.userId()}, {playing: this.props.id})
   }
 
@@ -44,73 +42,71 @@ class Player extends Component {
   play = () => {
     this.setState({playing: this.audio.paused})
     if (this.audio.paused) {
-      this.audio.play()
+      this.refs.audio.play()
     }
     else {
-      this.audio.pause()
+      this.refs.audio.pause()
     }
   }
 
   render() {
     const meta = this.props.data.metadata
-    if (this.state.loaded) {
-      return <div className="media-container">
-        <audio
-          src={bucketFile(props.id)}
-          onTimeUpdate={this.onTimeUpdate}
-          onLoadedMetadata={this.onLoadedMetadata}
-          onSeeked={this.onSeek}
-        />
-        <div className="background">
-          <div style={{backgroundImage: 'url("/images/video-poster.jpg")'}}/>
-        </div>
+    const audio = this.refs.audio
+    const controls =this.refs && this.refs.audio ? <div className='media-controls'>
+      <div className="ctrl ctrl-play" onClick={this.play}>
+        <span className={audio.paused ? 'play' : 'pause'}/>
+      </div>
+      <div className="ctrl ctrl-volume">
+        <input type="range"/>
+      </div>
+      <div className="ctrl ctrl-progress">
+        <input type="range"
+               step="1"
+               min="0"
+               value={audio.currentTime}
+               max={audio.duration}
+               onChange={this.onSeek}/>
+      </div>
+      <div className="ctrl ctrl-repeat">
+        <span className="repeat"/>
+      </div>
+    </div> : ''
+    return <div className="media-container">
+      <audio
+        ref="audio"
+        src={bucketFile(this.props.id)}
+        onTimeUpdate={this.onTimeUpdate}
+        onLoadedMetadata={this.onLoadedMetadata}
+        onSeeked={this.onSeek}
+      />
+      <div className="background">
+        <div style={{backgroundImage: 'url("/images/video-poster.jpg")'}}/>
+      </div>
 
-        <div className="media-poster text-center">
-          <div className="title">
-            <h3>{meta.title}</h3>
-          </div>
-          <div className="poster-container">
-            <div className="poster" style={{backgroundImage: 'url("/images/video-poster.jpg")'}}></div>
-          </div>
+      <div className="media-poster text-center">
+        <div className="title">
+          <h3>{meta.title}</h3>
         </div>
-
-        <div className="media-overlay">
-          <div className="ctrl ctrl-title">
-            <h3>{meta.artist}</h3>
-            <p>{meta.album}</p>
-          </div>
-          <div className="ctrl ctrl-favorite">
-            <span className="star-five"/>
-          </div>
-          <div className="ctrl ctrl-more">
-            <span>&bull;&bull;&bull;</span>
-          </div>
-        </div>
-
-        <div className='media-controls'>
-          <div className="ctrl ctrl-play" onClick={this.play}>
-            <span className={this.audio.paused ? 'play' : 'pause'}/>
-          </div>
-          <div className="ctrl ctrl-volume">
-            <input type="range"/>
-          </div>
-          <div className="ctrl ctrl-progress">
-            <input type="range"
-                   step="1"
-                   min="0"
-                   value={this.audio.currentTime}
-                   max={this.audio.duration}
-                   onChange={this.onSeek}/>
-          </div>
-          <div className="ctrl ctrl-repeat">
-            <span className="repeat"/>
-          </div>
+        <div className="poster-container">
+          <div className="poster" style={{backgroundImage: 'url("/images/video-poster.jpg")'}}></div>
         </div>
       </div>
-    }
-    else {
-      return <Busy/>
-    }
+
+      <div className="media-overlay">
+        <div className="ctrl ctrl-title">
+          <h3>{meta.artist}</h3>
+          <p>{meta.album}</p>
+        </div>
+        <div className="ctrl ctrl-favorite">
+          <span className="star-five"/>
+        </div>
+        <div className="ctrl ctrl-more">
+          <span>&bull;&bull;&bull;</span>
+        </div>
+      </div>
+
+      {controls}
+    </div>
   }
 }
 
@@ -133,7 +129,6 @@ export class AudioPlaylist extends Subscriber {
   }
 
   render() {
-    console.log(this.state.active)
     const player = this.state.active ? <Player {...this.state.active}/> : ''
     const files = this.getSubscription('file').map(file =>
       <Audio

@@ -4,30 +4,31 @@
   background-color: $button-color;
   border-radius: 5px;
 }
+
 main {
   min-height: calc(100vh - 247px - 91px);
-  .mt{
+  .mt {
     font-family: "Roboto-Light";
     margin-top: 10px;
-    a{
+    a {
       color: rgb(20, 124, 228);
       font-weight: 300;
     }
   }
-  .chbox{
+  .chbox {
     @include user-select(none);
     input[type="checkbox"] {
       position: absolute;
       left: -9999px;
     }
-    label{
+    label {
       cursor: pointer;
       font-weight: normal;
       color: $text-color;
       margin-bottom: 0;
-      &.text-danger{
+      &.text-danger {
         color: #ff0500;
-        a{
+        a {
           color: #c15452;
         }
       }
@@ -59,24 +60,24 @@ main {
     }
 
   }
-  .reg{
+  .reg {
     margin-top: 125px;
     font-family: "Panton-Regular";
-    h1{
+    h1 {
       text-shadow: 0 1px 0 white;
       color: rgb(0, 115, 191);
       font-size: 34px;
       font-weight: 400;
       line-height: 41px;
     }
-    p{
+    p {
       text-shadow: 0 1px 0 white;
       color: rgb(145, 145, 145);
       font-size: 16px;
       font-weight: 400;
       line-height: 41px;
     }
-    .reg-progress{
+    .reg-progress {
       $back-color: #cad3df;
       $back-color-active: #147ce4;
       $description: #cad3df;
@@ -90,7 +91,7 @@ main {
       margin-bottom: $action-height;
       justify-content: center;
       align-items: center;
-      .round{
+      .round {
         background: $back-color;
         text-align: center;
         color: #ffffff;
@@ -99,13 +100,13 @@ main {
         border-radius: 50%;
 
       }
-      .step-desc{
+      .step-desc {
         font-size: 18px;
         text-align: center;
         padding-top: $text-padding;
         color: $description;
       }
-      .step-line{
+      .step-line {
         height: 3px;
         width: 100%;
         background: $back-color;
@@ -113,30 +114,30 @@ main {
         @include calc(top, "-10px - #{$text-padding}*.7");
         margin: 0 10px;
       }
-      .action{
+      .action {
         display: none;
         position: absolute;
         width: 100%;
         left: 0;
         height: $action-height;
         padding: 35px 96px 0 96px;
-        .group{
-          button{
+        .group {
+          button {
             @include btn-default;
             font-size: 16px;
             line-height: 24px;
             padding: 10px 55px;
             width: 100%;
           }
-          .form-group{
+          .form-group {
             width: 49%;
             padding: 0 1%;
-            input{
+            input {
               width: 100%;
             }
           }
         }
-        .mt{
+        .mt {
           width: 100%;
           font-size: 14px;
           line-height: 26px;
@@ -150,16 +151,16 @@ main {
             background-position: 0 -3px;
           }
         }
-        &.active{
+        &.active {
           display: block;
         }
       }
-      [class*='step-'].active{
+      [class*='step-'].active {
         display: block;
-        .round{
-            background: $back-color-active;
+        .round {
+          background: $back-color-active;
         }
-        .step-desc{
+        .step-desc {
           color: $description-active;
         }
       }

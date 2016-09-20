@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link, browserHistory} from 'react-router'
-import '/imports/stylesheets/signup.scss'
+import '/imports/stylesheets/login.scss'
 
 export class Login extends Component {
   onChange = (e) => {
@@ -40,17 +40,17 @@ export class Login extends Component {
     return <form className="login" method="post" onSubmit={this.onSubmit}>
       <div>
         <div className="credentials">
-          <input type="text" className="form-control" name="login" placeholder="Login"
+          <input type="text" name="login" placeholder="Login"
                  onChange={this.onChange}/>
-          <input type="password" className="form-control" name="password" placeholder="Password"
+          <input type="password" name="password" placeholder="Password"
                  onChange={this.onChange}/>
         </div>
         <div className="options">
-          <div>
+          <div className="remember">
             <input type="checkbox" id="checkbox"/>
             Remember me
           </div>
-          <Link to="/recovery">Forgot password?</Link>
+          <Link className="recovery" to="/recovery">Forgot password?</Link>
         </div>
       </div>
       <div>
@@ -62,26 +62,23 @@ export class Login extends Component {
 
 export const Footer = () =>
   <footer>
-    <div className="container">
-      <div className="row">
-        <div className="col-sm-4 col-lg-6">
-          <div className="randomIcons"></div>
-          <div className="copyrights">
-            <p>&copy; 2015-2016 Evart Systems Incorporated.</p>
-            <p>All rights reserved.</p>
-            <p>Part of the <a href="http://evartcorp.com/">Evart</a> corporation.</p>
-          </div>
-        </div>
-        <div className="col-sm-8 col-lg-6">
-          <div className="row text-center">
-            <h4>Download the App</h4>
-            <p>Application available</p>
-          </div>
-          <div className="row text-center">
-            <a href="#" className="appbtn appbtn-App-Store"/>
-            <a href="#" className="appbtn appbtn-Google-Play"/>
-          </div>
-        </div>
+    <div className="copyright">
+      <p>&copy; 2015-2016 Evart Systems Incorporated.</p>
+      <p>All rights reserved.</p>
+      <p>Part of the <a href="http://evartcorp.com/">Evart</a> corporation.</p>
+    </div>
+    <div className="download">
+      <div>
+        <h4>Download the App</h4>
+        <p>Application available</p>
+      </div>
+      <div>
+        <a href="#" className="store-badge app-store">
+          <img src="/images/app-store.png"/>
+        </a>
+        <a href="#" className="store-badge google-play">
+          <img src="/images/google-play.png"/>
+        </a>
       </div>
     </div>
   </footer>
@@ -89,7 +86,7 @@ export const Footer = () =>
 export const LoginPage = () => <div id="login-page" className="auth">
   <main>
     <Login/>
-    <img id="welcome" src="/images/join-welcome.png"/>
+    <div id="welcome"/>
     <Link className="btn-join login-page-button" to="/signup">Join now</Link>
   </main>
   <Footer/>

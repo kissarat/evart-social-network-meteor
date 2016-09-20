@@ -1,0 +1,48 @@
+@media (min-width: 769px) {
+  #login-page {
+    position: relative;
+    min-height: 100vh;
+  }
+  footer {
+    height: 247px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    background-size: cover;
+    background: url("/images/auth-footer.jpg") no-repeat right;
+    .copyright {
+      position: absolute;
+      font-size: 12px;
+      margin-top: -91px;
+      padding-top: 220px;
+      padding-left: 240px;
+      text-align: left;
+      width: 730px;
+      height: 338px;
+      background: url("/images/footer-icons.png") no-repeat;
+      right: calc(50% + 100px);
+    }
+    .download {
+      position: absolute;
+      top: 25px;
+      left: calc(50% - 20px);
+      width: 400px;
+      h4 {
+        font-size: 36px;
+      }
+      min-width: 500px;
+      .store-badge {
+        > img {
+          display: inline-block;
+          max-width: 230px;
+        }
+        &.app-store {
+          margin-right: 12px;
+        }
+      }
+    }
+  }
+}

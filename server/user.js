@@ -24,6 +24,9 @@ Accounts.onCreateUser(function (options, user) {
 Meteor.methods({
   verify({phone, code, sid}) {
     if (code) {
+      if (!sid) {
+        throw new Meteor.Error(400)
+      }
       return table('verify').where({sid: sid, code: digits(code)}).single().then(function (found) {
         const data = {success: !!found}
         return log('user', 'approve', data).then(() => data)
@@ -74,7 +77,10 @@ Meteor.methods({
   'user.create'(params) {
     ['domain', 'password', 'surname', 'forename', 'phone', 'code', 'sid']
       .forEach(function (key) {
-        if ('string' !== typeof params[key]) {
+        if ('string' === typeof params[key]) {
+          params[key] = params[key].trim()
+        }
+        else {
           throw new Meteor.Error(400, 'Bad Request', JSON.stringify({[key]: 'Is required'}))
         }
       })
@@ -90,7 +96,7 @@ Meteor.methods({
           if (!found) {
             throw new Meteor.Error(403, 'Session is not found')
           }
-          const data = _.pick(params, ['domain', 'name', 'surname', 'forename', 'phone'])
+          const data = _.pick(params, ['domain', 'name', 'surname', 'forename', 'phone', 'email'])
           data.id = timeId()
           Meteor.users.insert({_id: data.id.toString(), username: data.domain})
           Accounts.setPassword(data.id.toString(), params.password)
@@ -100,22 +106,18 @@ Meteor.methods({
             .returning('id', 'domain')
             .insert(data)
             .promise()
-            .then(function (res) {
-              params.success = !!res.id
-              params.id = res.id
-              return log('user', 'create', params).then(() => params)
+            .then(function () {
+              data.success = true
+              return log('user', 'create', params).then(() => data)
             })
+            .then(resolve, reject)
         })
       })
   },
 
-  'show.errors'() {
-    throw new Meteor.Error(400, 'abc', '{"a":1}')
+  exists(params) {
+    return table('blog').where(params).promise().then(function (result) {
+      return {exists: result.rowCount > 0}
+    })
   }
-
-  // 'user.update': function (params) {
-  //   return knex('blog')
-  //     .insert(_.pick(params, 'domain', 'name', 'type'), 'id')
-  //     .single()
-  // }
 })

@@ -6,6 +6,7 @@ import '/imports/stylesheets/signup.scss'
 
 export class Signup extends Component {
   componentWillReceiveParams(props) {
+    this.state = {errors: {}}
     const state = _.pick(localStorage, 'sid', 'code', 'phone', 'domain')
     if (!_.isEmpty(state)) {
       this.setState(state)
@@ -13,7 +14,6 @@ export class Signup extends Component {
   }
 
   componentWillMount() {
-    this.state = {errors: {}}
     this.componentWillReceiveParams(this.props)
   }
 
@@ -24,8 +24,21 @@ export class Signup extends Component {
     </div>
   }
 
+  checkExistance = _.debounce((name, value) => {
+    Meteor.call('exists', {[name]: value}, (err, res) => {
+      if (res) {
+        this.setError(name, res.exists ? 'User already registered' : '')
+      }
+    })
+  }, 1000)
+
   onChange = (e) => {
-    this.setState({[e.target.getAttribute('name')]: e.target.value})
+    const name = e.target.getAttribute('name')
+    const value = e.target.value
+    this.setState({[name]: value})
+    if (value.trim() && ['domain', 'phone', 'email']. indexOf(name) >= 0) {
+      this.checkExistance(name, value)
+    }
   }
 
   send(method, cb) {
@@ -69,22 +82,47 @@ export class Signup extends Component {
     })
   }
 
+  setError(name, error) {
+    this.setState({errors: {[name]: T(error)}})
+  }
+
   onSubmit = (e) => {
     e.preventDefault()
-    Meteor.call('user.create', this.state, (err, state) => {
-      if (err) {
-        console.error(err)
-        _.each(JSON.parse(err.details), (value, key) => {
-          this.setState({errors: {[key]: value}})
-        })
-      }
-      else if (state.success) {
-        browserHistory.push('/login')
-      }
-      else {
-        console.error(err, state)
-      }
-    })
+    if (!/^[_\.\-\w]{4,24}$/g.test(this.state.domain)) {
+      this.setError('domain',
+        'The username should contain only letters, numbers and the following characters: "-", "_" and "."')
+    }
+    else if (!this.state.password || this.state.password.length < 6) {
+      this.setError('password', 'Password must contain at least six alphanumeric characters')
+    }
+    else if (this.state.password !== this.state.repeat) {
+      this.setError('repeat', 'Password does not match')
+    }
+    else if (this.state.email && !/\.+@\.+.\.+/) {
+      this.setError('email', 'Email is invalid')
+    }
+    else if (!this.state.surname || this.state.surname.length < 2) {
+      this.setError('surname', 'Last Name is required')
+    }
+    else if (!this.state.forename || this.state.forename.length < 2) {
+      this.setError('forename', 'First Name is required')
+    }
+    else {
+      Meteor.call('user.create', this.state, (err, state) => {
+        if (err) {
+          console.error(err)
+          _.each(JSON.parse(err.details), (value, key) => {
+            this.setState({errors: {[key]: value}})
+          })
+        }
+        else if (state.success) {
+          browserHistory.push('/login')
+        }
+        else {
+          console.error(err, state)
+        }
+      })
+    }
   }
 
   render() {
@@ -129,34 +167,34 @@ export class Signup extends Component {
           <div id="about" className={'about' === step ? 'active step' : 'step'}>
             {Signup.step(3)}
             <fieldset>
-              <InputGroup>
+              <InputGroup message={this.state.errors.domain}>
                 <input className="form-control"
                        name="domain" placeholder="Login"
                        onChange={this.onChange}/>
               </InputGroup>
-              <InputGroup class="form-group">
+              <InputGroup message={this.state.errors.email}>
                 <input className="form-control"
                        name="email" placeholder="Email"
                        onChange={this.onChange}/>
               </InputGroup>
-              <InputGroup class="form-group">
+              <InputGroup message={this.state.errors.password}>
                 <input className="form-control"
                        name="password" placeholder="Password" type="password"
                        onChange={this.onChange}/>
               </InputGroup>
-              <InputGroup class="form-group">
+              <InputGroup message={this.state.errors.repeat}>
                 <input className="form-control"
                        name="repeat" placeholder="Repeat Password" type="password"
                        onChange={this.onChange}/>
               </InputGroup>
-              <InputGroup class="form-group">
-                <input className="form-control"
-                       name="forename" placeholder="First Name"
-                       onChange={this.onChange}/>
-              </InputGroup>
-              <InputGroup class="form-group">
+              <InputGroup message={this.state.errors.surname}>
                 <input className="form-control"
                        name="surname" placeholder="Last Name"
+                       onChange={this.onChange}/>
+              </InputGroup>
+              <InputGroup message={this.state.errors.forename}>
+                <input className="form-control"
+                       name="forename" placeholder="First Name"
                        onChange={this.onChange}/>
               </InputGroup>
               <button type="submit">Signup</button>

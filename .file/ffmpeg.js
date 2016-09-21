@@ -1,6 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg')
 const _ = require('underscore')
-const config = require('../config')
+const config = require('../server/config')
 
 const filename = process.argv[process.argv.length - 1]
 ffmpeg(filename)

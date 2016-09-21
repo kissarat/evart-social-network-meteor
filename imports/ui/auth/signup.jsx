@@ -1,69 +1,170 @@
 import React, {Component} from 'react'
 import {Login, Footer} from './login'
-// import '/imports/stylesheets/signup.scss'
+import {InputGroup} from '/imports/ui/common/widget'
+import {browserHistory} from 'react-router'
+import '/imports/stylesheets/signup.scss'
 
-export const Signup = () => <div id="signup-page">
-  <main>
-    <div className="container">
-      <div className="row">
-        <div className="col-md-offset-3 col-md-6">
-          <Login/>
-        </div>
-      </div>
-      <div className="row reg">
-        <div className="col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
-          <h1 className="text-center">Простая регистрация в 3 шага</h1>
-          <p className="text-center">Заполните все поля для успешной регистрации</p>
-        </div>
-        <div className="col-md-offset-2 col-md-8">
-          <div className="reg-progress">
-            <div className="step-1 active">
-              <div className="round">1</div>
-              <div className="step-desc">STEP</div>
-              <div className="action active">
-                <form className="form-inline">
-                  <div className="group">
-                    <div className="form-group input-group-lg">
-                      <label className="sr-only" htmlFor="phone">Email address</label>
-                      <input type="text" className="form-control" id="phone" placeholder="Phone number"/>
-                    </div>
-                    <div className="form-group input-group-lg">
-                      <button type="submit" className="btn">Register</button>
-                    </div>
-                  </div>
-                  <div className="mt">
-                    <div className="form-group">
-                      <div className="chbox">
-                        <input type="checkbox" id="checkbox-reg"/>
-                        <label htmlFor="checkbox-reg">
-                          I am accepting <a href="#" target="_blank">license agreement</a>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div className="step-line hidden-xs"></div>
-            <div className="step-2">
-              <div className="round">2</div>
-              <div className="step-desc">STEP</div>
-              <div className="action">
-                <h1>STEP 2</h1>
-              </div>
-            </div>
-            <div className="step-line hidden-xs"></div>
-            <div className="step-3">
-              <div className="round">3</div>
-              <div className="step-desc">STEP</div>
-              <div className="action">
-                <h1>STEP 3</h1>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+export class Signup extends Component {
+  componentWillReceiveParams(props) {
+    const state = _.pick(localStorage, 'sid', 'code', 'phone', 'domain')
+    if (!_.isEmpty(state)) {
+      this.setState(state)
+    }
+  }
+
+  componentWillMount() {
+    this.state = {errors: {}}
+    this.componentWillReceiveParams(this.props)
+  }
+
+  static step(number) {
+    return <div className="step-label">
+      <div className="number">{number}</div>
+      <div className="text">Step</div>
     </div>
-  </main>
-  <Footer/>
-</div>
+  }
+
+  onChange = (e) => {
+    this.setState({[e.target.getAttribute('name')]: e.target.value})
+  }
+
+  send(method, cb) {
+    ['sid', 'code', 'phone', 'domain', 'surname', 'forename'].forEach((key) => {
+      if (this.state[key]) {
+        localStorage.setItem(key, this.state[key])
+      }
+    })
+    Meteor.call(method, _.omit(this.state, 'errors'), cb)
+    this.setState({errors: {}})
+  }
+
+  phone = () => {
+    if (this.state.agree) {
+      this.send('verify', (err, res) => {
+        if (err) {
+          this.setState({errors: {phone: err.reason}})
+        }
+        else if (res.success) {
+          localStorage.setItem('sid', res.sid)
+          browserHistory.push('/signup/verify')
+        }
+        else {
+          console.error(err, res)
+        }
+      })
+    }
+    else {
+      this.setState({errors:{phone: 'You must accept license agreement'}})
+    }
+  }
+
+  verify = () => {
+    this.send('verify', (err, res) => {
+      if (err) {
+        this.setState({errors:{phone: err.reason}})
+      }
+      else if (res.success) {
+        browserHistory.push('/signup/about')
+      }
+    })
+  }
+
+  onSubmit = (e) => {
+    e.preventDefault()
+    Meteor.call('user.create', this.state, (err, state) => {
+      if (err) {
+        console.error(err)
+        _.each(JSON.parse(err.details), (value, key) => {
+          this.setState({errors: {[key]: value}})
+        })
+      }
+      else if (state.success) {
+        browserHistory.push('/login')
+      }
+      else {
+        console.error(err, state)
+      }
+    })
+  }
+
+  render() {
+    let step = location.pathname.split('/')[2]
+    if (!('verify' === step || 'about' === step)) {
+      step = 'phone'
+    }
+    return <div id="signup-page">
+      <Login/>
+      <main>
+        <form method="post" className="signup" onSubmit={this.onSubmit}>
+          <h1>Simple registration in 3 steps</h1>
+          <h2>Fill all fields to register</h2>
+          <hr/>
+          <div id="phone" className={'phone' === step ? 'active step' : 'step'}>
+            {Signup.step(1)}
+            <fieldset className="single">
+              <InputGroup message={this.state.errors.phone}>
+                <input type="text" className="form-control"
+                       name="phone" placeholder="Phone"
+                onChange={this.onChange}/>
+                <button type="button" className="btn btn-primary" onClick={this.phone}>Next</button>
+              </InputGroup>
+              <label className="agree">
+                <input type="checkbox" name="agree"
+                       onChange={this.onChange}/>
+                I am accepting <a href="#" target="_blank">license agreement</a>
+              </label>
+            </fieldset>
+          </div>
+          <div id="verify" className={'verify' === step ? 'active step' : 'step'}>
+            {Signup.step(2)}
+            <fieldset className="single">
+              <InputGroup message={this.state.errors.code}>
+                <input type="text" className="form-control"
+                       name="code" placeholder="Code"
+                       onChange={this.onChange}/>
+                <button type="button" className="btn btn-primary" onClick={this.verify}>Verify</button>
+              </InputGroup>
+            </fieldset>
+          </div>
+          <div id="about" className={'about' === step ? 'active step' : 'step'}>
+            {Signup.step(3)}
+            <fieldset>
+              <InputGroup>
+                <input className="form-control"
+                       name="domain" placeholder="Login"
+                       onChange={this.onChange}/>
+              </InputGroup>
+              <InputGroup class="form-group">
+                <input className="form-control"
+                       name="email" placeholder="Email"
+                       onChange={this.onChange}/>
+              </InputGroup>
+              <InputGroup class="form-group">
+                <input className="form-control"
+                       name="password" placeholder="Password" type="password"
+                       onChange={this.onChange}/>
+              </InputGroup>
+              <InputGroup class="form-group">
+                <input className="form-control"
+                       name="repeat" placeholder="Repeat Password" type="password"
+                       onChange={this.onChange}/>
+              </InputGroup>
+              <InputGroup class="form-group">
+                <input className="form-control"
+                       name="forename" placeholder="First Name"
+                       onChange={this.onChange}/>
+              </InputGroup>
+              <InputGroup class="form-group">
+                <input className="form-control"
+                       name="surname" placeholder="Last Name"
+                       onChange={this.onChange}/>
+              </InputGroup>
+              <button type="submit">Signup</button>
+            </fieldset>
+          </div>
+        </form>
+      </main>
+      <Footer/>
+    </div>
+  }
+}

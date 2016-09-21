@@ -1,6 +1,6 @@
 const http = require('http')
 const fs = require('fs')
-const config = require('../config')
+const config = require('../server/config')
 const common = require('./common')
 const easyimage = require('easyimage')
 const db = require('../server/db')

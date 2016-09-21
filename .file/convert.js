@@ -1,6 +1,6 @@
 const _ = require('underscore')
 const common = require('./common')
-const config = require('./../config')
+const config = require('./../server/config')
 const db = require('./../server/db')
 const ffmpeg = require('fluent-ffmpeg')
 

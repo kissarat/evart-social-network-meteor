@@ -32,31 +32,31 @@ class UserEdit extends Component {
 
   render() {
     return <form className="blog-edit settings" onSubmit={this.onSave} method="post">
-      <h1>Settings</h1>
+      <h1>{T('Settings')}</h1>
       <div className="form-group">
-        <label>Last Name</label>
+        <label>{T('Last Name')}</label>
         <input name="surname"
                value={this.state.surname || this.props.surname || ''}
                onChange={this.onChange}
                className="form-control"/>
       </div>
       <div className="form-group">
-        <label>First Name</label>
+        <label>{T('First Name')}</label>
         <input name="forename"
                value={this.state.forename || this.props.forename || ''}
                onChange={this.onChange}
                className="form-control"/>
       </div>
       <div className="form-group">
-        <label>Birthday</label>
+        <label>{T('Birthday')}</label>
         <DateField name="birthday"
                    dateFormat="YYYY-MM-DD"
                    value={this.state.birthday || this.props.birthday}
                    onChange={this.onChangeDate}
                    className="form-control"/>
       </div>
-      <Link to="/change-password" type="button" className="btn btn-primary">Change Password</Link>
-      <button type="submit" className="btn btn-success">Save</button>
+      <Link to="/change-password" type="button" className="btn btn-primary">{T('Change Password')}</Link>
+      <button type="submit" className="btn btn-success">{T('Save')}</button>
     </form>
   }
 }
@@ -85,7 +85,7 @@ export class ChangePassword extends Component {
       })
     }
     else {
-      this.setState({errors: {repeat: 'Confirm password does not match'}})
+      this.setState({errors: {repeat: T('Confirm password does not match')}})
     }
   }
 
@@ -96,28 +96,28 @@ export class ChangePassword extends Component {
   render() {
     return <form className="container settings" onSubmit={this.onSave}>
       <h1>Change Password</h1>
-      <InputGroup label="Old Password" message={this.state.errors.old}>
+      <InputGroup label={T('Old Password')} message={this.state.errors.old}>
         <input name="old"
                type="password"
                value={this.state.old || ''}
                onChange={this.onChange}
                className="form-control"/>
       </InputGroup>
-      <InputGroup label="New Password" message={this.state.errors.password}>
+      <InputGroup label={T('New Password')} message={this.state.errors.password}>
         <input name="password"
                type="password"
                value={this.state.password || ''}
                onChange={this.onChange}
                className="form-control"/>
       </InputGroup>
-      <InputGroup label="Repeat Password" message={this.state.errors.repeat}>
+      <InputGroup label={T('Repeat Password')} message={this.state.errors.repeat}>
         <input name="repeat"
                type="password"
                value={this.state.repeat || ''}
                onChange={this.onChange}
                className="form-control"/>
       </InputGroup>
-      <button type="submit" className="btn btn-success">Change</button>
+      <button type="submit" className="btn btn-success">{T('Change')}</button>
     </form>
   }
 }
@@ -135,7 +135,7 @@ export class ResetPassword extends Component {
       })
     }
     else {
-      this.setState({errors: {repeat: 'Confirm password does not match'}})
+      this.setState({errors: {repeat: T('Confirm password does not match')}})
     }
   }
 
@@ -146,25 +146,25 @@ export class ResetPassword extends Component {
   render() {
     return <form className="container settings" onSubmit={this.onSave}>
       <h1>Change Password</h1>
-      <InputGroup label="Code" message={this.state.errors.old}>
+      <InputGroup label={T('Code')} message={this.state.errors.old}>
         <input name="code"
                value={this.state.old || ''}
                onChange={this.onChange}
                className="form-control"/>
       </InputGroup>
-      <InputGroup label="New Password" message={this.state.errors.password}>
+      <InputGroup label={T('New Password')} message={this.state.errors.password}>
         <input name="password"
                value={this.state.password || ''}
                onChange={this.onChange}
                className="form-control"/>
       </InputGroup>
-      <InputGroup label="Repeat Password" message={this.state.errors.repeat}>
+      <InputGroup label={T('Repeat Password')} message={this.state.errors.repeat}>
         <input name="repeat"
                value={this.state.repeat || ''}
                onChange={this.onChange}
                className="form-control"/>
       </InputGroup>
-      <button type="submit" className="btn btn-success">Change</button>
+      <button type="submit" className="btn btn-success">{T('Reset')}</button>
     </form>
   }
 }

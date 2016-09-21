@@ -1,4 +1,4 @@
-const config = require('../config')
+const config = require('../server/config')
 const MongoClient = require('mongodb').MongoClient
 const crypto = require('crypto')
 const fs = require('fs')

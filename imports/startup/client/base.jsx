@@ -7,6 +7,14 @@ Meteor.isMobile = Meteor.isCordova
   || navigator.userAgent.indexOf('iOS') > 0
   || navigator.userAgent.indexOf('Android') > 0
 
+const dictionary = {
+    'Settings': 'Настройки'
+}
+
+window.T = function (message) {
+  return message in dictionary ? dictionary[message] : message
+}
+
 const app = Meteor.isMobile ? require('/imports/ui/mobile/app') : require('/imports/ui/app')
 export const App = app.App
 

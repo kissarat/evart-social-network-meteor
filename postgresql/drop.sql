@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS "verify";
 DROP VIEW IF EXISTS "informer";
 DROP VIEW IF EXISTS "to_list";
 DROP VIEW IF EXISTS "from_list";

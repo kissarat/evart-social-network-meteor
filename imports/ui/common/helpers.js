@@ -1,7 +1,3 @@
-const config = require('../../../config')
-
-const year = new Date(new Date().getFullYear(), 0).getTime()
-
 export function idToTimeString(id) {
   id = id / (1000 * 1000)
   const delta = Date.now() - id
@@ -17,7 +13,7 @@ export function idToTimeString(id) {
 }
 
 export function bucketFile(id) {
-  return `https://${config.aws.endpoint}/${config.aws.params.Bucket}/${id}`
+  return `https://${Meteor.settings.public.aws.endpoint}/${Meteor.settings.public.aws.params.Bucket}/${id}`
 }
 
 export function thumb(id) {

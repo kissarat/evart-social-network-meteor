@@ -46,6 +46,8 @@ export const RootRoute = <Route path='/' component={Root}>
     <Route component={NoIndex}>
       <Route path="login" component={LoginPage}/>
       <Route path="signup" component={Signup}/>
+      <Route path="signup/verify" component={Signup}/>
+      <Route path="signup/about" component={Signup}/>
       <Route path="reset-password" component={ResetPassword}/>
     </Route>
     {AdminRoute}

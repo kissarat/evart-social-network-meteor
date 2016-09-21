@@ -26,6 +26,7 @@
     "pg": "^6.1.0",
     "pg-live-select": "^1.0.3",
     "pg-native": "^1.10.0",
+    "randomstring": "^1.1.5",
     "rangeslider.js": "^2.2.1",
     "react": "^15.3.0",
     "react-date-picker": "^5.3.28",

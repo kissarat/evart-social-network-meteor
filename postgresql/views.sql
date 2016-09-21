@@ -292,3 +292,6 @@ CREATE OR REPLACE VIEW informer AS
     row_to_json(f.*)                            AS track
   FROM blog_recipient b
     LEFT JOIN file f ON b.playing = f.id;
+
+CREATE OR REPLACE VIEW verify AS
+  SELECT data->>'sid' as sid, data->>'code' as code FROM log WHERE type = 'user' AND action = 'verify';

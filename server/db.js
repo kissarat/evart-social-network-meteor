@@ -1,6 +1,6 @@
 const Pool = require('pg').Pool
 const _ = require('underscore')
-const config = require('../config')
+const config = require('./config')
 const _knex = require('knex')
 if (!this.Meteor) {
   global.LivePg = require('pg-live-select')
@@ -405,8 +405,10 @@ function log(type, action, params) {
     type,
     action,
     id: timeId(),
-    ip: Meteor.call('ip'),
-    actor: Meteor.userId()
+    ip: Meteor.call('ip')
+  }
+  if (Meteor.userId()) {
+    record.actor = Meteor.userId()
   }
   if (!_.isEmpty(params)) {
     record.data = params

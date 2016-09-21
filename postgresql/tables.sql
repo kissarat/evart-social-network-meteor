@@ -38,6 +38,7 @@ CREATE TABLE blog (
   name   VARCHAR(128),
   surname   VARCHAR(64),
   forename   VARCHAR(64),
+  phone   VARCHAR(24),
   type   blog_type NOT NULL,
   playing BIGINT REFERENCES file(id),
   status VARCHAR(140),
@@ -117,6 +118,7 @@ CREATE TABLE log (
   type VARCHAR(16) NOT NULL,
   action VARCHAR(32) NOT NULL,
   ip INET,
-  actor BIGINT REFERENCES blog(id),
+  actor BIGINT REFERENCES blog(id)
+  ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
   data JSON
 )

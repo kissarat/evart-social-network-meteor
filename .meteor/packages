@@ -16,7 +16,7 @@ mongo
 numtel:pg
 random@1.0.10
 reactive-var
-session@1.1.6
+session
 shell-server
 standard-minifier-css@1.2.0
 standard-minifier-js@1.2.0
@@ -25,3 +25,4 @@ twbs:bootstrap
 underscore@1.0.9
 wolves:bourbon
 static-html
+dispatch:twilio

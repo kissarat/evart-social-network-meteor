@@ -18,6 +18,11 @@ class Audio extends Component {
   }
 }
 
+//
+// <div className="ctrl ctrl-volume">
+//  <input type="range"/>
+/// </div>
+
 class Player extends Component {
   componentWillMount() {
     const audio = document.createElement('audio')
@@ -28,7 +33,8 @@ class Player extends Component {
   }
 
   onLoadedMetadata = () => {
-    Meteor.call('blog.update', {id: Meteor.userId()}, {playing: this.props.id})
+    const state = {playing: this.props.id}
+    Meteor.call('blog.update', {id: Meteor.userId()}, state, () => this.setState(state))
   }
 
   onSeek = (e) => {
@@ -40,8 +46,8 @@ class Player extends Component {
   }
 
   play = () => {
-    this.setState({playing: this.audio.paused})
-    if (this.audio.paused) {
+    this.setState({playing: this.refs.audio.paused})
+    if (this.refs.audio.paused) {
       this.refs.audio.play()
     }
     else {
@@ -55,9 +61,6 @@ class Player extends Component {
     const controls =this.refs && this.refs.audio ? <div className='media-controls'>
       <div className="ctrl ctrl-play" onClick={this.play}>
         <span className={audio.paused ? 'play' : 'pause'}/>
-      </div>
-      <div className="ctrl ctrl-volume">
-        <input type="range"/>
       </div>
       <div className="ctrl ctrl-progress">
         <input type="range"

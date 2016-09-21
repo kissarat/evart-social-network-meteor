@@ -90,6 +90,12 @@
   }
 }
 
+@media (max-height: 800px) {
+  footer {
+    margin-bottom: -180px;
+  }
+}
+
 @media (max-width: 768px) {
   .auth {
     footer {

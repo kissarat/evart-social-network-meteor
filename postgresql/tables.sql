@@ -19,17 +19,6 @@ CREATE TABLE file (
   thumb VARCHAR(50)
 );
 
-CREATE TABLE convert (
-  id        BIGSERIAL PRIMARY KEY,
-  file      BIGINT NOT NULL UNIQUE REFERENCES file (id),
-  pid       INT CHECK (pid > 0),
-  progress  FLOAT4 NOT NULL DEFAULT 0,
-  processed BIGINT NOT NULL DEFAULT 0,
-  blog      BIGINT REFERENCES blog (id)
-  ON DELETE CASCADE ON UPDATE CASCADE,
-  size      BIGINT
-);
-
 CREATE TYPE blog_type AS ENUM ('user', 'group', 'chat');
 
 CREATE TABLE blog (
@@ -57,7 +46,18 @@ CREATE TABLE blog (
   time   TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
-CREATE TYPE relation_type AS ENUM ('follow', 'manage', 'deny', 'reject');
+CREATE TABLE convert (
+  id        BIGSERIAL PRIMARY KEY,
+  file      BIGINT NOT NULL UNIQUE REFERENCES file (id),
+  pid       INT CHECK (pid > 0),
+  progress  FLOAT4 NOT NULL DEFAULT 0,
+  processed BIGINT NOT NULL DEFAULT 0,
+  blog      BIGINT REFERENCES blog (id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+  size      BIGINT
+);
+
+CREATE TYPE relation_type AS ENUM ('follow', 'manage', 'deny', 'reject', 'friend');
 
 CREATE TABLE relation (
   id     BIGINT PRIMARY KEY,

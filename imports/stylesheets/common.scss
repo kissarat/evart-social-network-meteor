@@ -395,3 +395,22 @@ ul.list {
     list-style: none;
   }
 }
+
+.player {
+  .media-container {
+    min-height: 280px;
+  }
+
+  .media-overlay {
+    top: 180px
+  }
+
+  h3 {
+    margin-top: 0;
+    padding-top: 16px;
+  }
+
+  .more {
+    opacity: 0;
+  }
+}

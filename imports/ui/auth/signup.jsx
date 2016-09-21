@@ -35,6 +35,7 @@ export class Signup extends Component {
   onChange = (e) => {
     const name = e.target.getAttribute('name')
     const value = e.target.value
+
     this.setState({[name]: value})
     if (value.trim() && ['domain', 'phone', 'email']. indexOf(name) >= 0) {
       this.checkExistance(name, value)
@@ -59,6 +60,7 @@ export class Signup extends Component {
         }
         else if (res.success) {
           localStorage.setItem('sid', res.sid)
+          this.setState({sid: res.sid})
           browserHistory.push('/signup/verify')
         }
         else {

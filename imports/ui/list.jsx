@@ -180,6 +180,29 @@ export class FriendList extends List {
   }
 }
 
+export class UserList extends List {
+  componentWillReceiveProps(props) {
+    this.subscribe('invite', {})
+  }
+
+  search = (string) => {
+    const params = this.state.invite
+    params.search = string
+    this.subscribe('invite', params)
+  }
+
+  render() {
+    const list = this.renderList(this.getSubscription('invite'))
+    const searchBar = this.props.tiny ? <Search search={this.search}/> : ''
+    const content =
+      <div className="contact-list list">
+        {searchBar}
+        {list}
+      </div>
+    return this.props.tiny ? content : <ListHeader search={this.search}>{content}</ListHeader>
+  }
+}
+
 export class SubscriberList extends List {
   componentWillReceiveProps(props) {
     const params = {}

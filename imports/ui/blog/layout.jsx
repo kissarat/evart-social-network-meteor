@@ -37,7 +37,7 @@ export class Title extends Component {
     const name = this.props.name ? <h4>{this.props.name}</h4> : <h4>Untitled</h4>
     const geo = this.props.geo ?
       <div><span className="icon icon-location"/>{this.props.geo.replace('\t', ',')}</div> : ''
-    let status = this.state.status || this.props.status
+    let status = this.state.status || this.props.status || ''
     status = 'manage' === this.props.relation
       ? <textarea value={status}
                   rows={Meteor.isMobile ? 1 : 3}
@@ -181,20 +181,26 @@ class Friends extends Subscriber {
       return <div className="friends"><Busy/></div>
     }
     else {
-      const list = this.getSubscription('invite')
-        .map(friend => {
-          const avatar = friend.avatar ? thumb(friend.avatar) : '/images/user.png'
-          return <Link key={friend.from}
-                       className="friend avatar"
-                       to={'/blog/' + friend.from}
-                       title={friend.name}
-                       style={{backgroundImage: `url("${avatar}")`}}
-          />
-        })
-      return <div className="friends">
-        {list}
-        <Link key='url' to={'/friends/' + this.props.id} className="friend count">More</Link>
-      </div>
+      let list = this.getSubscription('invite')
+      if (list.length > 0) {
+        list = this.getSubscription('invite')
+          .map(friend => {
+            const avatar = friend.avatar ? thumb(friend.avatar) : '/images/user.png'
+            return <Link key={friend.from}
+                         className="friend avatar"
+                         to={'/blog/' + friend.from}
+                         title={friend.name}
+                         style={{backgroundImage: `url("${avatar}")`}}
+            />
+          })
+        return <div className="friends">
+          {list}
+          <Link key='url' to={'/friends/' + this.props.id} className="friend count">More</Link>
+        </div>
+      }
+      else {
+        return <div className="friends"></div>
+      }
     }
   }
 }
@@ -303,15 +309,11 @@ export class BlogLayout extends Component {
       const avatarId = this.state.avatar || this.props.avatar
       const avatar = <ImageDropzone
         imageProperty="avatar"
+        className="avatar large"
         imageId={avatarId}
         relation={this.props.relation}
+        big={true}
         onDrop={this.onDrop}>
-        <Avatar
-          avatar={avatarId}
-          type={this.props.type}
-          big={true}
-          className="img-thumbnail"
-        />
       </ImageDropzone>
       const page = [
         <div key='content' className="col-sm-4">

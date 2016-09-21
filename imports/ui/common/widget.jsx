@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import _ from 'underscore'
-import {bucketFile, thumb} from '/imports/ui/common/helpers'
+import {bucketFile, thumb, upload} from '/imports/ui/common/helpers'
 import Dropzone from 'react-dropzone'
 
 export class Subscriber extends Component {
@@ -112,13 +112,20 @@ export class ImageDropzone extends Component {
 
   onDrop = (files, e) => {
     this.setState({busy: true})
-    this.props.onDrop(files, e).then(() => {this.setState({busy: false})})
+    if (this.props.onDrop) {
+      this.props.onDrop(files, e).then(() => {
+        this.setState({busy: false})
+      })
+    }
+    else {
+      Promise.all(_.map(files, upload)).then(() => this.setState({busy: false}))
+    }
   }
 
   render() {
     const attrs = _.pick(this.props, 'className')
     attrs.id = this.props.imageProperty
-    const imageUrl = thumb(this.props.imageId)
+    const imageUrl = this.props.big ? bucketFile(this.props.imageId) : thumb(this.props.imageId)
     attrs.style = this.props.imageId ? {
       background: `url("${imageUrl}") no-repeat center`,
       backgroundSize: 'cover'

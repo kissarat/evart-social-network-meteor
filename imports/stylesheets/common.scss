@@ -251,6 +251,9 @@ header {
     display: flex;
     align-items: center;
     padding: 8px 0;
+    .file {
+      display: none;
+    }
     > * {
       margin-left: 8px;
     }
@@ -331,6 +334,11 @@ header {
   height: 130px;
 }
 
+.avatar.large {
+  width: 100%;
+  min-height: 283px;
+}
+
 .edit-chat {
   display: flex;
   flex-direction: column;
@@ -362,6 +370,19 @@ header {
       transition: opacity 300ms;
     }
   }
+}
+
+.upload-photo {
+  text-align: center;
+  vertical-align: middle;
+  background-color: gainsboro !important;
+  line-height: 60px;
+  color: white
+}
+
+
+#avatar {
+  border: 6px solid white;
 }
 
 .attachment-widget {

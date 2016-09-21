@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {browserHistory} from 'react-router'
 import {Blog, News} from '../../ui/blog/article'
 import {AlertQueue} from '/imports/ui/common/alert'
 import '/imports/stylesheets/main.scss'
@@ -18,8 +19,17 @@ window.T = function (message) {
 const app = Meteor.isMobile ? require('/imports/ui/mobile/app') : require('/imports/ui/app')
 export const App = app.App
 
-export const NoIndex = ({children, menu}) =>
-  <noindex>{children}</noindex>
+export class NoIndex extends Component {
+  componentWillMount() {
+    if (Meteor.userId()) {
+      browserHistory.push('/profile')
+    }
+  }
+
+  render() {
+    return <noindex>{this.props.children}</noindex>
+  }
+}
 
 export class NotFound extends Component {
   resolveUrl() {

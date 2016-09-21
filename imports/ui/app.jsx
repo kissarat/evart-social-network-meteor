@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router'
+import {Link, browserHistory} from 'react-router'
 import {AudioPlaylist} from './audio'
 import {VideoList} from './video'
 import {DialogList, Dialog} from './message'
@@ -109,6 +109,12 @@ class Aside extends Component {
 }
 
 export class App extends Component {
+  componentWillMount() {
+    if (!Meteor.userId()) {
+      browserHistory.push('/login')
+    }
+  }
+
   render() {
     return <section role="main">
       <Aside id="left" className="vertical-panel"/>

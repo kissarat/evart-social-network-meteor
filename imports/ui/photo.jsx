@@ -3,7 +3,7 @@ import {Link} from 'react-router'
 import {BlogLayout} from './blog/layout'
 import {Profile, Children} from './blog/article'
 import {bucketImage} from '/imports/ui/common/helpers'
-import {Busy} from '/imports/ui/common/widget'
+import {Busy, ImageDropzone} from '/imports/ui/common/widget'
 
 export class Gallery extends Profile {
   setupState(state) {
@@ -13,6 +13,9 @@ export class Gallery extends Profile {
 
   render() {
     if (this.state) {
+      const upload = 'manage' == this.state.relation
+        ? <ImageDropzone className="upload-photo" relation="manage">Upload</ImageDropzone>
+        : ''
       const images = this.getSubscription('file').map(file =>
         <div key={file.id} className="item">
           <Link to={'/image/' + file.id} className="image"
@@ -23,6 +26,7 @@ export class Gallery extends Profile {
           <div className="albums">
           </div>
           <div className="photos">
+            {upload}
             {images}
           </div>
         </div>

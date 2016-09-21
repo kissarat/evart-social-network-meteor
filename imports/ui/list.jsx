@@ -17,8 +17,8 @@ class ListHeader extends Component {
               <Link to={'/important'}
                     className={'response ' + ('important' == first ? 'active' : '')}
                     data-id="tab_important">Important</Link>
-              <Link to={'/friends'}
-                    className={'stats ' + ('friends' == first ? 'active' : '')}
+              <Link to={'/users'}
+                    className={'stats ' + ('users' == first ? 'active' : '')}
                     data-id="tab_all">All</Link>
             </div>
             <Search search={this.props.search}/>
@@ -34,7 +34,8 @@ class ListHeader extends Component {
 
 class Contact extends Component {
   render() {
-    const id = +this.props.id
+    console.log(this.props)
+    const id = this.props.from || this.props.id
     const url = '/blog/' + id
     const online = <i className="online"/>
     const more = 'user' === this.props.type ?
@@ -182,24 +183,30 @@ export class FriendList extends List {
 
 export class UserList extends List {
   componentWillReceiveProps(props) {
-    this.subscribe('invite', {})
+    this.subscribe('blog', {type: 'user', order: {id: -1}})
   }
 
   search = (string) => {
-    const params = this.state.invite
+    const params = this.state.blog
     params.search = string
-    this.subscribe('invite', params)
+    this.subscribe('blog', params)
   }
 
   render() {
-    const list = this.renderList(this.getSubscription('invite'))
-    const searchBar = this.props.tiny ? <Search search={this.search}/> : ''
-    const content =
-      <div className="contact-list list">
-        {searchBar}
+    const list = this.renderList(this.getSubscription('blog'))
+    if (this.props.tiny) {
+      return <div className="contact-list list">
+        <Search search={this.search}/>
         {list}
       </div>
-    return this.props.tiny ? content : <ListHeader search={this.search}>{content}</ListHeader>
+    }
+    else {
+      return <ListHeader search={this.search}>
+        <div className="contact-list list">
+          {list}
+        </div>
+      </ListHeader>
+    }
   }
 }
 

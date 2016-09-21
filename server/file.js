@@ -78,7 +78,12 @@ function requestOembed({url}) {
           reject(err)
         }
         else {
-          resolve(JSON.parse(b))
+          try {
+            resolve(JSON.parse(b))
+          }
+          catch (ex) {
+            reject(ex)
+          }
         }
       })
     })

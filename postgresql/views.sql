@@ -138,7 +138,8 @@ CREATE OR REPLACE VIEW "message_attitude_recipient" AS
     author.avatar,
     b.id   AS recipient,
     a.type AS attitude
-  FROM "blog" b CROSS JOIN repost_count m JOIN blog author ON m."from" = author.id
+  FROM "blog" b CROSS JOIN repost_count m
+    JOIN blog author ON m."from" = author.id
     LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
   WHERE b.type = 'user';
 
@@ -249,6 +250,10 @@ CREATE OR REPLACE VIEW blog_cross AS
     f.id AS "recipient"
   FROM blog f CROSS JOIN blog t;
 
+CREATE OR REPLACE VIEW "recipient" AS
+  SELECT j.*
+  FROM blog_cross j;
+
 CREATE OR REPLACE VIEW "blog_recipient" AS
   SELECT
     j.*,
@@ -256,11 +261,16 @@ CREATE OR REPLACE VIEW "blog_recipient" AS
     WHEN j.id = j.recipient OR 'manage' = rv.type
       THEN 'manage'
     WHEN r.type = 'follow' AND rv.type = 'follow'
-      THEN 'friend'
+      THEN 'follow'
     ELSE r.type END AS relation
   FROM blog_cross j
     LEFT JOIN relation r ON j.recipient = r."from" AND j.id = r."to"
     LEFT JOIN relation rv ON j.recipient = rv."to" AND j.id = rv."from";
+
+CREATE OR REPLACE VIEW recipient AS
+  SELECT j.*
+  FROM blog_cross j LEFT JOIN relation r ON j.recipient = r."from" AND j.id = r."to"
+    RIGHT JOIN relation rv ON j.recipient = rv."to" AND j.id = rv."from";
 
 CREATE OR REPLACE VIEW informer AS
   SELECT
@@ -294,4 +304,14 @@ CREATE OR REPLACE VIEW informer AS
     LEFT JOIN file f ON b.playing = f.id;
 
 CREATE OR REPLACE VIEW verify AS
-  SELECT data->>'sid' as sid, data->>'code' as code FROM log WHERE type = 'user' AND action = 'verify';
+  SELECT
+    data ->> 'sid'  AS sid,
+    data ->> 'code' AS code
+  FROM log
+  WHERE type = 'user' AND action = 'verify';
+
+CREATE OR REPLACE VIEW friend AS
+  SELECT d.*
+  FROM relation d
+    JOIN relation r ON d."from" = r."to" AND r."to" = d."from"
+  WH

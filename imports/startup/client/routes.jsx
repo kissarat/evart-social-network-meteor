@@ -6,7 +6,7 @@ import {Edit, ChangePassword, ResetPassword} from '/imports/ui/blog/edit'
 import {Chat} from '/imports/ui/chat'
 import {FileRoute} from '/imports/ui/file'
 import {Gallery, Visual} from '/imports/ui/photo'
-import {InviteList, FriendList, GroupsList, SubscriberList} from '/imports/ui/list'
+import {InviteList, FriendList, GroupsList, SubscriberList, User, UserList} from '/imports/ui/list'
 import {LoginPage} from '/imports/ui/auth/login'
 import {Messenger} from '/imports/ui/message'
 import {PhoneRoute} from '/imports/ui/phone'
@@ -41,6 +41,7 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="groups/:id" component={GroupsList}/>
       <Route path="unavailable" component={Unavailable}/>
       <Route path="chat/:id/edit" component={Chat}/>
+      <Route path="users" component={UserList}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>
@@ -49,8 +50,6 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="signup/verify" component={Signup}/>
       <Route path="signup/about" component={Signup}/>
       <Route path="reset-password" component={ResetPassword}/>
+      <Route path="*" component={NotFound}/>
     </Route>
-    {AdminRoute}
-    {PhoneRoute}
-    <Route path="*" component={NotFound}/>
   </Route>

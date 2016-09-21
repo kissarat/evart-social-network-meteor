@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link, browserHistory} from 'react-router'
-import {upload} from '/imports/ui/common/helpers'
+import {upload, thumb} from '/imports/ui/common/helpers'
 import {Subscriber, Avatar, ImageDropzone, Busy} from '/imports/ui/common/widget'
 
 export const Track = function ({track, type}) {

@@ -21,9 +21,14 @@ export const App = app.App
 
 export class NoIndex extends Component {
   componentWillMount() {
-    if (Meteor.userId()) {
-      browserHistory.push('/profile')
-    }
+    // if ('/' == location.pathname) {
+    //   if (Meteor.userId()) {
+    //     browserHistory.push('/profile')
+    //   }
+    //   else {
+    //     browserHistory.push('/login')
+    //   }
+    // }
   }
 
   render() {
@@ -33,11 +38,22 @@ export class NoIndex extends Component {
 
 export class NotFound extends Component {
   resolveUrl() {
-    Meteor.call('blog.get', {domain: location.pathname.slice(1)}, (err, res) => {
-      if (res) {
-        this.setState(res)
+    const route = location.pathname.slice(1)
+    if (route) {
+      Meteor.call('blog.get', {domain: route}, (err, res) => {
+        if (res) {
+          this.setState(res)
+        }
+      })
+    }
+    else {
+      if (Meteor.userId()) {
+        browserHistory.push('/profile')
       }
-    })
+      else {
+        browserHistory.push('/login')
+      }
+    }
   }
 
   componentWillMount() {
@@ -59,6 +75,17 @@ export class NotFound extends Component {
 }
 
 export class BrowserFeatures extends Component {
+  componentWillMount() {
+    if ('/' == location.pathname) {
+      if (Meteor.userId()) {
+        browserHistory.push('/profile')
+      }
+      else {
+        browserHistory.push('/login')
+      }
+    }
+  }
+
   render() {
     document.title = 'Browser Features'
     const features = {

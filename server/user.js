@@ -23,7 +23,7 @@ Accounts.onCreateUser(function (options, user) {
 
 Meteor.methods({
   verify({phone, code, sid}) {
-    if (code) {
+    if (code && sid) {
       if (!sid) {
         throw new Meteor.Error(400)
       }

@@ -10,10 +10,12 @@ for (let i = 0; i < 400; i++) {
   })
 }
 
-const users = blogs.filter(b => 'user' === b.type)
-_.uniq(_.faker.lorem.words(1000).split(' ')).forEach(function (word) {
-  _.sample(users).domain = word
-})
+// const users = blogs.filter(b => 'user' === b.type)
+// _.uniq(_.faker.lorem.words(1000).split(' ')).forEach(function (word) {
+//   if (!users.some(u => u.domain === word)) {
+//     _.sample(users).domain = word
+//   }
+// })
 
 _.saveSQL('blog', [
   {

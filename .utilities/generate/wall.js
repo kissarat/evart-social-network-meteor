@@ -28,12 +28,17 @@ for (let i = 0; i < 5000; i++) {
 
 const ids = _.pluck(children, 'id').concat(nodeIds)
 const attitudes = []
-for (let i = 0; i < 15000; i++) {
-  attitudes.push({
+for (let i = 0; i < 15000;) {
+  const attitude = {
     from: _.sample(blogIds),
     message: _.sample(ids),
     type: _.sample(['like', 'hate'])
-  })
+  }
+  if (attitudes.some(a => attitude.from === a.from && attitude.message === a.message)) {
+    continue;
+  }
+  i++;
+  attitudes.push(attitude)
 }
 
 _.saveSQL('wall', [

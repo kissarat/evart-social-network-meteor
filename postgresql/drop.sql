@@ -23,8 +23,8 @@ DROP VIEW IF EXISTS "dialog";
 DROP VIEW IF EXISTS "member";
 
 DROP TABLE IF EXISTS "log";
-DROP TYPE IF EXISTS "event_type";
 DROP TABLE IF EXISTS "channel";
+DROP TYPE IF EXISTS "event_type";
 DROP TABLE IF EXISTS "attachment";
 DROP TABLE IF EXISTS "attitude";
 DROP TYPE IF EXISTS "attitude_type";

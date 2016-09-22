@@ -1,10 +1,10 @@
-const config = require('../server/config')
+const config = require('../config')
 const MongoClient = require('mongodb').MongoClient
 const crypto = require('crypto')
 const fs = require('fs')
 const AWS = require('aws-sdk')
 const stream = require('stream')
-const db = require('../server/db')
+const db = require('../meteor/server/db')
 const ffprobe = require('node-ffprobe')
 const _ = require('underscore')
 

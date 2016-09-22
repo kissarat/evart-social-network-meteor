@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {AdminRoute} from '/imports/ui/admin/index'
 import {AudioPlaylist} from '/imports/ui/audio'
 import {Blog, News} from '/imports/ui/blog/article'
 import {Edit, ChangePassword, ResetPassword} from '/imports/ui/blog/edit'

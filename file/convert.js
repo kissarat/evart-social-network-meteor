@@ -1,7 +1,7 @@
 const _ = require('underscore')
 const common = require('./common')
-const config = require('./../server/config')
-const db = require('./../server/db')
+const config = require('../config')
+const db = require('../meteor/server/db')
 const ffmpeg = require('fluent-ffmpeg')
 
 let count = 0

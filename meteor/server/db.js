@@ -1,6 +1,6 @@
 const Pool = require('pg').Pool
 const _ = require('underscore')
-const config = require('./config')
+const config = this.Meteor ? Meteor.settings : require('../../config')
 const _knex = require('knex')
 if (!this.Meteor) {
   global.LivePg = require('pg-live-select')

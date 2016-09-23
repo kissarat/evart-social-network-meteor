@@ -34,7 +34,6 @@ class ListHeader extends Component {
 
 class Contact extends Component {
   render() {
-    console.log(this.props)
     const id = this.props.from || this.props.id
     const url = '/blog/' + id
     const online = <i className="online"/>
@@ -183,7 +182,7 @@ export class FriendList extends List {
 
 export class UserList extends List {
   componentWillReceiveProps(props) {
-    this.subscribe('blog', {type: 'user', order: {id: -1}})
+    this.subscribe('blog', {type: 'user', order: {id: -1}, limit: 100})
   }
 
   search = (string) => {

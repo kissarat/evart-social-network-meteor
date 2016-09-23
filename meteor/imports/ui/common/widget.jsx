@@ -125,8 +125,14 @@ export class ImageDropzone extends Component {
   render() {
     const attrs = _.pick(this.props, 'className')
     attrs.id = this.props.imageProperty
-    const imageUrl = this.props.big ? bucketFile(this.props.imageId) : thumb(this.props.imageId)
-    attrs.style = this.props.imageId ? {
+    let imageUrl
+    if (this.props.imageId) {
+      imageUrl = this.props.big ? bucketFile(this.props.imageId) : thumb(this.props.imageId)
+    }
+    else if (this.props.empty) {
+      imageUrl = this.props.empty
+    }
+    attrs.style = imageUrl ? {
       background: `url("${imageUrl}") no-repeat center`,
       backgroundSize: 'cover'
     } : {}

@@ -313,8 +313,8 @@ export class BlogLayout extends Component {
         imageId={avatarId}
         relation={this.props.relation}
         big={true}
-        onDrop={this.onDrop}>
-      </ImageDropzone>
+        empty={`/images/${this.props.type}.png`}
+        onDrop={this.onDrop}/>
       const page = [
         <div key='content' className="col-sm-4">
           <div className="row">

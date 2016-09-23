@@ -9,12 +9,20 @@ const emoji = `😃 😄 😉 😍 😘 😚 😳 😌 😜 😝 😒 😓 😞 
   .split(/\s+/);
 
 export class ImageList extends Subscriber {
+  componentWillReceiveProps(props) {
+    this.subscribe('file_message', {
+      from: Meteor.userId(),
+      type: 'image',
+      limit: 100
+    })
+  }
+
   componentWillMount() {
-    this.subscribe('file', {from: Meteor.userId(), type: 'image', limit: 100})
+    this.componentWillReceiveProps(this.props)
   }
 
   render() {
-    const images = this.getSubscription('file').map(file =>
+    const images = this.getSubscription('file_message').map(file =>
       <div key={file.id} className="item">
         <div className="thumb"
              style={{backgroundImage: `url("${file.thumb}")`}}
@@ -68,21 +76,22 @@ class Attachment extends Component {
     if ('video' === this.state.type) {
       widget = <VideoList {...this.props} open={this.props.open}/>
     }
-    else if ('audio' === this.state.type) {
+    else {
       widget = <AudioPlaylist {...this.props} open={this.props.open}/>
     }
-    // else {
-      //widget = <ImageList open={this.props.open}/>
+    // else {('audio' === this.state.type)
+      //widget = <ImageList {...this.props} open={this.props.open}/>
     // }
+    //<div className={"glyphicon glyphicon-picture " + ('image' === this.state.type ? 'active' : '')}
+    //data-name="image"
+    //onClick={this.onClickMenu}
+    //style={{display:'node'}}/>
     const list = this.props.list.map(file => <File key={file.id} {...file}/>)
     return <div className="attachment-block">
       <div className="attachment-list">{list}</div>
       <div className="attachment-bar">
         <div className="menu">
-          <div className={"glyphicon glyphicon-picture " + ('image' === this.state.type ? 'active' : '')}
-               data-name="image"
-               onClick={this.onClickMenu}
-          style={{display: 'none'}}/>
+
           <div className={"glyphicon glyphicon-play-circle " + ('video' === this.state.type ? 'active' : '')}
                data-name="video"
                onClick={this.onClickMenu}/>

@@ -133,7 +133,9 @@ export class ImageDropzone extends Component {
       imageUrl = this.props.empty
     }
     attrs.style = imageUrl ? {
-      background: `url("${imageUrl}") no-repeat center`,
+      backgroundImage: `url("${imageUrl}")`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
       backgroundSize: 'cover'
     } : {}
     attrs.onDrop = this.onDrop

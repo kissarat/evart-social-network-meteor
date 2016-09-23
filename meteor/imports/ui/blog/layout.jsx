@@ -262,6 +262,9 @@ export class BlogLayout extends Component {
           else {
             this.setState({[name]: data.id})
             resolve(res)
+            if ('avatar' === name) {
+              location.reload()
+            }
           }
         })
       })

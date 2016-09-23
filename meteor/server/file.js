@@ -7,6 +7,11 @@ Meteor.publish('file', function (params = {}) {
     .cursor()
 })
 
+Meteor.publish('file_view', function (params = {}) {
+  return query('file_view', params)
+    .cursor()
+})
+
 Meteor.publish('convert', function (params = {}) {
   return table('convert')
     .cursor()

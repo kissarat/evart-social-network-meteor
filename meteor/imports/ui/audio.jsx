@@ -144,7 +144,9 @@ export class AudioPlaylist extends Subscriber {
       {player}
       <div className="playlist-container">
         <Search label="Search music..." search={this.search}>
-          <button className="add" onClick={this.onClickAdd}>+</button>
+          <button className="add" onClick={this.onClickAdd}>
+            <div className="center">+</div>
+          </button>
         </Search>
         <div className="playlist">
           <Dropzone className={'uploader' + (this.state.upload ? '' : ' hide')} onDrop={this.onDrop}>

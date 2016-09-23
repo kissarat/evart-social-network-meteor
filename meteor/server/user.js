@@ -145,5 +145,20 @@ Meteor.methods({
             .then(resolve, reject)
         })
       })
+  },
+
+  'user,create'() {
+    const data = {id: timeId()}
+    return table('blog')
+      .insert(data)
+      .promise()
+      .then(() => table('relation')
+        .insert({
+          from: data.id,
+          to: Meteor.userId(),
+          type: 'manage'
+        })
+        .promise())
+      .then(() => data)
   }
 })

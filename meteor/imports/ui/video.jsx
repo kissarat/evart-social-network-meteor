@@ -82,7 +82,9 @@ export class VideoList extends Subscriber {
     return <div className="video player">
         {current}
         <Search search={this.search} label="Search video...">
-          <button className="add" onClick={this.onClickAdd}>+</button>
+          <button className="add" onClick={this.onClickAdd}>
+            <div className="center">+</div>
+          </button>
         </Search>
         {add}
         <div className="playlist-container">

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Subscriber, ScrollArea, Avatar, Search} from './common/widget'
 import {Communicate} from './blog/layout'
-import {Link} from 'react-router'
+import {Link, browserHistory} from 'react-router'
 
 class ListHeader extends Component {
   render() {
@@ -255,10 +255,25 @@ export class GroupsList extends List {
     this.subscribe(name, params)
   }
 
+  onClickAdd() {
+    Meteor.call('group.create', (err, res) => {
+      if (err) {
+        Meteor.error(err.reason)
+      }
+      else {
+        browserHistory.push(`/group/${res.id}/edit`)
+      }
+    })
+  }
+
   render() {
     const list = this.renderList(this.getSubscription(this.state.blog ? 'blog' : 'from_list'))
     return <div className="contact-list list group">
-      <Search search={this.search}/>
+      <Search search={this.search}>
+        <button className="add" onClick={this.onClickAdd}>
+          <div className="center">+</div>
+        </button>
+      </Search>
       {list}
     </div>
   }

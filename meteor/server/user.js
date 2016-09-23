@@ -21,56 +21,87 @@ Accounts.onCreateUser(function (options, user) {
   return user
 })
 
+function exists(params) {
+  params = _.pick(params, 'phone', 'domain')
+  if (_.isEmpty()) {
+    throw new Meteor.Error(400)
+  }
+  else {
+    if (params.phone) {
+      params.phone = digits(params.phone)
+    }
+    return table('blog').where(params).promise().then(function (result) {
+      return {exists: result.rowCount > 0}
+    })
+  }
+}
+
 Meteor.methods({
-  verify({phone, code, sid}) {
+  exists,
+
+  sendSMS({phone}) {
+    phone = digits(phone)
+    if (phone && Meteor.settings.sms.codes.some(a => 0 === phone.indexOf(a))) {
+      return table('blog').where('phone', phone).single().then(function (found) {
+        if (found) {
+          throw new Meteor.Error(403, 'Number is registered')
+        }
+        else {
+          const code = generate({charset: 'numeric', length: 6})
+          return new Promise(function (resolve, reject) {
+            sendSMS(phone, 'Evart Social Network. Code: ' + code, function (err, response) {
+              if (err) {
+                reject(err)
+              }
+              else {
+                var result = {
+                  success: !!response.sid,
+                  status: response.status
+                };
+                if (result.success) {
+                  result.sid = response.sid
+                  result.time = response.dateUpdated
+                  log('user', 'verify', {
+                    sid: response.sid,
+                    code: code,
+                    phone: phone
+                  })
+                    .then(() => resolve(result))
+                    .catch(reject)
+                }
+                else {
+                  reject(result);
+                }
+              }
+            })
+          })
+        }
+      })
+    }
+    else {
+      throw new Meteor.Error(400, 'Invalid phone')
+    }
+  },
+
+  verify({sid, code, phone}) {
     if (code && sid) {
       if (!sid) {
         throw new Meteor.Error(400)
       }
       return table('verify').where({sid: sid, code: digits(code)}).single().then(function (found) {
-        const data = {success: !!found}
+        const data = {
+          sid: sid,
+          code: code,
+          success: !!found
+        }
+        if (phone) {
+          data.phone = digits(phone)
+        }
         return log('user', 'approve', data).then(() => data)
       })
     }
     else {
-      phone = digits(phone)
-      if (phone && Meteor.settings.sms.codes.some(a => 0 === phone.indexOf(a))) {
-        return table('blog').where('phone', phone).single().then(function (found) {
-          if (found) {
-            throw new Meteor.Error(403, 'Number is registered')
-          }
-          else {
-            const code = generate({charset: 'numeric', length: 6})
-            return new Promise(function (resolve, reject) {
-              sendSMS(phone, 'Evart Social Network. Code: ' + code, function (err, response) {
-                if (err) {
-                  reject(err)
-                }
-                else {
-                  var result = {
-                    success: !!response.sid,
-                    status: response.status
-                  };
-                  if (result.success) {
-                    result.sid = response.sid
-                    result.time = response.dateUpdated
-                    log('user', 'verify', {
-                      sid: response.sid,
-                      code: code
-                    })
-                      .then(() => resolve(result))
-                      .catch(reject)
-                  }
-                  else {
-                    reject(result);
-                  }
-                }
-              })
-            })
-          }
-        })
-      }
-      throw new Meteor.Error(400, 'Invalid phone')
+      throw new Meteor.Error(400, 'Invalid code or session id')
     }
   },
 
@@ -97,6 +128,7 @@ Meteor.methods({
             throw new Meteor.Error(403, 'Session is not found')
           }
           const data = _.pick(params, ['domain', 'name', 'surname', 'forename', 'phone', 'email'])
+          data.phone = digits(data.phone)
           data.id = timeId()
           Meteor.users.insert({_id: data.id.toString(), username: data.domain})
           Accounts.setPassword(data.id.toString(), params.password)
@@ -113,11 +145,5 @@ Meteor.methods({
             .then(resolve, reject)
         })
       })
-  },
-
-  exists(params) {
-    return table('blog').where(params).promise().then(function (result) {
-      return {exists: result.rowCount > 0}
-    })
   }
 })

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Login, Footer} from './login'
-import {InputGroup} from '/imports/ui/common/widget'
+import {InputGroup, Busy} from '/imports/ui/common/widget'
 import {browserHistory} from 'react-router'
 import '/imports/stylesheets/signup.scss'
 
@@ -27,7 +27,7 @@ export class Signup extends Component {
   checkExistance = _.debounce((name, value) => {
     Meteor.call('exists', {[name]: value}, (err, res) => {
       if (res) {
-        this.setError(name, res.exists ? 'User already registered' : '')
+        this.setError(name, res.exists ? 'User is already registered' : '')
       }
     })
   }, 1000)
@@ -48,13 +48,19 @@ export class Signup extends Component {
         localStorage.setItem(key, this.state[key])
       }
     })
-    Meteor.call(method, _.omit(this.state, 'errors'), cb)
-    this.setState({errors: {}})
+    Meteor.call(method, _.omit(this.state, 'errors'), (err, res) => {
+      this.setState({busy: false})
+      cb(err, res)
+    })
+    this.setState({
+      busy: true,
+      errors: {}
+    })
   }
 
   phone = () => {
     if (this.state.agree) {
-      this.send('verify', (err, res) => {
+      this.send('sendSMS', (err, res) => {
         if (err) {
           this.setState({errors: {phone: err.reason}})
         }
@@ -69,17 +75,25 @@ export class Signup extends Component {
       })
     }
     else {
-      this.setState({errors: {phone: 'You must accept license agreement'}})
+      this.setError('agree', 'You must accept license agreement')
     }
   }
 
   verify = () => {
     this.send('verify', (err, res) => {
       if (err) {
-        this.setState({errors: {phone: err.reason}})
+        this.setState({errors: {code: err.reason}})
       }
-      else if (res.success) {
-        browserHistory.push('/signup/about')
+      else if (res) {
+        if (res.success) {
+          browserHistory.push('/signup/about')
+        }
+        else {
+          this.setError('code', 'Wrong code')
+        }
+      }
+      else {
+        Meteor.error('Something wrong happened')
       }
     })
   }
@@ -132,80 +146,91 @@ export class Signup extends Component {
     if (!('verify' === step || 'about' === step)) {
       step = 'phone'
     }
-    return <div id="signup-page">
-      <Login/>
-      <main>
-        <form method="post" className="signup" onSubmit={this.onSubmit}>
-          <div className="title">
-            <h1>Simple registration in 3 steps</h1>
-            <h2>Fill all fields to register</h2>
-          </div>
-          <hr/>
-          <div id="phone" className={'phone' === step ? 'active step' : 'step'}>
-            {Signup.step(1)}
-            <fieldset className="single">
-              <InputGroup message={this.state.errors.phone}>
-                <input type="text" className="form-control"
-                       name="phone" placeholder="Phone"
-                       onChange={this.onChange}/>
-                <button type="button" className="btn btn-primary" onClick={this.phone}>Next</button>
-              </InputGroup>
-              <label className="agree">
+    const form = this.state.busy ? <Busy/> :
+      <form method="post" className="signup" onSubmit={this.onSubmit}>
+        <div className="title">
+          <h1>Simple registration in 3 steps</h1>
+          <h2>Fill all fields to register</h2>
+        </div>
+        <hr/>
+        <div id="phone" className={'phone' === step ? 'active step' : 'step'}>
+          {Signup.step(1)}
+          <fieldset className="single">
+            <InputGroup message={this.state.errors.phone}>
+              <input type="text" className="form-control"
+                     name="phone" placeholder="Phone"
+                     value={this.state.phone}
+                     onChange={this.onChange}/>
+              <button type="button" className="btn btn-primary" onClick={this.phone}>Next</button>
+            </InputGroup>
+            <label className="agree">
+              <InputGroup message={this.state.errors.agree}>
                 <input type="checkbox" name="agree"
+                       value={this.state.agree}
                        onChange={this.onChange}/>
                 I am accepting <a href="#" target="_blank">license agreement</a>
-              </label>
-            </fieldset>
-          </div>
-          <div id="verify" className={'verify' === step ? 'active step' : 'step'}>
-            {Signup.step(2)}
-            <fieldset className="single">
-              <InputGroup message={this.state.errors.code}>
-                <input type="text" className="form-control"
-                       name="code" placeholder="Code"
-                       onChange={this.onChange}/>
-                <button type="button" className="btn btn-primary" onClick={this.verify}>Verify</button>
               </InputGroup>
-            </fieldset>
-          </div>
-          <div id="about" className={'about' === step ? 'active step' : 'step'}>
-            {Signup.step(3)}
-            <fieldset>
-              <InputGroup message={this.state.errors.domain}>
-                <input className="form-control"
-                       name="domain" placeholder="Login"
-                       onChange={this.onChange}/>
-              </InputGroup>
-              <InputGroup message={this.state.errors.email}>
-                <input className="form-control"
-                       name="email" placeholder="Email"
-                       onChange={this.onChange}/>
-              </InputGroup>
-              <InputGroup message={this.state.errors.password}>
-                <input className="form-control"
-                       name="password" placeholder="Password" type="password"
-                       onChange={this.onChange}/>
-              </InputGroup>
-              <InputGroup message={this.state.errors.repeat}>
-                <input className="form-control"
-                       name="repeat" placeholder="Repeat Password" type="password"
-                       onChange={this.onChange}/>
-              </InputGroup>
-              <InputGroup message={this.state.errors.surname}>
-                <input className="form-control"
-                       name="surname" placeholder="Last Name"
-                       onChange={this.onChange}/>
-              </InputGroup>
-              <InputGroup message={this.state.errors.forename}>
-                <input className="form-control"
-                       name="forename" placeholder="First Name"
-                       onChange={this.onChange}/>
-              </InputGroup>
-              <button type="submit">Signup</button>
-            </fieldset>
-          </div>
-        </form>
-      </main>
+            </label>
+          </fieldset>
+        </div>
+        <div id="verify" className={'verify' === step ? 'active step' : 'step'}>
+          {Signup.step(2)}
+          <fieldset className="single">
+            <InputGroup message={this.state.errors.code}>
+              <input type="text" className="form-control"
+                     name="code" placeholder="Code"
+                     value={this.state.code}
+                     onChange={this.onChange}/>
+              <button type="button" className="btn btn-primary" onClick={this.verify}>Verify</button>
+            </InputGroup>
+          </fieldset>
+        </div>
+        <div id="about" className={'about' === step ? 'active step' : 'step'}>
+          {Signup.step(3)}
+          <fieldset>
+            <InputGroup message={this.state.errors.domain}>
+              <input className="form-control"
+                     name="domain" placeholder="Login"
+                     value={this.state.domain}
+                     onChange={this.onChange}/>
+            </InputGroup>
+            <InputGroup message={this.state.errors.email}>
+              <input className="form-control"
+                     name="email" placeholder="Email"
+                     value={this.state.email}
+                     onChange={this.onChange}/>
+            </InputGroup>
+            <InputGroup message={this.state.errors.password}>
+              <input className="form-control"
+                     name="password" placeholder="Password" type="password"
+                     value={this.state.password}
+                     onChange={this.onChange}/>
+            </InputGroup>
+            <InputGroup message={this.state.errors.repeat}>
+              <input className="form-control"
+                     name="repeat" placeholder="Repeat Password" type="password"
+                     value={this.state.repeat}
+                     onChange={this.onChange}/>
+            </InputGroup>
+            <InputGroup message={this.state.errors.surname}>
+              <input className="form-control"
+                     name="surname" placeholder="Last Name"
+                     value={this.state.surname}
+                     onChange={this.onChange}/>
+            </InputGroup>
+            <InputGroup message={this.state.errors.forename}>
+              <input className="form-control"
+                     name="forename" placeholder="First Name"
+                     value={this.state.forename}
+                     onChange={this.onChange}/>
+            </InputGroup>
+            <button type="submit">Signup</button>
+          </fieldset>
+        </div>
+      </form>
+    return <div id="signup-page">
+      <Login/>
+      <main>{form}</main>
       <Footer/>
     </div>
   }

@@ -179,9 +179,6 @@
 }
 
 form.login {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
   .credentials input, button {
     border: 1px solid #ccc;
     padding: 6px 12px;

@@ -57,7 +57,7 @@ function resizeImage(id, resize) {
   return promise.then(function () {
     const options = {
       src: filename,
-      dst: __dirname + `/../public/thumb/${id}.jpg`,
+      dst: `${config.image.thumb.dir}/${id}.jpg`,
       width: config.image.thumb.width,
       height: config.image.thumb.height,
       quality: config.image.thumb.quality

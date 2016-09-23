@@ -31,7 +31,8 @@ module.exports = merge({
     thumb: {
       width: 120,
       height: 120,
-      quality: 86
+      quality: 86,
+      dir: '/usr/local/var/www/thumb'
     }
   },
   convert: {

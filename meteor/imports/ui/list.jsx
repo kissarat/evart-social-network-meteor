@@ -260,7 +260,7 @@ export class GroupsList extends List {
         Meteor.error(err.reason)
       }
       else {
-        browserHistory.push(`/group/${res.id}/edit`)
+        browserHistory.push('/edit/' + res.id)
       }
     })
   }

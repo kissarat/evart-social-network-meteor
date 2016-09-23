@@ -243,8 +243,12 @@ class Subscribers extends Subscriber {
 }
 
 export class BlogLayout extends Component {
+  componentWillReceiveProps(props) {
+    this.setState(props)
+  }
+
   componentWillMount() {
-    this.state = {}
+    this.componentWillReceiveProps(this.props)
   }
 
   onDrop = (files, e) => {
@@ -278,10 +282,10 @@ export class BlogLayout extends Component {
     }
     else {
       const header = 'user' === this.props.type
-        ? <UserHeader {...this.props} onDrop={this.onDrop}/>
-        : <GroupHeader {...this.props} onDrop={this.onDrop}/>
+        ? <UserHeader {...this.state} onDrop={this.onDrop}/>
+        : <GroupHeader {...this.state} onDrop={this.onDrop}/>
 
-      const relation = 'relation' in this.state ? this.state.relation : this.props.relation
+      const relation = this.state.relation
       let follow
       if ('manage' === relation) {
         follow = <Friends/>
@@ -289,7 +293,7 @@ export class BlogLayout extends Component {
       else if ('follow' === relation) {
         follow = <button className="add-friend" onClick={this.onClickFollow}>Unsubscribe</button>
       }
-      else if ('user' === this.props.type) {
+      else if ('user' === this.state.type) {
         follow = <button className="add-friend" id="follow" onClick={this.onClickFollow}>Add friend</button>
       }
       else {
@@ -298,19 +302,18 @@ export class BlogLayout extends Component {
 
       let menu
       if ('manage' === relation) {
-        menu = <ManagerMenu id={this.props.id}/>
+        menu = <ManagerMenu id={this.state.id}/>
       }
       else if ('user' === this.props.type) {
-        menu = <Communicate id={this.props.id}/>
+        menu = <Communicate id={this.state.id}/>
       }
       else {
-        menu = <Subscribers {...this.props}/>
+        menu = <Subscribers {...this.state}/>
       }
-      const avatarId = this.state.avatar || this.props.avatar
       const avatar = <ImageDropzone
         imageProperty="avatar"
         className="avatar large"
-        imageId={avatarId}
+        imageId={this.state.avatar}
         relation={this.props.relation}
         big={true}
         empty={`/images/${this.props.type}.png`}
@@ -333,14 +336,12 @@ export class BlogLayout extends Component {
           </div>
         </div>
       ]
-      if ('user' !== this.props.type) {
+      if ('user' !== this.state.type) {
         page.reverse()
       }
-      return <div className={'blog' + (this.props.busy ? ' busy' : '')}>
+      return <div className={'blog' + (this.state.busy ? ' busy' : '')}>
         {header}
-        <main>
-          {page}
-        </main>
+        <main>{page}</main>
       </div>
     }
   }

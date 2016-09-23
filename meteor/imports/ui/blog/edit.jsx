@@ -37,14 +37,14 @@ class UserEdit extends Component {
       <div className="form-group">
         <label>{T('Last Name')}</label>
         <input name="surname"
-               value={this.state.surname || this.props.surname || ''}
+               value={this.state.surname || ''}
                onChange={this.onChange}
                className="form-control"/>
       </div>
       <div className="form-group">
         <label>{T('First Name')}</label>
         <input name="forename"
-               value={this.state.forename || this.props.forename || ''}
+               value={this.state.forename || ''}
                onChange={this.onChange}
                className="form-control"/>
       </div>
@@ -52,7 +52,7 @@ class UserEdit extends Component {
         <label>{T('Birthday')}</label>
         <DateField name="birthday"
                    dateFormat="YYYY-MM-DD"
-                   value={this.state.birthday || this.props.birthday}
+                   value={this.state.birthday}
                    onChange={this.onChangeDate}
                    className="form-control"/>
       </div>

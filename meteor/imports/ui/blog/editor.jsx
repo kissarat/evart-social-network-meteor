@@ -1,10 +1,58 @@
 import React, {Component} from 'react'
-// import {Gallery} from '/imports/ui/photo'
+// import {ImageList} from '/imports/ui/photo'
 import {VideoList} from '/imports/ui/video'
 import {AudioPlaylist} from '/imports/ui/audio'
+import {thumb, bucketFile} from '/imports/ui/common/helpers'
+import {Subscriber, ImageDropzone} from '/imports/ui/common/widget'
 
 const emoji = `😃 😄 😉 😍 😘 😚 😳 😌 😜 😝 😒 😓 😞 😥 😭 😡 😷 👿 👽 💘 🌟 🎵 🔥 👍 👎 👌 👊 💋 🙏 👏 💪 🔒 🔓 🔑 💰 🚬 💣 🔫 💊 💉 ⚽ 🎯 🏆 🎩 💄 💎 🍹 🍺 🍴 🍭 🍦`
   .split(/\s+/);
+
+export class ImageList extends Subscriber {
+  componentWillMount() {
+    this.subscribe('file', {from: Meteor.userId(), type: 'image', limit: 100})
+  }
+
+  render() {
+    const images = this.getSubscription('file').map(file =>
+      <div key={file.id} className="item">
+        <div className="thumb"
+             style={{backgroundImage: `url("${file.thumb}")`}}
+             onClick={this.props.open(file)}
+        />
+      </div>)
+    return <div className="photo-container">
+      <div className="albums">
+      </div>
+      <div className="photos">
+        <ImageDropzone className="upload-photo" relation="manage">Upload</ImageDropzone>
+        {images}
+      </div>
+    </div>
+  }
+}
+
+export class File extends Component {
+  componentWillReceiveProps(props) {
+    this.setState(props)
+  }
+
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props)
+  }
+
+  render() {
+    if ('audio' === this.state.type) {
+      return <audio key={this.state.id} controls={true} src={bucketFile(this.state.id)}/>
+    }
+    else {
+      return <div
+        key={this.state.id}
+        className="thumb"
+        style={{backgroundImage: `url("${this.state.thumb}")`}}></div>
+    }
+  }
+}
 
 class Attachment extends Component {
   componentWillMount() {
@@ -18,22 +66,24 @@ class Attachment extends Component {
   render() {
     let widget = ''
     if ('video' === this.state.type) {
-      widget = <VideoList {...this.props} />
+      widget = <VideoList {...this.props} open={this.props.open}/>
     }
     else if ('audio' === this.state.type) {
-      widget = <AudioPlaylist {...this.props} />
+      widget = <AudioPlaylist {...this.props} open={this.props.open}/>
     }
-    else {
-      // {/*widget = <Gallery {...this.props} />*/}
-    }
+    // else {
+      //widget = <ImageList open={this.props.open}/>
+    // }
+    const list = this.props.list.map(file => <File key={file.id} {...file}/>)
     return <div className="attachment-block">
-      <div className="attachment-list"></div>
+      <div className="attachment-list">{list}</div>
       <div className="attachment-bar">
         <div className="menu">
           <div className={"glyphicon glyphicon-picture " + ('image' === this.state.type ? 'active' : '')}
                data-name="image"
-               onClick={this.onClickMenu}/>
-          <div className={"glyphicon glyphicon-play-circle "  + ('video' === this.state.type ? 'active' : '')}
+               onClick={this.onClickMenu}
+          style={{display: 'none'}}/>
+          <div className={"glyphicon glyphicon-play-circle " + ('video' === this.state.type ? 'active' : '')}
                data-name="video"
                onClick={this.onClickMenu}/>
           <div className={"glyphicon glyphicon-music " + ('audio' === this.state.type ? 'active' : '')}
@@ -64,12 +114,17 @@ export class Editor extends Component {
         ['dialog' === this.props.type ? 'to' : 'parent']: +this.props.id,
         text: text
       }
+      const files = this.getAttachments()
+      if (!_.isEmpty(files)) {
+        data.files = files.map(file => file.id)
+      }
       Meteor.call('message.create', data,
         (err, res) => {
           if (err) {
             console.error(err)
           }
           else {
+            this.state = {}
             this.setState({text: ''})
           }
         })
@@ -103,6 +158,14 @@ export class Editor extends Component {
     this.setState({attach: true})
   }
 
+  open = (file) => {
+    this.setState({['file_' + Date.now()]: file})
+  }
+
+  getAttachments() {
+    return _.filter(this.state, (v, k) => 0 === k.indexOf('file_'))
+  }
+
   render() {
     const smiles = this.state.emoji
       ? emoji.map(smile => <span
@@ -113,12 +176,15 @@ export class Editor extends Component {
       <div className="chat-add" onClick={this.props.add}>
         <div className="icon icon-add"></div>
       </div> : ''
-    const attachment = this.state.attach ? <Attachment {...this.props}/> : ''
+    const list = this.getAttachments()
+    const attachment = this.state.attach ? <Attachment {...this.props} list={list} open={this.open}/> : ''
+    const attach = 'wall' === this.props.type ?
+      <div className="file" onClick={this.attach}>
+        <div className="icon icon-attach"/>
+      </div> : ''
     return <div className="editor">
       <form>
-        <div className="file" onClick={this.attach}>
-          <div className="icon icon-attach"/>
-        </div>
+        {attach}
         <textarea
           ref="text"
           name="message"

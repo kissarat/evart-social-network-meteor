@@ -24,9 +24,22 @@ Meteor.methods({
   'message.create'(message) {
     message.id = timeId()
     message.from = +Meteor.userId()
-    return query('message')
-      .insert(message)
+    return table('message')
+      .insert(_.pick(message, 'id', 'from', 'to', 'parent', 'type', 'text', 'original'))
       .promise()
+      .then(function () {
+        if (message.files instanceof Array) {
+          const promises = message.files.map((id, i) => table('attachment')
+            .insert({
+              number: i,
+              message: message.id,
+              file: id
+            })
+            .promise())
+          return Promise.all(promises).then(() => message)
+        }
+        return message
+      })
   },
 
   estimate(params) {

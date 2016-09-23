@@ -9,6 +9,7 @@ DROP VIEW IF EXISTS "blog_recipient";
 DROP VIEW IF EXISTS "blog_cross";
 DROP VIEW IF EXISTS "child";
 DROP VIEW IF EXISTS "news";
+DROP VIEW IF EXISTS "file_message";
 DROP VIEW IF EXISTS "wall";
 DROP VIEW IF EXISTS "subscription";
 DROP VIEW IF EXISTS "invite";

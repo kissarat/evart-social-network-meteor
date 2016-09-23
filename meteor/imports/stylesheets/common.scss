@@ -251,9 +251,6 @@ header {
     display: flex;
     align-items: center;
     padding: 8px 0;
-    .file {
-      display: none;
-    }
     > * {
       margin-left: 8px;
     }
@@ -380,7 +377,6 @@ header {
   color: white
 }
 
-
 #avatar {
   border: 6px solid white;
 }
@@ -425,4 +421,28 @@ ul.list {
 
 #desktop .blog .user-container .posts {
   padding-bottom: 400px;
+}
+
+.visual {
+  img.content {
+    max-width: 100%;
+  }
+
+  .content-footer {
+    padding: 20px 5% 0 5%;
+  }
+
+  .comments {
+    padding: 0 5%;
+  }
+}
+
+.message-attachment-list, .attachment-list {
+  .thumb {
+    width: 128px;
+    height: 128px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }

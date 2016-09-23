@@ -131,6 +131,15 @@ export class AudioPlaylist extends Subscriber {
     this.subscribe('file', {type: 'audio', order: {id: -1}, search: string})
   }
 
+  open = (file) => {
+    if (this.props.open instanceof Function) {
+      this.props.open(file)
+    }
+    else {
+      this.setState({active: file})
+    }
+  }
+
   render() {
     const player = this.state.active ? <Player {...this.state.active}/> : ''
     const files = this.getSubscription('file').map(file =>
@@ -138,7 +147,8 @@ export class AudioPlaylist extends Subscriber {
         {...file}
         key={file.id}
         active={file === this.state.active}
-        onClick={() => this.setState({active: file})}/>
+        onClick={() => this.open(file)}
+      />
     )
     return <div className="player audio">
       {player}

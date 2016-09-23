@@ -48,7 +48,12 @@ export class VideoList extends Subscriber {
   }
 
   open(file) {
-    this.setState({current: file.data})
+    if (this.props.open instanceof Function) {
+      this.props.open(file)
+    }
+    else {
+      this.setState({current: file.data})
+    }
   }
 
   videoAdded = () => {

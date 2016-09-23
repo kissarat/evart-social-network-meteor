@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Link} from 'react-router'
 import {Subscriber, Busy, Avatar} from '/imports/ui/common/widget'
 import {BlogLayout} from './layout'
-import {Editor} from './editor'
+import {Editor, File} from './editor'
 import {idToTimeString} from '/imports/ui/common/helpers'
 
 class Attitude extends Component {
@@ -64,6 +64,8 @@ export class Article extends Component {
   }
 
   render() {
+    const files = this.props.files instanceof Array
+      ? this.props.files.map(file => <File key={file.id} {...file}/>) : ''
     const comments = this.state.comments ? <Children id={this.props.id}/> : ''
     const commentButton = 'wall' === this.props.type ?
       <div className="comment">
@@ -90,6 +92,7 @@ export class Article extends Component {
           <Repost {...this.props}/>
           <Attitude {...this.props}/>
         </div>
+        <div className="message-attachment-list">{files}</div>
         {comments}
       </div>
     </article>

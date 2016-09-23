@@ -143,8 +143,25 @@ CREATE OR REPLACE VIEW "message_attitude_recipient" AS
     LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
   WHERE b.type = 'user';
 
+CREATE OR REPLACE VIEW file_view AS
+  SELECT
+    f.*,
+    coalesce(t.type, 'video') AS type
+  FROM file f
+    LEFT JOIN mime t ON f.mime = t.id;
+
 CREATE OR REPLACE VIEW "wall" AS
-  SELECT *
+  SELECT
+    *,
+    (SELECT array_to_json(array_agg(row_to_json(f)))
+     FROM (SELECT
+             f.id,
+             f.type,
+             f.thumb,
+             f.data
+           FROM file_view f
+             JOIN attachment a ON a.file = f.id
+           WHERE a.message = m.id) f) AS files
   FROM message_attitude_recipient m
   WHERE type = 'wall';
 
@@ -249,10 +266,6 @@ CREATE OR REPLACE VIEW blog_cross AS
     t.*,
     f.id AS "recipient"
   FROM blog f CROSS JOIN blog t;
-
-CREATE OR REPLACE VIEW "recipient" AS
-  SELECT j.*
-  FROM blog_cross j;
 
 CREATE OR REPLACE VIEW "blog_recipient" AS
   SELECT

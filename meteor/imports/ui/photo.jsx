@@ -1,14 +1,21 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router'
+import {Link, browserHistory} from 'react-router'
 import {BlogLayout} from './blog/layout'
 import {Profile, Children} from './blog/article'
-import {bucketImage} from '/imports/ui/common/helpers'
-import {Busy, ImageDropzone} from '/imports/ui/common/widget'
+import {bucketFile} from '/imports/ui/common/helpers'
+import {Busy, ImageDropzone, Subscriber} from '/imports/ui/common/widget'
 
 export class Gallery extends Profile {
   setupState(state) {
     this.setState(state)
     this.subscribe('file', {from: state.id, type: 'image'})
+  }
+
+  onClick(file, e) {
+    if (this.props.open instanceof Function) {
+      e.preventDefault()
+      this.props.open(file)
+    }
   }
 
   render() {
@@ -18,19 +25,21 @@ export class Gallery extends Profile {
         : ''
       const images = this.getSubscription('file').map(file =>
         <div key={file.id} className="item">
-          <Link to={'/image/' + file.id} className="image"
-                style={{backgroundImage: `url("${file.thumb}")`}}/>
+          <Link to={'/image/' + file.id}
+                className="image"
+                style={{backgroundImage: `url("${file.thumb}")`}}
+                onClick={(e) => this.onClick(file, e)}
+          />
         </div>)
-      return <BlogLayout {...this.state}>
-        <div className="photo-container">
-          <div className="albums">
-          </div>
-          <div className="photos">
-            {upload}
-            {images}
-          </div>
+      const content = <div className="photo-container">
+        <div className="albums">
         </div>
-      </BlogLayout>
+        <div className="photos">
+          {upload}
+          {images}
+        </div>
+      </div>
+      return this.props.tiny ? content : <BlogLayout {...this.state}>{content}</BlogLayout>
     }
     else {
       return <Busy/>
@@ -67,10 +76,8 @@ export class Visual extends Component {
     if (this.state) {
       const content = 'video' === this.state.type
         ? <div></div>
-        : <img src={bucketImage(this.state.id)} className="content"/>
-      return <div id={'modal-' + this.state.type} className="modal fade modal-media vertical-mid in" tabIndex="-1"
-                  role="dialog"
-                  style={{display: 'block'}}>
+        : <img src={bucketFile(this.state.id)} className="content"/>
+      return <div id={'modal-' + this.state.type} className="visual" style={{display: 'block'}}>
         <div className="modal-dialog modal-lg" role="document">
           <div className="modal-content">
             {content}
@@ -91,7 +98,7 @@ export class Visual extends Component {
       </div>
     }
     else {
-      return <div></div>
+      return <Busy/>
     }
   }
 }

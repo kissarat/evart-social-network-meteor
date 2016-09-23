@@ -6,10 +6,11 @@ import {InputGroup, Busy} from '/imports/ui/common/widget'
 
 class UserEdit extends Component {
   componentWillReceiveProps(props) {
+    this
+    this.setState(props)
   }
 
   componentWillMount() {
-    this.state = {}
     this.componentWillReceiveProps(this.props)
   }
 
@@ -56,6 +57,51 @@ class UserEdit extends Component {
                    className="form-control"/>
       </div>
       <Link to="/change-password" type="button" className="btn btn-primary">{T('Change Password')}</Link>
+      <button type="submit" className="btn btn-success">{T('Save')}</button>
+    </form>
+  }
+}
+
+class GroupEdit extends Component {
+  componentWillReceiveProps(props) {
+    const state = _.pick(props, 'name')
+    state.error = {}
+    this.setState(state)
+  }
+
+  componentWillMount() {
+    this.state = {errors: {}}
+    this.componentWillReceiveProps(this.props)
+  }
+
+  onChange = (e) => {
+    this.setState({[e.target.getAttribute('name')]: e.target.value})
+  }
+
+  setError(name, message) {
+    this.setState({errors: {[name]: message}})
+  }
+
+  onSave = (e) => {
+    e.preventDefault()
+    if ('string' !== typeof this.state.name || this.state.name.length < 4) {
+      this.setError('name', 'Name must be at least 4 character')
+    }
+    else {
+      Meteor.call('blog.update', {id: +this.props.id}, this.state, (err) => {
+        if (!err) {
+          browserHistory.push('/blog/' + this.props.id)
+        }
+      })
+    }
+  }
+
+  render() {
+    return <form className="blog-edit settings" onSubmit={this.onSave} method="post">
+      <h1>{T('Group Settings')}</h1>
+      <InputGroup label={T('Name')} message={this.state.errors.name}>
+        <input value={this.state.name || ''} name="name" onChange={this.onChange}/>
+      </InputGroup>
       <button type="submit" className="btn btn-success">{T('Save')}</button>
     </form>
   }
@@ -173,7 +219,10 @@ export class Edit extends Component {
   componentWillReceiveProps(props) {
     const id = props.params && props.params.id ? +props.params.id : Meteor.userId()
     Meteor.call('blog.get', {id: id, table: 'blog'}, (err, state) => {
-      if (!err) {
+      if (err) {
+        Meteor.error(err.reason)
+      }
+      else {
         this.setState(state)
       }
     })
@@ -185,17 +234,14 @@ export class Edit extends Component {
 
   render() {
     if (this.state) {
-      if ('manage' === this.state.relation) {
-        return 'user' === this.state.type
-          ? <UserEdit {...this.state}/>
-          : <div>Not supported yet</div>
-      }
-      else {
-        return <div>
+      let edit = 'user' === this.state.type ? <UserEdit {...this.state}/> : <GroupEdit {...this.state}/>
+      if ('manage' !== this.state.relation) {
+        edit = <div>
           <h1>403</h1>
           <h2>Forbidden</h2>
         </div>
       }
+      return <div className="edit">{edit}</div>
     }
     else {
       return <Busy/>

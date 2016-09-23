@@ -269,7 +269,7 @@ export class GroupsList extends List {
   render() {
     const list = this.renderList(this.getSubscription(this.state.blog ? 'blog' : 'from_list'))
     return <div className="contact-list list group">
-      <Search search={this.search}>
+      <Search search={this.search} label="Search group...">
         <button className="add" onClick={this.onClickAdd}>
           <div className="center">+</div>
         </button>

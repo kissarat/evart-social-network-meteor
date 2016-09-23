@@ -147,13 +147,17 @@ Meteor.methods({
       })
   },
 
-  'user,create'() {
-    const data = {id: timeId()}
+  'group.create'() {
+    const data = {
+      id: timeId(),
+      type: 'group'
+    }
     return table('blog')
       .insert(data)
       .promise()
       .then(() => table('relation')
         .insert({
+          id: timeId(),
           from: data.id,
           to: Meteor.userId(),
           type: 'manage'

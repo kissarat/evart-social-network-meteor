@@ -5,10 +5,11 @@ export ROOT_URL=http://evart.com
 export PORT=3000
 export METEOR_SETTINGS=`cat /home/admin/settings.json`
 
-if [ ! -x ./programs/server/node_modules ]; then
-cd ./programs/server/
+if [ ! -x ./bundle/programs/server/node_modules ]; then
+cd ./bundle/programs/server/
 npm install --production
 cd ../..
 fi
+cd /home/admin/bundle
 
 node main.js

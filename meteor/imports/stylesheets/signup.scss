@@ -1,3 +1,10 @@
+.title {
+  margin-left: 140px;
+  h1, h2 {
+    font-family: Panton-Regular, serif;
+  }
+}
+
 #signup-page {
   $blue: #147ce4;
   $light-blue: #cad3df;
@@ -11,8 +18,8 @@
   h2 {
     color: $light-blue;
     margin-top: 0;
-    font-size: 20px;
-    margin-bottom: 24px;
+    font-size: 16px;
+    margin-bottom: 48px;
   }
   form.signup {
     position: relative;
@@ -26,6 +33,7 @@
     position: absolute;
     width: 100%;
     fieldset {
+      margin-top: 36px;
       display: none;
       &.single {
         [type="text"], button {
@@ -75,9 +83,14 @@
   #about {
     text-align: right;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 769px) {
     form.signup {
       width: 640px;
+    }
+  }
+  @media (max-width: 768px) {
+    form.signup {
+      margin: auto 12px;
     }
   }
 }

@@ -37,7 +37,7 @@ export class Signup extends Component {
     const value = e.target.value
 
     this.setState({[name]: value})
-    if (value.trim() && ['domain', 'phone', 'email']. indexOf(name) >= 0) {
+    if (value.trim() && ['domain', 'phone', 'email'].indexOf(name) >= 0) {
       this.checkExistance(name, value)
     }
   }
@@ -69,14 +69,14 @@ export class Signup extends Component {
       })
     }
     else {
-      this.setState({errors:{phone: 'You must accept license agreement'}})
+      this.setState({errors: {phone: 'You must accept license agreement'}})
     }
   }
 
   verify = () => {
     this.send('verify', (err, res) => {
       if (err) {
-        this.setState({errors:{phone: err.reason}})
+        this.setState({errors: {phone: err.reason}})
       }
       else if (res.success) {
         browserHistory.push('/signup/about')
@@ -136,8 +136,10 @@ export class Signup extends Component {
       <Login/>
       <main>
         <form method="post" className="signup" onSubmit={this.onSubmit}>
-          <h1>Simple registration in 3 steps</h1>
-          <h2>Fill all fields to register</h2>
+          <div className="title">
+            <h1>Simple registration in 3 steps</h1>
+            <h2>Fill all fields to register</h2>
+          </div>
           <hr/>
           <div id="phone" className={'phone' === step ? 'active step' : 'step'}>
             {Signup.step(1)}
@@ -145,7 +147,7 @@ export class Signup extends Component {
               <InputGroup message={this.state.errors.phone}>
                 <input type="text" className="form-control"
                        name="phone" placeholder="Phone"
-                onChange={this.onChange}/>
+                       onChange={this.onChange}/>
                 <button type="button" className="btn btn-primary" onClick={this.phone}>Next</button>
               </InputGroup>
               <label className="agree">

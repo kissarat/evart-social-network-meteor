@@ -264,4 +264,6 @@ const server = http.createServer(function (req, res) {
   }
 )
 
+process.title = 'evart-file-server'
+
 server.listen(config.file.port, '0.0.0.0')

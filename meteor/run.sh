@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-export MONGO_URL=mongodb://127.0.0.1/evart
+export MONGO_URL=mongodb://127.0.0.1:27017/evart
 export ROOT_URL=http://evart.com
-export PORT=3000
+export PORT=$1
 export METEOR_SETTINGS=`cat /home/admin/settings.json`
 
 if [ ! -x ./bundle/programs/server/node_modules ]; then

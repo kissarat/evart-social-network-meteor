@@ -61,3 +61,35 @@ export function sequentialUpload(files, events) {
 
   upload()
 }
+
+export function tag3name(file) {
+  if (file) {
+    if (file.data) {
+      const m = file.data.metadata
+      if (m && m.artist && m.title) {
+        return m.artist + ' - ' + m.title
+      }
+      else if (m && m.artist) {
+        return m.artist + ' - ' + file.name
+      }
+      else {
+        return file.name || ''
+      }
+    }
+    else {
+      return file.name || ''
+    }
+  }
+  console.error('File is undefined')
+  return ''
+}
+
+export function pageTitle(name) {
+  name = 'string' === typeof name ? name.trim().replace(/\s+/g, ' ') : false
+  if (name) {
+    document.title = name + ' - Evart Social Network'
+  }
+  else {
+    document.title = 'Evart Social Network'
+  }
+}

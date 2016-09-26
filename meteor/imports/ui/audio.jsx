@@ -1,18 +1,18 @@
 import React, {Component} from 'react'
 import {Subscriber, Search, ScrollArea} from './common/widget'
 import Dropzone from 'react-dropzone'
-import {sequentialUpload, bucketFile} from './common/helpers'
+import {sequentialUpload, bucketFile, tag3name} from './common/helpers'
 import {Busy} from './common/widget'
 
 class Audio extends Component {
   render() {
-    const meta = this.props.data.metadata
+    const trackName = tag3name(this.props.playing)
     const track = this.props.active
       ? <span className="play"/>
-      : <span className="number">{meta.track}</span>
+      : <span className="number">{trackName}</span>
     return <li onClick={this.props.onClick} className={this.props.active ? 'active' : ''}>
       <div className="order" data-order="1">{track}</div>
-      <div className="title">{meta.artist} - {meta.title}</div>
+      <div className="title">{tag3name(this.props)}</div>
       <div className="more">&bull;&bull;&bull;</div>
     </li>
   }

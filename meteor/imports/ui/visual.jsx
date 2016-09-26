@@ -2,8 +2,9 @@ import React, {Component} from 'react'
 import {Link, browserHistory} from 'react-router'
 import {BlogLayout} from './blog/layout'
 import {Profile, Children} from './blog/article'
-import {bucketFile} from '/imports/ui/common/helpers'
+import {bucketFile, pageTitle} from '/imports/ui/common/helpers'
 import {Busy, ImageDropzone, Subscriber} from '/imports/ui/common/widget'
+import {Video} from './video'
 
 export class Gallery extends Profile {
   setupState(state) {
@@ -49,6 +50,7 @@ export class Gallery extends Profile {
 
 export class Visual extends Component {
   setup(props) {
+    pageTitle(props.name)
     Meteor.call('file.get', {id: +props.params.id}, (err, state) => {
       if (err) {
         console.error(err)
@@ -75,25 +77,23 @@ export class Visual extends Component {
   render() {
     if (this.state) {
       const content = 'video' === this.state.type
-        ? <div></div>
+        ? <Video {...this.state}/>
         : <img src={bucketFile(this.state.id)} className="content"/>
-      return <div id={'modal-' + this.state.type} className="visual" style={{display: 'block'}}>
-        <div className="modal-dialog modal-lg" role="document">
-          <div className="modal-content">
-            {content}
-            <div className="content-footer">
-              <div className="counter"></div>
-              <div className="comment">
-                <span className="icon icon-quote"/>
-                <span className="comment-text">Comment</span>
-              </div>
-              <div className="repost">
-                <span className="icon icon-repost"/>
-                {this.state.repost}
-              </div>
+      return <div className={'visual-background visual visual-' + this.state.type}>
+        <div className="center">
+          {content}
+          <div className="content-footer">
+            <div className="counter"></div>
+            <div className="comment">
+              <span className="icon icon-quote"/>
+              <span className="comment-text">Comment</span>
             </div>
-            <Children {...this.state}/>
+            <div className="repost">
+              <span className="icon icon-repost"/>
+              {this.state.repost}
+            </div>
           </div>
+          <Children {...this.state}/>
         </div>
       </div>
     }

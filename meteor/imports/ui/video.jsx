@@ -42,6 +42,27 @@ class AddExternalVideo extends Component {
   }
 }
 
+export class Video extends Component {
+  removeSize = (el) => {
+    if (el) {
+      el.removeAttribute('width')
+      el.removeAttribute('height')
+      if (el.childNodes[0] instanceof Element) {
+        el.childNodes[0].removeAttribute('width')
+        el.childNodes[0].removeAttribute('height')
+      }
+    }
+  }
+
+  render() {
+    return <div
+      className="video-player-container"
+      dangerouslySetInnerHTML={{__html: this.props.data.html}}
+      ref={this.removeSize}
+    />
+  }
+}
+
 export class VideoList extends Subscriber {
   onClickAdd = () => {
     this.setState({add: true})
@@ -71,13 +92,7 @@ export class VideoList extends Subscriber {
 
   render() {
     const current = this.state.current
-      ? <div className="current-video" dangerouslySetInnerHTML={{__html: this.state.current.html}} ref={el => {
-      if (el) {
-        el.removeAttribute('width')
-        el.removeAttribute('height')
-      }
-    }
-    }/>
+      ? <Video {...{data: this.state.current}}/>
       : ''
     const videos = this.getSubscription('file').map(file => <li key={file.id} onClick={this.open.bind(this, file)}>
       <img src={file.thumb}/>
@@ -85,16 +100,16 @@ export class VideoList extends Subscriber {
     </li>)
     const add = this.state.add ? <AddExternalVideo done={this.videoAdded}/> : ''
     return <div className="video player">
-        {current}
-        <Search search={this.search} label="Search video...">
-          <button className="add" onClick={this.onClickAdd}>
-            <div className="center">+</div>
-          </button>
-        </Search>
-        {add}
-        <div className="playlist-container">
-          <ScrollArea>{videos}</ScrollArea>
-        </div>
+      {current}
+      <Search search={this.search} label="Search video...">
+        <button className="add" onClick={this.onClickAdd}>
+          <div className="center">+</div>
+        </button>
+      </Search>
+      {add}
+      <div className="playlist-container">
+        <ScrollArea>{videos}</ScrollArea>
       </div>
+    </div>
   }
 }

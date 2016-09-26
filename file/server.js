@@ -262,7 +262,9 @@ const server = http.createServer(function (req, res) {
         break
 
       default:
-        answer(405)
+        res.writeHead(302, {
+          location: 'http://evart.com/'
+        })
         break
     }
   }

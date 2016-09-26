@@ -4,7 +4,7 @@ import {Blog, News} from '/imports/ui/blog/article'
 import {Edit, ChangePassword, ResetPassword} from '/imports/ui/blog/edit'
 import {Chat} from '/imports/ui/chat'
 import {FileRoute} from '/imports/ui/file'
-import {Gallery, Visual} from '/imports/ui/photo'
+import {Gallery, Visual} from '/imports/ui/visual'
 import {InviteList, FriendList, GroupsList, SubscriberList, User, UserList} from '/imports/ui/list'
 import {LoginPage} from '/imports/ui/auth/login'
 import {Messenger} from '/imports/ui/message'
@@ -26,6 +26,7 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="invites" component={InviteList}/>
       <Route path="gallery/:id" component={Gallery}/>
       <Route path="image/:id" component={Visual}/>
+      <Route path="video/:id" component={Visual}/>
       <Route path="blog/:id/video" component={VideoList}/>
       <Route path="blog/:id/audio" component={AudioPlaylist}/>
       <Route path="settings" component={Edit}/>

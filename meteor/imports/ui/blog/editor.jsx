@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
+import {Link} from 'react-router'
 // import {ImageList} from '/imports/ui/photo'
 import {VideoList} from '/imports/ui/video'
 import {AudioPlaylist} from '/imports/ui/audio'
-import {thumb, bucketFile} from '/imports/ui/common/helpers'
+import {thumb, bucketFile, tag3name} from '/imports/ui/common/helpers'
 import {Subscriber, ImageDropzone} from '/imports/ui/common/widget'
 
 const emoji = `😃 😄 😉 😍 😘 😚 😳 😌 😜 😝 😒 😓 😞 😥 😭 😡 😷 👿 👽 💘 🌟 🎵 🔥 👍 👎 👌 👊 💋 🙏 👏 💪 🔒 🔓 🔑 💰 🚬 💣 🔫 💊 💉 ⚽ 🎯 🏆 🎩 💄 💎 🍹 🍺 🍴 🍭 🍦`
@@ -10,7 +11,7 @@ const emoji = `😃 😄 😉 😍 😘 😚 😳 😌 😜 😝 😒 😓 😞 
 
 export class ImageList extends Subscriber {
   componentWillReceiveProps(props) {
-    this.subscribe('file_message', {
+    this.subscribe('file', {
       from: Meteor.userId(),
       type: 'image',
       limit: 100
@@ -22,16 +23,14 @@ export class ImageList extends Subscriber {
   }
 
   render() {
-    const images = this.getSubscription('file_message').map(file =>
+    const images = this.getSubscription('file').map(file =>
       <div key={file.id} className="item">
         <div className="thumb"
              style={{backgroundImage: `url("${file.thumb}")`}}
-             onClick={this.props.open(file)}
+             onClick={() => this.props.open(file)}
         />
       </div>)
     return <div className="photo-container">
-      <div className="albums">
-      </div>
       <div className="photos">
         <ImageDropzone className="upload-photo" relation="manage">Upload</ImageDropzone>
         {images}
@@ -51,13 +50,20 @@ export class File extends Component {
 
   render() {
     if ('audio' === this.state.type) {
-      return <audio key={this.state.id} controls={true} src={bucketFile(this.state.id)}/>
+      return <div>
+        <div>{tag3name(this.props)}</div>
+        <audio key={this.state.id} controls={true} src={bucketFile(this.state.id)}/>
+      </div>
     }
     else {
-      return <div
-        key={this.state.id}
-        className="thumb"
-        style={{backgroundImage: `url("${this.state.thumb}")`}}></div>
+      const className = 'video' === this.state.type
+        ? 'thumb attachment-video glyphicon glyphicon-play-circle'
+        : 'thumb attachment-image'
+      return <Link
+        to={`/${this.props.type}/${this.props.id}`}
+        key={this.props.id}
+        className={className}
+        style={{backgroundImage: `url("${this.props.thumb}")`}}/>
     }
   }
 }
@@ -76,22 +82,21 @@ class Attachment extends Component {
     if ('video' === this.state.type) {
       widget = <VideoList {...this.props} open={this.props.open}/>
     }
-    else {
+    else if ('audio' === this.state.type) {
       widget = <AudioPlaylist {...this.props} open={this.props.open}/>
     }
-    // else {('audio' === this.state.type)
-      //widget = <ImageList {...this.props} open={this.props.open}/>
-    // }
-    //<div className={"glyphicon glyphicon-picture " + ('image' === this.state.type ? 'active' : '')}
-    //data-name="image"
-    //onClick={this.onClickMenu}
-    //style={{display:'node'}}/>
+    else {
+      widget = <ImageList {...this.props} open={this.props.open}/>
+    }
     const list = this.props.list.map(file => <File key={file.id} {...file}/>)
     return <div className="attachment-block">
       <div className="attachment-list">{list}</div>
       <div className="attachment-bar">
         <div className="menu">
-
+          <div className={"glyphicon glyphicon-picture " + ('image' === this.state.type ? 'active' : '')}
+               data-name="image"
+               onClick={this.onClickMenu}
+               style={{display: 'node'}}/>
           <div className={"glyphicon glyphicon-play-circle " + ('video' === this.state.type ? 'active' : '')}
                data-name="video"
                onClick={this.onClickMenu}/>

@@ -55,7 +55,7 @@ const mimes = {
   'audio/x-realaudio': {size: 2097152, ext: ['ra']},
   'image/gif': {size: 8388608, ext: ['gif']},
   'image/jpeg': {size: 8388608, ext: ['jpeg', 'jpg']},
-  'image/png': {size: 1048576, ext: ['png']},
+  'image/png': {size: 8388608, ext: ['png']},
   'image/svg+xml': {size: 1048576, ext: ['svg', 'svgz']},
   'image/tiff': {size: 2097152, ext: ['tif', 'tiff']},
   'image/vnd.wap.wbmp': {size: 262144, ext: ['wbmp']},

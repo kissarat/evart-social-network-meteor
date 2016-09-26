@@ -119,5 +119,5 @@ function listen() {
     })
 }
 
-process.title = 'evart-convert'
+process.title = 'node-evart-convert'
 listen()

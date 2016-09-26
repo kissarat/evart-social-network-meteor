@@ -6,7 +6,10 @@ const easyimage = require('easyimage')
 const db = require('../meteor/server/db')
 const _ = require('underscore')
 const crypto = require('crypto')
-const qs = require('querystring')
+
+const argv = require('optimist')
+  .default('port', 9080)
+  .argv
 
 const start = Date.now() / 1000 - process.hrtime()[0]
 
@@ -264,6 +267,8 @@ const server = http.createServer(function (req, res) {
   }
 )
 
-process.title = 'evart-file-server'
+process.title = 'node-evart-file'
 
-server.listen(config.file.port, '0.0.0.0')
+server.listen(+argv.port, '0.0.0.0', function () {
+  console.log(`File server on port ${argv.port} started`)
+})

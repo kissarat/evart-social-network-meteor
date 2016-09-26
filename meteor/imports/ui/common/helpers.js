@@ -22,7 +22,7 @@ export function thumb(id) {
 
 export function requestUpload(file) {
   const xhr = new XMLHttpRequest()
-  xhr.open('POST', `//${location.hostname}:9080/${file.name}`)
+  xhr.open('POST', _.sample(Meteor.settings.public.upload.servers) + '/' + file.name)
   xhr.setRequestHeader('authorization', 'Token ' + localStorage.getItem('Meteor.loginToken'))
   xhr.setRequestHeader('content-type', file.type)
   if (file.lastModifiedDate instanceof Date) {

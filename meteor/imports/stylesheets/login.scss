@@ -1,8 +1,14 @@
 @import './includes/auth';
-
+@import "includes/mixins";
 // Styles
 #login-page {
   background: url(/images/join-back.jpg) no-repeat top / cover;
+}
+
+.auth {
+  #welcome {
+    max-width: 420px;
+  }
 }
 
 .btn-join {
@@ -34,6 +40,119 @@
   }
 }
 
+@media only screen and (max-width: 1200px) {
+  footer {
+    >  div {
+      @include transition(0.2s, ease);
+    }
+    .copyright {
+      padding-left: 340px;
+    }
+    .download {
+      left: calc(50% - 14px);
+    }
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  footer {
+    .copyright {
+      padding-left: 420px;
+    }
+    .download {
+      right: 0;
+      left: auto;
+    }
+  }
+}
+
+@media only screen and (max-width: 856px) {
+  .auth {
+    #welcome {
+      width: 100%;
+    }
+  }
+  footer {
+    .copyright {
+      padding-left: 460px;
+    }
+  }
+}
+
+@media (max-height: 800px) {
+  footer {
+//    bottom: -280px;
+    bottom: -247px;
+  }
+}
+
+@media (max-width: 768px) {
+  #signup-page form.login {
+    padding: 16px;
+    input, button {
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+  }
+  .auth {
+    footer {
+      display: none;
+    }
+    #welcome {
+      background-position: center;
+      order: -1;
+      height: 30vh;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+      background-image: url("/images/join-back-cover.png");
+//      width: 100vw;
+      height: 100vh;
+      > * {
+        margin-bottom: 16px;
+        max-width: 426px;
+      }
+
+      .login-page-button {
+        display: flex;
+        height: 80px;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        @include large-login-button();
+      }
+    }
+    form.login {
+      .credentials > input {
+        display: block;
+        line-height: 30px;
+        margin-bottom: 15px;
+        width: 100%;
+      }
+      .options {
+        display: flex;
+        width: 100%;
+        input {
+          margin-right: 4px;
+        }
+        a {
+          color: white;
+        }
+        > * {
+          margin-bottom: 15px;
+          flex: 1;
+          text-align: center;
+        }
+      }
+      .login-page-button {
+        @include large-login-button()
+      }
+    }
+  }
+}
+
 @media (min-width: 769px) {
   #login-page {
     main {
@@ -43,18 +162,16 @@
       flex-direction: column;
       align-items: flex-start;
     }
-
     form.login {
       box-shadow: 0 4px 5px rgba(0, 0, 0, .1);
     }
   }
-
   #welcome {
     background-position: left;
-    width: 420px;
+//    width: 420px;
+    width: 100%;
     margin-top: 16px;
   }
-
   form.login {
     padding: 20px;
     background-color: hsla(0, 0%, 100%, .2);
@@ -83,89 +200,15 @@
   }
   .btn-join {
     margin-top: 150px;
-    min-width: 420px;
+    width: 100%;
+    max-width: 420px;
+//    min-width: 420px;
     line-height: 80px;
     &:hover {
       text-decoration: none;
       color: white;
     }
     @include large-login-button()
-  }
-}
-
-@media (max-height: 800px) {
-  footer {
-    bottom: -280px;
-  }
-}
-
-@media (max-width: 768px) {
-  #signup-page form.login {
-    padding: 16px;
-    input, button {
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
-  }
-
-  .auth {
-    footer {
-      display: none;
-    }
-
-    #welcome {
-      background-position: center;
-      order: -1;
-      height: 30vh;
-    }
-
-    main {
-      display: flex;
-      flex-direction: column;
-      padding: 8px;
-      background-image: url("/images/join-back-cover.png");
-      width: 100vw;
-      height: 100vh;
-      > * {
-        margin-bottom: 16px;
-      }
-
-      .login-page-button {
-        display: flex;
-        height: 80px;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        @include large-login-button();
-      }
-    }
-
-    form.login {
-      .credentials > input {
-        display: block;
-        line-height: 30px;
-        margin-bottom: 15px;
-        width: 100%;
-      }
-      .options {
-        display: flex;
-        width: 100%;
-        input {
-          margin-right: 4px;
-        }
-        a {
-          color: white;
-        }
-        > * {
-          margin-bottom: 15px;
-          flex: 1;
-          text-align: center;
-        }
-      }
-      .login-page-button {
-        @include large-login-button()
-      }
-    }
   }
 }
 

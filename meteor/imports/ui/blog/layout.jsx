@@ -252,6 +252,7 @@ export class BlogLayout extends Component {
   }
 
   onDrop = (files, e) => {
+    console.log(e.nativeEvent)
     const name = e.target.getAttribute('id') || e.target.parentNode.getAttribute('id')
     return upload(files[0]).then(data => {
       return new Promise((resolve, reject) => {

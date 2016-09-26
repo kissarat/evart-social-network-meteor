@@ -518,3 +518,11 @@ ul.list {
    margin: auto;
  }
 }
+
+.song {
+  padding-left: 4px;
+  padding-top: 4px;
+  .action {
+    font-style: italic;
+  }
+}

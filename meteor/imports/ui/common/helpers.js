@@ -42,10 +42,16 @@ export function upload(file) {
   })
 }
 
+export function timeId() {
+  const m = 1000 * 1000
+  return Date.now() * m + Math.round(Math.random() * m)
+}
+
 export function sequentialUpload(files, events) {
   function upload() {
     const file = files.shift()
     if (file) {
+      file.id = timeId()
       const ajax = requestUpload(file)
       _.each(events, function (fn, name) {
         ajax.addEventListener(name, function (e) {

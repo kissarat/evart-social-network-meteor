@@ -51,7 +51,7 @@ export class File extends Component {
   render() {
     if ('audio' === this.state.type) {
       return <div>
-        <div>{tag3name(this.props)}</div>
+        <div className="song">{tag3name(this.props)}</div>
         <audio key={this.state.id} controls={true} src={bucketFile(this.state.id)}/>
       </div>
     }

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Subscriber, Search, ScrollArea} from './common/widget'
 import Dropzone from 'react-dropzone'
 import {sequentialUpload, bucketFile, tag3name} from './common/helpers'
+import _ from 'underscore'
 import {Busy} from './common/widget'
 
 class Audio extends Component {
@@ -128,7 +129,7 @@ export class AudioPlaylist extends Subscriber {
     sequentialUpload(files, {
       progress: (e, file) => {
         this.setState({
-          uploadProgress: {
+          ['upload_' + file.id]: {
             name: file.name,
             loaded: file.loaded,
             total: file.total
@@ -136,7 +137,7 @@ export class AudioPlaylist extends Subscriber {
         })
       },
       load: (e, file) => {
-        this.setState({uploadProgress: false})
+        this.setState({['upload_' + file.id]: false})
       },
       done: () => this.setState({upload: false})
     })
@@ -155,6 +156,10 @@ export class AudioPlaylist extends Subscriber {
     }
   }
 
+  getUploads() {
+    return _.filter(this.state, (v, k) => v && 0 === k.indexOf('upload_'))
+  }
+
   render() {
     const player = this.state.active ? <Player {...this.state.active}/> : ''
     const files = this.getSubscription('file').map(file =>
@@ -165,14 +170,14 @@ export class AudioPlaylist extends Subscriber {
         onClick={() => this.open(file)}
       />
     )
-    const u = this.state.uploadProgress
-    const upload = u ? <div>
-      <span>{u.name}</span>
+    const uploads = this.getUploads().map(u => <div key={u.id}>
+      <span className="song">{u.name}</span>
       <progress value={u.loaded} max={u.total}/>
-    </div> : ''
+      <span>{u.loaded / (1024 * 1024)}/{u.total / (1024 * 1024)}</span>
+    </div>)
     const converts = this.getSubscription('convert_progress').map(f =>
-      <div className="convert-progress" key={f.id}>
-        <span>Converting</span>
+      <div className="convert-progress song" key={f.id}>
+        <span className="action">Converting</span>
         <span>{f.name}</span>
       </div>
     )
@@ -186,8 +191,8 @@ export class AudioPlaylist extends Subscriber {
         </Search>
         <div className="playlist">
           <div className="upload-container">
-            {upload}
             {converts}
+            {uploads}
           </div>
           <Dropzone className={'uploader' + (this.state.upload ? '' : ' hide')} onDrop={this.onDrop}>
             <div className="upload-zone">
@@ -208,9 +213,7 @@ export class AudioPlaylist extends Subscriber {
                       </div>
                     </div>
                   </div>
-                  <div className="status">
-                    65% from 3 Mb loaded
-                  </div>
+                  <div className="status"></div>
                   <div className="options">
                     <span className="settings"/>
                   </div>

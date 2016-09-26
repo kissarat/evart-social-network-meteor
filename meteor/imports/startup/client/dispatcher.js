@@ -6,7 +6,7 @@ Meteor.alert = function (type, message, timeout) {
   if (timeout) {
     data.timeout = timeout
   }
-  Meteor.dispatcher.dispatch(timeout)
+  Meteor.dispatcher.dispatch(data)
 }
 Meteor.error = function (message, timeout) {
   Meteor.alert('danger', T(message), timeout)

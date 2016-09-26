@@ -11,7 +11,7 @@ export class Login extends Component {
 
   onSubmit = (e) => {
     e.preventDefault()
-    Meteor.loginWithPassword(this.state.login, this.state.password, () => {
+    Meteor.loginWithPassword(this.state.login, this.state.password, (err) => {
       if (Meteor.userId()) {
         const blog = {id: Meteor.userId()}
         Meteor.call('blog.get', blog, (err1, res1) => {
@@ -30,8 +30,8 @@ export class Login extends Component {
           }
         })
       }
-      else {
-        this.setState({})
+      else if (err) {
+        Meteor.error(err.reason, 3000)
       }
     })
   }

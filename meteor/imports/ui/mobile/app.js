@@ -24,7 +24,7 @@ export class App extends Component {
 
   render() {
     if (this.state) {
-      const informers = Informer.all(this.props)
+      const informers = Informer.all(this.state)
       return <div className="mobile-container">
         <header>
           <Avatar {...this.state} className="back avatar tile"/>

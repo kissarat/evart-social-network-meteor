@@ -130,6 +130,7 @@ export class AudioPlaylist extends Subscriber {
       progress: (e, file) => {
         this.setState({
           ['upload_' + file.id]: {
+            id: file.id,
             name: file.name,
             loaded: file.loaded,
             total: file.total

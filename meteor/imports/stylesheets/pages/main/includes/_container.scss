@@ -183,8 +183,9 @@
   }
 
   nav.collapsed {
+    mso-width-source: 15px;
     .tile {
-      width: 20px;
+      width: inherit;
       transition: width 300ms;
       > * {
         display: none;

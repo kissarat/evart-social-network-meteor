@@ -6,6 +6,7 @@ const easyimage = require('easyimage')
 const db = require('../meteor/server/db')
 const _ = require('underscore')
 const crypto = require('crypto')
+const qs = require('querystring')
 
 const argv = require('optimist')
   .default('port', 9080)
@@ -99,7 +100,7 @@ const server = http.createServer(function (req, res) {
       let bucketResponse
       const file = {
         id: timeId(),
-        name: req.url.slice(1)
+        name: qs.unescape(req.url.slice(1))
       }
       const id = file.id
       const uploadOptions = {

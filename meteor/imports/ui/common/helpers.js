@@ -41,3 +41,23 @@ export function upload(file) {
     })
   })
 }
+
+export function sequentialUpload(files, events) {
+  function upload() {
+    const file = files.shift()
+    if (file) {
+      const ajax = requestUpload(file)
+      _.each(events, function (fn, name) {
+        ajax.addEventListener(name, function (e) {
+          fn.call(this, e, file)
+        })
+      })
+      ajax.addEventListener('load', upload)
+    }
+    else if (events.done instanceof Function) {
+      events.done()
+    }
+  }
+
+  upload()
+}

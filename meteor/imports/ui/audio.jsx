@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Subscriber, Search, ScrollArea} from './common/widget'
 import Dropzone from 'react-dropzone'
-import {upload, bucketFile} from './common/helpers'
+import {sequentialUpload, bucketFile} from './common/helpers'
 import {Busy} from './common/widget'
 
 class Audio extends Component {
@@ -58,7 +58,7 @@ class Player extends Component {
   render() {
     const meta = this.props.data.metadata
     const audio = this.refs.audio
-    const controls =this.refs && this.refs.audio ? <div className='media-controls'>
+    const controls = this.refs && this.refs.audio ? <div className='media-controls'>
       <div className="ctrl ctrl-play" onClick={this.play}>
         <span className={audio.paused ? 'play' : 'pause'}/>
       </div>
@@ -117,6 +117,7 @@ export class AudioPlaylist extends Subscriber {
   componentWillMount() {
     this.state = {}
     this.subscribe('file', {type: 'audio', order: {id: -1}})
+    this.subscribe('convert_progress')
   }
 
   onClickAdd = () => {
@@ -124,7 +125,21 @@ export class AudioPlaylist extends Subscriber {
   }
 
   onDrop = (files) => {
-    Promise.all(files.map(upload)).then(() => this.setState({upload: false}))
+    sequentialUpload(files, {
+      progress: (e, file) => {
+        this.setState({
+          uploadProgress: {
+            name: file.name,
+            loaded: file.loaded,
+            total: file.total
+          }
+        })
+      },
+      load: (e, file) => {
+        this.setState({uploadProgress: false})
+      },
+      done: () => this.setState({upload: false})
+    })
   }
 
   search = (string) => {
@@ -150,6 +165,17 @@ export class AudioPlaylist extends Subscriber {
         onClick={() => this.open(file)}
       />
     )
+    const u = this.state.uploadProgress
+    const upload = u ? <div>
+      <span>{u.name}</span>
+      <progress value={u.loaded} max={u.total}/>
+    </div> : ''
+    const converts = this.getSubscription('convert_progress').map(f =>
+      <div className="convert-progress" key={f.id}>
+        <span>Converting</span>
+        <span>{f.name}</span>
+      </div>
+    )
     return <div className="player audio">
       {player}
       <div className="playlist-container">
@@ -159,6 +185,10 @@ export class AudioPlaylist extends Subscriber {
           </button>
         </Search>
         <div className="playlist">
+          <div className="upload-container">
+            {upload}
+            {converts}
+          </div>
           <Dropzone className={'uploader' + (this.state.upload ? '' : ' hide')} onDrop={this.onDrop}>
             <div className="upload-zone">
               <div className="dropZone">

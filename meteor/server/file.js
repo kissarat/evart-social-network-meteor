@@ -12,8 +12,9 @@ Meteor.publish('file_view', function (params = {}) {
     .cursor()
 })
 
-Meteor.publish('convert', function (params = {}) {
-  return table('convert')
+Meteor.publish('convert_progress', function (params = {}) {
+  return table('convert_progress')
+    // .where('from', Meteor.userId)
     .cursor()
 })
 

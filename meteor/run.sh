@@ -28,20 +28,20 @@ fi
 
 export PORT=3001
 node $HOME/bundle/main.js &
-echo $! > $PIDS_FILENAME
+echo $! >> $PIDS_FILENAME
 export PORT=3002
 node $HOME/bundle/main.js &
-echo $! > $PIDS_FILENAME
+echo $! >> $PIDS_FILENAME
 
 node $HOME/evart/file/server.js --port 9081 &
-echo $! > $PIDS_FILENAME
+echo $! >> $PIDS_FILENAME
 node $HOME/evart/file/server.js --port 9082 &
-echo $! > $PIDS_FILENAME
+echo $! >> $PIDS_FILENAME
 
 node $HOME/evart/file/convert.js &
-echo $! > $PIDS_FILENAME
+echo $! >> $PIDS_FILENAME
 node $HOME/evart/file/convert.js &
-echo $! > $PIDS_FILENAME
+echo $! >> $PIDS_FILENAME
 
 sudo service nginx reload
 echo Done

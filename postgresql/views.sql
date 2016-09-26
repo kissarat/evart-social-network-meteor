@@ -197,15 +197,6 @@ CREATE OR REPLACE VIEW convert_file AS
     JOIN "convert" c ON f.id = c.file
   WHERE c.pid IS NULL;
 
-CREATE OR REPLACE VIEW convert_progress AS
-  SELECT
-    f.name,
-    f.size,
-    c.progress,
-    c.processed
-  FROM file f
-    JOIN "convert" c ON f.id = c.file;
-
 CREATE OR REPLACE VIEW invite AS
   WITH inv AS (
       SELECT
@@ -244,6 +235,17 @@ CREATE OR REPLACE VIEW file_message AS
   FROM file f
     JOIN message m ON f.id = m.id
     LEFT JOIN mime t ON f.mime = t.id;
+
+CREATE OR REPLACE VIEW convert_progress AS
+  SELECT
+    f.id,
+    f.name,
+    f.size,
+    c.progress,
+    c.processed,
+    f."from"
+  FROM file_message f
+    JOIN "convert" c ON f.id = c.file;
 
 CREATE OR REPLACE VIEW from_list AS
   SELECT

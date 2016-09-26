@@ -61,10 +61,10 @@ module.exports = merge({
 
 const config = module.exports
 
+_.extend(config.public, {
+  aws: _.pick(config.aws, 'endpoint', 'region', 'params'),
+  // sms: _.pick(config.sms, 'phone', 'interval', 'codes'),
+})
 if (!module.parent) {
-  _.extend(config.public, {
-    aws: _.pick(config.aws, 'endpoint', 'region', 'params'),
-    // sms: _.pick(config.sms, 'phone', 'interval', 'codes'),
-  })
   console.log(JSON.stringify(config, null, '\t'))
 }

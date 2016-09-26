@@ -99,12 +99,14 @@ aside {
 }
 
 aside.expand {
+  width: 100%;
   @include small-stripe();
   .panel-container > .menu.visible {
     display: block;
   }
   .panel-container {
     min-width: 200px;
+    flex: 1;
   }
 }
 

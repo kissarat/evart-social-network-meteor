@@ -13,6 +13,8 @@
     "faker": "^3.1.0",
     "fluent-ffmpeg": "^2.1.0",
     "flux": "^2.1.1",
+    "fs-extra": "^0.30.0",
+    "gulp": "^3.9.1",
     "knex": "^0.11.10",
     "meteor-node-stubs": "~0.2.0",
     "moment": "^2.15.1",
@@ -30,6 +32,7 @@
     "react-router": "^2.8.1",
     "request": "^2.75.0",
     "sqlite3": "^3.1.4",
+    "tar.gz": "^1.0.5",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

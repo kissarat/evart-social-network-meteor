@@ -49,21 +49,26 @@ export class File extends Component {
   }
 
   render() {
-    if ('audio' === this.state.type) {
-      return <div>
-        <div className="song">{tag3name(this.props)}</div>
-        <audio key={this.state.id} controls={true} src={bucketFile(this.state.id)}/>
-      </div>
-    }
-    else {
-      const className = 'video' === this.state.type
-        ? 'thumb attachment-video glyphicon glyphicon-play-circle'
-        : 'thumb attachment-image'
-      return <Link
-        to={`/${this.props.type}/${this.props.id}`}
-        key={this.props.id}
-        className={className}
-        style={{backgroundImage: `url("${this.props.thumb}")`}}/>
+    switch (this.state.type) {
+      case 'audio':
+        return <div className="attachment-audio song">
+          <div>{tag3name(this.props)}</div>
+          <audio key={this.state.id} controls={true} src={bucketFile(this.state.id)}/>
+        </div>
+      case 'image':
+        return <Link
+          to={`/${this.props.type}/${this.props.id}`}
+          key={this.props.id}
+          className="thumb attachment-image"
+          style={{backgroundImage: `url("${this.props.thumb}")`}}/>
+      case 'video':
+        return <Link
+          to={`/${this.props.type}/${this.props.id}`}
+          key={this.props.id}
+          className="thumb attachment-video"
+          style={{backgroundImage: `url("${this.props.thumb}")`}}>
+          <div className="glyphicon glyphicon-play-circle"/>
+        </Link>
     }
   }
 }

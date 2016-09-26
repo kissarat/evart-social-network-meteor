@@ -457,28 +457,22 @@ ul.list {
 }
 
 .attachment-widget .photos .thumb {
-  width: 96px;
-  height: 96px;
+  min-width: 96px;
+  min-height: 96px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .attachment-image, .attachment-video {
+  display: inline-block;
   order: -1;
-  padding: 0 4px 8px;
-}
-
-.attachment-image {
+  margin: 0 4px 8px;
 }
 
 .attachment-video {
-  text-align: center;
-  padding: 36px;
-  &:before {
-    width: 100%;
-    height: 100%;
-    color: rgba(255, 255, 255, 0.4);
+  .glyphicon {
+    color: rgba(255, 255, 255, 0.5);
     font-size: 56px;
   }
 }
@@ -490,9 +484,6 @@ ul.list {
 
 #central .video-player-container > * {
   min-height: 50vh;
-}
-
-.visual-background {
 }
 
 @media (min-width: 981px) {
@@ -520,6 +511,7 @@ ul.list {
 }
 
 .song {
+  display: block;
   padding-left: 4px;
   padding-top: 4px;
   .action {

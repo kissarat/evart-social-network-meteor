@@ -528,3 +528,11 @@ ul.list {
     font-style: italic;
   }
 }
+
+.ctrl-favorite, .ctrl-more {
+  display: none !important;
+}
+
+.media-poster > .title > h3 {
+  visibility: hidden;
+}

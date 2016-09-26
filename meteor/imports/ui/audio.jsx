@@ -178,7 +178,7 @@ export class AudioPlaylist extends Subscriber {
     </div>)
     const converts = this.getSubscription('convert_progress').map(f =>
       <div className="convert-progress song" key={f.id}>
-        <span className="action">Converting</span>
+        <span className="action">Processing</span>
         <span>{f.name}</span>
       </div>
     )
@@ -210,7 +210,7 @@ export class AudioPlaylist extends Subscriber {
                     <div className="progress">
                       <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45"
                            aria-valuemin="0" aria-valuemax="100">
-                        <span className="sr-only">45% Complete</span>
+                        <span className="sr-only"></span>
                       </div>
                     </div>
                   </div>

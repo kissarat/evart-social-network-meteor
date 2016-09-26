@@ -185,6 +185,7 @@ const server = http.createServer(function (req, res) {
             return common.probe(filename)
           })
           .then(function (probe) {
+            file.mime = req.mime.id
             file.data = common.lowercase(probe)
             return insert(file)
           })

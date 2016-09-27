@@ -271,7 +271,7 @@ const server = http.createServer(function (req, res) {
   }
 )
 
-process.title = 'node-evart-file'
+process.title = 'labiak-file'
 
 server.listen(+argv.port, '0.0.0.0', function () {
   console.log(`File server on port ${argv.port} started`)

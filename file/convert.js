@@ -119,5 +119,5 @@ function listen() {
     })
 }
 
-process.title = 'node-evart-convert'
+process.title = 'labiak-convert'
 listen()

@@ -1,5 +1,5 @@
 Meteor.startup(() => {
-  process.title = 'node-evart-meteor'
+  process.title = 'labiak-meteor'
 })
 
 WebApp.rawConnectHandlers.use(function (req, res, next) {

@@ -4,16 +4,19 @@ const fse = require('fs-extra')
 const gulp = require('gulp')
 const os = require('os')
 const spawn = require('child_process').spawn
-const tgz = require('tag.gz')
+const tgz = require('tar.gz')
+const _ = require('underscore')
 
 const settingsFileName = __dirname + '/meteor/settings.json'
+const nodeFileName = '/usr/local/bin/node'
 
 const threads = []
 for (let i = 0; i < os.cpus().length; i++) {
   threads.push({
     file: [],
     convert: [],
-    meteor: []
+    meteor: [],
+    node: []
   })
 }
 
@@ -28,37 +31,40 @@ gulp.task('settings', function (cb) {
 })
 
 gulp.task('file-server', function () {
-  delay(2000, function (thread, i) {
-    spawn('node', [__dirname + '/file/server.js', '--port=' + (9081 + i)], {
+  delay(8000, function (thread, i) {
+    thread.file.push(spawn(nodeFileName, [__dirname + '/file/server.js', '--port=' + (9081 + i)], {
       cwd: __dirname,
       stdio: 'inherit'
-    })
+    }))
   })
 })
 
 gulp.task('convert-server', function () {
   delay(8000, function (thread, i) {
-    spawn('node', [__dirname + '/file/convert.js', '--number=' + (i + 1)], {
+    thread.convert.push(spawn(nodeFileName, [__dirname + '/file/convert.js', '--number=' + (i + 1)], {
       cwd: __dirname,
       stdio: 'inherit'
-    })
+    }))
   })
 })
 
 gulp.task('meteor-server', ['settings'], function () {
-  spawn('meteor', ['--settings=' + settingsFileName, '--port=' + 3001], {
+  threads[0].meteor.push(spawn('meteor', ['--settings=' + settingsFileName, '--port=' + 3001], {
     cwd: __dirname + '/meteor',
     stdio: 'inherit'
-  })
+  }))
 })
 
 gulp.task('dev', ['meteor-server', 'file-server', 'convert-server'])
 
 gulp.task('pull', function (cb) {
   spawn('git', ['pull', 'origin', 'master'], {
-    cwd: __dirname
+    cwd: __dirname,
+    stdio: 'inherit'
   })
-    .on('close', cb)
+    .on('close', function () {
+      cb()
+    })
 })
 
 gulp.task('extract', function (cb) {
@@ -89,9 +95,9 @@ gulp.task('prod-dependencies', ['extract'], function (cb) {
 })
 
 gulp.task('prod', ['pull', 'prod-dependencies', 'file-server', 'convert-server'], function () {
-  delay(2000, function (thread, i) {
-    spawn('node', ['main.js'], {
-      cwd: __dirname + '/../bundle/',
+  delay(8000, function (thread, i) {
+    thread.node.push(spawn(nodeFileName, [__dirname + '/../bundle/main.js'], {
+      cwd: __dirname + '/../bundle',
       stdio: 'inherit',
       env: {
         ROOT_URL: 'http://evart.com',
@@ -99,6 +105,15 @@ gulp.task('prod', ['pull', 'prod-dependencies', 'file-server', 'convert-server']
         METEOR_SETTINGS: JSON.stringify(config),
         MONGO_URL: 'mongodb://127.0.0.1:27017/evart'
       }
-    })
+    }))
   })
 })
+
+function exit() {
+  _.flatten(_.values(threads)).forEach(function (p) {
+    process.kill(p.pid, 'SIGINT')
+  })
+}
+
+process.on('SIGINT', exit)
+process.title = 'labiak-gulp'

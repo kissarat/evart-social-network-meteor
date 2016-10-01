@@ -8,6 +8,8 @@ const _ = require('underscore')
 const crypto = require('crypto')
 const qs = require('querystring')
 
+process.title = 'labiak-file'
+
 const argv = require('optimist')
   .default('port', 9080)
   .argv
@@ -271,8 +273,7 @@ const server = http.createServer(function (req, res) {
   }
 )
 
-process.title = 'labiak-file'
-
 server.listen(+argv.port, '0.0.0.0', function () {
   console.log(`File server on port ${argv.port} started`)
+  process.title = 'labiak-file-' + argv.port
 })

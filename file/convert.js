@@ -121,3 +121,5 @@ function listen() {
 
 process.title = 'labiak-convert'
 listen()
+common.send({type: 'start'})
+console.log('Start converter')

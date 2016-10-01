@@ -274,6 +274,7 @@ const server = http.createServer(function (req, res) {
 )
 
 server.listen(+argv.port, '0.0.0.0', function () {
+  common.send({type: 'start'})
   console.log(`File server on port ${argv.port} started`)
   process.title = 'labiak-file-' + argv.port
 })

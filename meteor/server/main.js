@@ -1,16 +1,10 @@
+const {send} = require('/imports/server/common')
+
 process.title = 'labiak-meteor'
 
 Meteor.startup(() => {
   if (Meteor.isProduction) {
-    process.send({
-      type: 'start',
-      server: {
-        type: 'meteor',
-        port: process.env.PORT
-      },
-      name: process.title,
-      time: process.hrtime()
-    })
+    send({type: 'start'})
     process.title = 'labiak-meteor-' + process.env.PORT
     console.log(`Meteor server on port ${process.env.PORT} started`)
   }

@@ -29,22 +29,8 @@ function sha256(string) {
   return h.digest('base64')
 }
 
-function lowercase(obj) {
-  if (obj instanceof Array) {
-    return obj.map(v => v instanceof Object ? lowercase(v) : v)
-  }
-  else {
-    const result = {}
-    for (const key in obj) {
-      let value = obj[key]
-      result[key.toLocaleLowerCase()] = value instanceof Object ? lowercase(value) : value
-    }
-    return result
-  }
-}
-
-module.exports = {
-  authenticate: function (token) {
+module.exports = _.extend(require('../meteor/imports/server/common'), {
+  authenticate(token) {
     return new Promise(function (resolve, reject) {
       function cb(err, user) {
         if (err) {
@@ -67,7 +53,7 @@ module.exports = {
     })
   },
 
-  upload: function (options) {
+  upload(options) {
     return new Promise(function (resolve, reject) {
       s3.createBucket(function () {
         _.defaults(options, {
@@ -89,14 +75,14 @@ module.exports = {
     })
   },
 
-  getMIME: function (name) {
+  getMIME(name) {
    return db
      .knex('mime')
      .where({id: name})
      .single()
   },
 
-  fileStat: function (filename) {
+  fileStat(filename) {
     return new Promise(function (resolve, reject) {
       fs.stat(filename, function (err, stat) {
         if (err) {
@@ -109,7 +95,7 @@ module.exports = {
     })
   },
 
-  saveFile: function (reader, filename) {
+  saveFile(reader, filename) {
     return new Promise(function (resolve, reject) {
       const writer = fs.createWriteStream(filename)
       reader.on('error', reject)
@@ -119,7 +105,7 @@ module.exports = {
     })
   },
 
-  probe: function (filename) {
+  probe(filename) {
     return new Promise(function (resolve, reject) {
       ffprobe(filename, function (err, probe) {
         if (err) {
@@ -138,7 +124,7 @@ module.exports = {
     })
   },
 
-  remove: function (id) {
+  remove(id) {
     return new Promise(function (resolve, reject) {
       fs.unlink(config.file.temp + '/' + id, function (err, res) {
         if (err) {
@@ -149,7 +135,5 @@ module.exports = {
         }
       })
     })
-  },
-
-  lowercase
-}
+  }
+})

@@ -37,10 +37,11 @@ class Contact extends Component {
     const id = this.props.from || this.props.id
     const url = '/blog/' + id
     const online = <i className="online"/>
+    const birthday = this.props.birthday ? this.props.birthday.toLocaleDateString() : ''
     const more = 'user' === this.props.type ?
       <div>
         <Communicate id={id}/>
-        <p className="center-block">{this.props.birthday}</p>
+        <p className="center-block">{birthday}</p>
       </div> : ''
     return <div className={'contact ' + this.props.type}>
       <div>

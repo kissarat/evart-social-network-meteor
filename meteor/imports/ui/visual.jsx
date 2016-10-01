@@ -49,7 +49,7 @@ export class Gallery extends Profile {
 }
 
 export class Visual extends Component {
-  setup(props) {
+  componentWillReceiveProps(props) {
     pageTitle(props.name)
     Meteor.call('file.get', {id: +props.params.id}, (err, state) => {
       if (err) {
@@ -62,16 +62,12 @@ export class Visual extends Component {
   }
 
   componentWillMount() {
-    this.setup(this.props)
+    this.componentWillReceiveProps(this.props)
     document.body.setAttribute('class', 'fade in modal-open')
   }
 
   componentWillUnmount() {
     document.body.removeAttribute('class')
-  }
-
-  componentWillReceiveProps(props) {
-    this.setup(props)
   }
 
   render() {

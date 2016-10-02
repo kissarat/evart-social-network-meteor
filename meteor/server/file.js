@@ -1,10 +1,18 @@
-import {query, table, timeId, errors} from './db'
+import {query, table, timeId, liveSQL, errors} from './db'
 import request from 'request'
 import {escape} from 'querystring'
 
 Meteor.publish('file', function (params = {}) {
-  return query('file_message', params)
-    .cursor()
+  if (isFinite(params.recipient)) {
+    return liveSQL(`
+    SELECT * FROM file_message WHERE "from" = $1::BIGINT
+    UNION SELECT * FROM file_message
+`, [params.recipient])
+  }
+  else {
+    return query('file_message', params)
+      .cursor()
+  }
 })
 
 Meteor.publish('file_view', function (params = {}) {

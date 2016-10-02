@@ -280,22 +280,26 @@ function JSON2DOM(params, inverse = {}) {
   })
 }
 
-export class BrowserFeatures extends Component {
-  componentWillMount() {
-    if ('/' == location.pathname) {
-      if (Meteor.userId()) {
-        browserHistory.push('/profile')
-      }
-      else {
-        browserHistory.push('/login')
-      }
-    }
-    else if (Meteor.userId() && !this.props.params.id) {
-      browserHistory.push('/agent/' + Meteor.userId())
+export const rootRedirect = () => {
+  if ('/' == location.pathname) {
+    if (Meteor.userId()) {
+      browserHistory.push('/profile')
     }
     else {
-      Meteor.call('agent.set', collectFeatures())
+      browserHistory.push('/login')
     }
+  }
+  else if (Meteor.userId() && !this.props.params.id) {
+    browserHistory.push('/agent/' + Meteor.userId())
+  }
+  else {
+    return <Busy>Unknown error</Busy>
+  }
+}
+
+export class BrowserFeatures extends Component {
+  componentWillMount() {
+    Meteor.call('agent.set', collectFeatures())
   }
 
   render() {

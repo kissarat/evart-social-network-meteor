@@ -103,7 +103,7 @@ export const Avatar = ({avatar, type, className, name, big}) => {
   }
 }
 
-export const Busy = (children) => <div className="busy-animation">{children}</div>
+export const Busy = ({children}) => <div className="busy-animation">{children}</div>
 
 export class ImageDropzone extends Component {
   componentWillMount() {

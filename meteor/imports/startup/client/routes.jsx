@@ -12,11 +12,11 @@ import {PhoneRoute} from '/imports/ui/phone'
 import {Route, IndexRoute} from 'react-router'
 import {Signup} from '/imports/ui/auth/signup'
 import {VideoList} from '/imports/ui/video'
-import {App, BrowserFeatures, NoIndex, Root, Unavailable, NotFound}
+import {App, BrowserFeatures, NoIndex, Root, Unavailable, NotFound, rootRedirect}
 from '/imports/startup/client/base'
 
 export const RootRoute = <Route path='/' component={Root}>
-    <IndexRoute component={BrowserFeatures}/>
+    <IndexRoute component={rootRedirect}/>
     <Route component={App}>
       <Route path="messenger" component={Messenger}/>
       <Route path="news" component={News}/>

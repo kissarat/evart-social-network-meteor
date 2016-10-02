@@ -106,7 +106,7 @@ const worker = new Worker({
   },
 
   prod: {
-    deps: ['extract', 'dependencies', 'file', 'convert'],
+    deps: ['file', 'convert'],
     run: () => sequential(multiply(cpus.length, function ({number}) {
       const port = 3001 + number
       const server = spawn(nodeFileName, [__dirname + '/../bundle/main.js'], {

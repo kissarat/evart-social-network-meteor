@@ -50,6 +50,8 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="signup/verify" component={Signup}/>
       <Route path="signup/about" component={Signup}/>
       <Route path="reset-password" component={ResetPassword}/>
+      <Route path="agent" component={BrowserFeatures}/>
+      <Route path="agent/:id" component={BrowserFeatures}/>
       <Route path="*" component={NotFound}/>
     </Route>
   </Route>

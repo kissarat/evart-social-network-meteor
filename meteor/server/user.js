@@ -164,5 +164,9 @@ Meteor.methods({
         })
         .promise())
       .then(() => data)
+  },
+
+  'agent.set'(features) {
+    return log('agent', 'features', features)
   }
 })

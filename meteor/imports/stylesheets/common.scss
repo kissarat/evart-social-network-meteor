@@ -505,9 +505,9 @@ ul.list {
 }
 
 @media (max-width: 980px) {
- .visual-background > div {
-   margin: auto;
- }
+  .visual-background > div {
+    margin: auto;
+  }
 }
 
 .song {
@@ -527,4 +527,28 @@ ul.list {
 
 .media-poster > .title > h3 {
   visibility: hidden;
+}
+
+.table-row {
+  display: table-row;
+  > * {
+    display: table-cell;
+  }
+}
+
+.features {
+  display: table;
+  .table-row {
+    > * {
+      padding: 2px 4px;
+    }
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+  .feature-array > * {
+    display: block;
+  }
+}
+
+.features .table-row:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.08);
 }

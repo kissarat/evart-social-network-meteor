@@ -52,7 +52,9 @@ Meteor.publish('candidate', function ({from, limit, search}) {
 
 Meteor.methods({
   ip() {
-    return this.connection.clientAddress
+    if (this.connection.httpHeaders && 'string' === typeof this.connection.httpHeaders['x-forwarded-for']) {
+      return this.connection.httpHeaders['x-forwarded-for'].split(',')[0]
+    }
   },
 
   'blog.get' (params) {

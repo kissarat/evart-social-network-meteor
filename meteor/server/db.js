@@ -404,8 +404,11 @@ function log(type, action, params) {
   const record = {
     type,
     action,
-    id: timeId(),
-    ip: Meteor.call('ip')
+    id: timeId()
+  }
+  const ip = Meteor.call('ip')
+  if (ip) {
+    record.ip = ip
   }
   if (Meteor.userId()) {
     record.actor = Meteor.userId()

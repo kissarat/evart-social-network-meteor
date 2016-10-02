@@ -83,7 +83,9 @@ function purify(object) {
   keys.forEach(function (k) {
     if (k.indexOf('on') < 0) {
       const v = object[k]
-      pure[k] = _.isObject(v) ? purify(v) : v
+      if ('function' !== typeof v && 0 !== v) {
+        pure[k] = _.isObject(v) ? purify(v) : v
+      }
     }
   })
   return pure
@@ -233,6 +235,18 @@ function collectFeatures() {
 
   const video = document.createElement('video')
   features.Codecs = codecs.filter(codec => video.canPlayType(codec))
+
+  if (window.performance) {
+    if (performance.memory) {
+      features.Memory = purify(performance.memory)
+    }
+    if (performance.navigation) {
+      features.Navigation = purify(performance.navigation)
+    }
+    if (performance.timing) {
+      features.Timing = purify(performance.timing)
+    }
+  }
 
   return features
 }

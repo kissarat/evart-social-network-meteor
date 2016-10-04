@@ -178,3 +178,12 @@ export class Search extends Component {
     </div>
   }
 }
+
+export class EllipsisMenu extends Component {
+  render() {
+    return <div className="ellipsis-container">
+      <span className="ellipsis">&bull;&bull;&bull;</span>
+      <div className="ellipsis-menu">{this.props.children}</div>
+    </div>
+  }
+}

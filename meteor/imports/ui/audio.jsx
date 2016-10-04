@@ -3,7 +3,7 @@ import {Subscriber, Search, ScrollArea} from './common/widget'
 import Dropzone from 'react-dropzone'
 import {sequentialUpload, bucketFile, tag3name} from './common/helpers'
 import _ from 'underscore'
-import {Busy} from './common/widget'
+import {Busy, EllipsisMenu} from './common/widget'
 
 class Audio extends Component {
   render() {
@@ -14,7 +14,7 @@ class Audio extends Component {
     return <li onClick={this.props.onClick} className={this.props.active ? 'active' : ''}>
       <div className="order" data-order="1">{track}</div>
       <div className="title">{tag3name(this.props)}</div>
-      <div className="more">&bull;&bull;&bull;</div>
+      <EllipsisMenu/>
     </li>
   }
 }
@@ -115,10 +115,20 @@ class Player extends Component {
 }
 
 export class AudioPlaylist extends Subscriber {
+  componentWillReceiveProps(props) {
+    this.subscribe('file', {
+      type: 'audio',
+      order: {id: -1},
+      recipient: props.params && isFinite(props.params.id)
+        ? this.props.params.id
+        : Meteor.userId()
+    })
+  }
+
   componentWillMount() {
     this.state = {}
-    this.subscribe('file', {type: 'audio', order: {id: -1}})
     this.subscribe('convert_progress')
+    this.componentWillReceiveProps(this.props)
   }
 
   onClickAdd = () => {

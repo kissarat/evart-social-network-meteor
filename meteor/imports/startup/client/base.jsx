@@ -281,27 +281,39 @@ function JSON2DOM(params, inverse = {}) {
 }
 
 export const rootRedirect = () => {
-  if ('/' == location.pathname) {
-    if (Meteor.userId()) {
-      browserHistory.push('/profile')
-    }
-    else {
-      browserHistory.push('/login')
-    }
-  }
-  else if (Meteor.userId() && !this.props.params.id) {
+  if (0 === location.pathname.indexOf('/agent') && Meteor.userId() && !this.props.params.id) {
     browserHistory.push('/agent/' + Meteor.userId())
   }
   else {
-    return <Busy>Unknown error</Busy>
+    setTimeout(function () {
+      if (Meteor.userId()) {
+        browserHistory.push('/profile')
+      }
+      else {
+        browserHistory.push('/login')
+      }
+    }, 200)
+  }
+  return <div>Loading...</div>
+}
+
+export function introduceAgent() {
+  if (navigator.cookieEnabled && window.crypto) {
+    let cid = /cid=([\w+\/]{24})/.exec(document.cookie)
+    if (!cid) {
+      cid = new Uint8Array(18)
+      crypto.getRandomValues(cid)
+      cid = btoa(String.fromCharCode.apply(null, cid))
+      cid = cid.replace(/[+\/]/g, function () {
+        return _.sample('ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxy0123456789')
+      })
+      document.cookie = `cid=${cid}; path=/; expires=Tue, 01 Jan 2030 00:00:00 GMT`
+      Meteor.call('agent.set', collectFeatures())
+    }
   }
 }
 
 export class BrowserFeatures extends Component {
-  componentWillMount() {
-    Meteor.call('agent.set', collectFeatures())
-  }
-
   render() {
     const features = JSON2DOM(collectFeatures(), {
       DoNotTrack: true

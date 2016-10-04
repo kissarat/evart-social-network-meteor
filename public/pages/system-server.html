@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Server</title>
+    <meta name="description" content="CentOS server for file conversion"/>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        body, #background {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #background {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: url("https://i.ytimg.com/vi/M1PwD1FkU5A/maxresdefault.jpg") no-repeat center;
+            background-size: cover;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        h1 {
+            margin-top: 20vh;
+        }
+
+        #url {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        #developed {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="background"></div>
+<h1>System Server</h1>
+<a id="url" href="http://evart.com">evart.com</a>
+<div id="developed">
+    <a href="http://kissarat.github.io/">Developed by Taras Labiak</a>
+</div>
+</body>
+</html>

@@ -1,13 +1,22 @@
-import {query, table, timeId, liveSQL, errors} from './db'
+import {query, table, timeId, liveSQL, log, errors} from './db'
 import request from 'request'
 import {escape} from 'querystring'
 
+const fileTypes = ['image', 'audio', 'video']
+
 Meteor.publish('file', function (params = {}) {
-  if (isFinite(params.recipient)) {
+  if (params.type && fileTypes.indexOf(params.type) < 0) {
+    throw new Meteor.Error('Invalid file type')
+  }
+  if (isFinite(params.recipient) && fileTypes.indexOf(params.type) >= 0) {
     return liveSQL(`
-    SELECT * FROM file_message WHERE "from" = $1::BIGINT
-    UNION SELECT * FROM file_message
-`, [params.recipient])
+    WITH t AS (
+      SELECT *,
+      (CASE WHEN "from" = $1::BIGINT THEN 1 ELSE 0 END) as priority
+      FROM file_message f WHERE type = $2
+    )
+    SELECT * FROM t ORDER BY priority DESC, id DESC
+`, [params.recipient, params.type])
   }
   else {
     return query('file_message', params)
@@ -22,7 +31,7 @@ Meteor.publish('file_view', function (params = {}) {
 
 Meteor.publish('convert_progress', function (params = {}) {
   return table('convert_progress')
-    // .where('from', Meteor.userId)
+  // .where('from', Meteor.userId)
     .cursor()
 })
 
@@ -112,6 +121,14 @@ Meteor.methods({
     return table('file_message')
       .where(_.pick(params, 'id', 'url'))
       .single()
+  },
+
+  'file.update': function ({id}, {from}) {
+    return table('message')
+      .where('id', id)
+      .update('from', from)
+      .promise()
+      .then(() => log('file', from ? 'add' : 'remove', {id, from}))
   },
 
   'oembed.get': requestOembed,

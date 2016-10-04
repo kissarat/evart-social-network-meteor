@@ -180,10 +180,39 @@ export class Search extends Component {
 }
 
 export class EllipsisMenu extends Component {
+  componentWillMount() {
+    this.state = {}
+  }
+
+  onClick = (e) => {
+    this.setState({opened: true})
+  }
+
+  onClickItem = (key) => {
+    if ('function' === typeof this.props.onClickItem) {
+      const promise = this.props.onClickItem(key)
+    }
+    else {
+      if (this.props.id && undefined !== this.props.from && ('add' === key || 'remove' === key)) {
+        Meteor.call('file.update', {id: this.props.id}, {from: 'add' === key ? Meteor.userId() : null})
+      }
+      else {
+        console.error('props.onClickItem is required')
+      }
+    }
+    this.setState({opened: false})
+  }
+
   render() {
+    const items = []
+    if (this.state.opened) {
+      for(const key in this.props.items) {
+        items.push(<div key={key} onClick={() => this.onClickItem(key)}>{this.props.items[key]}</div>)
+      }
+    }
     return <div className="ellipsis-container">
-      <span className="ellipsis">&bull;&bull;&bull;</span>
-      <div className="ellipsis-menu">{this.props.children}</div>
+      <div className="ellipsis" onClick={this.onClick}>&bull;&bull;&bull;</div>
+      <menu className="ellipsis-menu">{items}</menu>
     </div>
   }
 }

@@ -8,13 +8,14 @@ import {Busy, EllipsisMenu} from './common/widget'
 class Audio extends Component {
   render() {
     const trackName = tag3name(this.props.playing)
+    const items = Meteor.userId() == this.props.from ? {remove: 'Remove'} : {add: 'Add'}
     const track = this.props.active
       ? <span className="play"/>
       : <span className="number">{trackName}</span>
-    return <li onClick={this.props.onClick} className={this.props.active ? 'active' : ''}>
-      <div className="order" data-order="1">{track}</div>
-      <div className="title">{tag3name(this.props)}</div>
-      <EllipsisMenu/>
+    return <li className={this.props.active ? 'active' : ''}>
+      <div onClick={this.props.onClick} className="order" data-order="1">{track}</div>
+      <div onClick={this.props.onClick} className="title">{tag3name(this.props)}</div>
+      <EllipsisMenu items={items} {...this.props}/>
     </li>
   }
 }
@@ -118,7 +119,6 @@ export class AudioPlaylist extends Subscriber {
   componentWillReceiveProps(props) {
     this.subscribe('file', {
       type: 'audio',
-      order: {id: -1},
       recipient: props.params && isFinite(props.params.id)
         ? this.props.params.id
         : Meteor.userId()

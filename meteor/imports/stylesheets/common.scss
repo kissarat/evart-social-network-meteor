@@ -552,3 +552,22 @@ ul.list {
 .features .table-row:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.08);
 }
+
+.ellipsis-container {
+  position: relative;
+  .ellipsis {
+    transform: rotate(90deg);
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    width: 18px;
+    height: 18px;
+    transform-origin: 0 0;
+  }
+  .ellipsis-menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: white;
+  }
+}

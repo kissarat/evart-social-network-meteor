@@ -7,6 +7,7 @@ import '/imports/stylesheets/main.scss'
 
 Meteor.isMobile = Meteor.isCordova
   || navigator.userAgent.indexOf('iOS') > 0
+  || navigator.userAgent.indexOf('iPhone OS') > 0
   || navigator.userAgent.indexOf('Android') > 0
 
 const dictionary = {

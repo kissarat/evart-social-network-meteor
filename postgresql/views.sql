@@ -324,3 +324,8 @@ CREATE OR REPLACE VIEW friend AS
   SELECT d.*
   FROM relation d
     JOIN relation r ON d."from" = r."to" AND r."to" = d."from";
+
+CREATE OR REPLACE VIEW agent AS
+  SELECT id, ip, actor,
+    ("data" ->> 'Agent') as string
+  FROM log;

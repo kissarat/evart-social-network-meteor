@@ -14,6 +14,8 @@ Meteor.startup(function () {
 
   setTimeout(introduceAgent, 30 * 1000)
 
+
+
   // setTimeout(function () {
   //   location.reload()
   // }, 3600 * 1000)

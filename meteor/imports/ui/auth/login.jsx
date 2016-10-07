@@ -15,7 +15,6 @@ export class Login extends Component {
       if (Meteor.userId()) {
         const blog = {id: Meteor.userId()}
         Meteor.call('blog.get', blog, (err1, res1) => {
-          console.log(err1, res1)
           if (res1) {
             this.setState(blog)
             browserHistory.push('/profile')

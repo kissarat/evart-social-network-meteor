@@ -14,9 +14,29 @@ Meteor.startup(function () {
 
   setTimeout(introduceAgent, 30 * 1000)
 
-
+  if (window.RTCPeerConnection || window.webkitRTCPeerConnection) {
+    setTimeout(function () {
+      require('/imports/ui/peer').peerStartup()
+    }, 300)
+  }
 
   // setTimeout(function () {
   //   location.reload()
   // }, 3600 * 1000)
+})
+
+const globals = {
+  request(url) {
+    return new Promise(function (resolve, reject) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', url)
+      xhr.addEventListener('load', resolve)
+      xhr.addEventListener('error', reject)
+      xhr.send(null)
+    })
+  }
+}
+
+_.each(globals, function (fn, name) {
+  window[name] = fn
 })

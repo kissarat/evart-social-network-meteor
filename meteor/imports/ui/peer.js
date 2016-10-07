@@ -8,11 +8,16 @@ function trigger(target, name, detail) {
 
 const events = {
   offer: function (offer) {
+    if (Meteor.isDevelopment) {
+      console.log('offer', offer)
+    }
     this.receiveCall(offer)
   },
 
-  answer: function () {
-
+  answer: function (answer) {
+    if (Meteor.isDevelopment) {
+      console.log('offer', answer)
+    }
   },
 
   candidate: function (candidate) {
@@ -22,8 +27,6 @@ const events = {
   }
 }
 
-const Peer = window.RTCPeerConnection || window.webkitRTCPeerConnection || {}
-
 // Polyfills
 if (window.webkitRTCPeerConnection) {
   ['createOffer', 'createAnswer'].forEach(function (method) {
@@ -31,8 +34,11 @@ if (window.webkitRTCPeerConnection) {
     this[method] = function (options) {
       return new Promise((resolve, reject) => original.call(this, resolve, reject, options))
     }
-  }, Peer.prototype)
+  }, webkitRTCPeerConnection.prototype)
 }
+
+const Peer = window.RTCPeerConnection || window.webkitRTCPeerConnection || {disabled: true}
+Peer.enabled = !Peer.disabled
 
 if (navigator.mediaDevices && navigator.webkitGetUserMedia && !navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia = function (options) {
@@ -66,6 +72,10 @@ function getUserMedia(options) {
 }
 
 Peer.peers = {}
+
+if (Meteor.isDevelopment) {
+  window.Peer = Peer
+}
 
 function trace() {
   console.log.apply(this, arguments)
@@ -105,16 +115,16 @@ _.extend(Peer.prototype, {
       iceconnectionstatechange: function (e) {
         trace('CONNECTION: ' + e.target.iceConnectionState)
       },
-      signalingstatechange: this.OnSignalingStateChange,
-      icecandidate: this.OnIceCandidate
+      signalingstatechange: this.onSignalingStateChange,
+      icecandidate: this.onIceCandidate
     })
   },
 
-  OnSignalingStateChange(e) {
+  onSignalingStateChange(e) {
     trace('SIGNAL: ' + e.target.signalingState)
   },
 
-  OnIceCandidate: function (e) {
+  onIceCandidate(e) {
     if (e.candidate) {
       this.emit('candidate', JSON.stringify(e.candidate))
     }
@@ -123,7 +133,7 @@ _.extend(Peer.prototype, {
     }
   },
 
-  emit: function (type, text) {
+  emit(type, text) {
     channel.dispatch({
       to: this.getReceiverId(),
       type: type,
@@ -131,15 +141,15 @@ _.extend(Peer.prototype, {
     })
   },
 
-  isClosed: function () {
+  isClosed() {
     return ['closed', 'disconnected', 'failed'].indexOf(this.iceConnectionState) >= 0
   },
 
-  isApproved: function () {
+  isApproved() {
     return !this.callOffer && 'have-remote-offer' === this.signalingState
   },
 
-  addCandidate: function (candidate) {
+  addCandidate(candidate) {
     if (this.isApproved()) {
       this.addIceCandidate(candidate)
     }
@@ -148,7 +158,7 @@ _.extend(Peer.prototype, {
     }
   },
 
-  setupCamera: function () {
+  setupCamera() {
     return getUserMedia({audio: true, video: true})
       .then(_camera => {
         // _camera.getTracks().forEach(track => this.addTrack(track, _camera))
@@ -156,7 +166,7 @@ _.extend(Peer.prototype, {
       })
   },
 
-  trace: function () {
+  trace() {
     return {
       connection: this.iceConnectionState,
       signal: this.signalingState,
@@ -164,11 +174,11 @@ _.extend(Peer.prototype, {
     }
   },
 
-  getReceiverId: function () {
-    return parseInt(this.peerIdentity, 36)
+  getReceiverId() {
+    return +this.peerIdentity
   },
 
-  addWaitingCandidates: function () {
+  addWaitingCandidates() {
     if (this.candidates) {
       this.candidates.forEach(candidate => this.addIceCandidate(candidate))
       this.candidates = null
@@ -178,7 +188,7 @@ _.extend(Peer.prototype, {
     }
   },
 
-  offer: function (options) {
+  offer(options) {
     if (!options) {
       options = makeMediaConstraints()
     }
@@ -189,7 +199,7 @@ _.extend(Peer.prototype, {
       })
   },
 
-  offerCall: function () {
+  offerCall() {
     return this.setupCamera()
       .then(() => listenOncePromise(this, 'negotiationneeded'))
       .then(() => this.offer(makeMediaConstraints()))
@@ -197,11 +207,11 @@ _.extend(Peer.prototype, {
       .catch(error)
   },
 
-  onNegotiationNeeded: function (e) {
+  onNegotiationNeeded(e) {
     // trace('negotiationneeded', e)
   },
 
-  answer: function (description, options) {
+  answer(description, options) {
     if ('string' === typeof description) {
       description = new RTCSessionDescription({
         type: 'offer',
@@ -216,14 +226,14 @@ _.extend(Peer.prototype, {
       .then(answer => this.setLocalDescription(answer))
   },
 
-  answerCall: function () {
+  answerCall() {
     return this.setupCamera()
       .then(() => listenOncePromise(this, 'negotiationneeded'))
       .then(() => this.answer(this.callOffer, makeMediaConstraints()))
       .then(answer => this.emit('answer', answer.sdp))
   },
 
-  receiveCall: function (offer) {
+  receiveCall(offer) {
     if ('string' === typeof offer) {
       offer = new RTCSessionDescription({
         type: 'offer',
@@ -237,12 +247,12 @@ _.extend(Peer.prototype, {
 })
 
 Peer.get = function (id) {
-  if ('number' === typeof id) {
-    id = id.toString(36)
+  const peer = Peer.peers[id]
+  if (peer) {
+    return peer
   }
-  let peer = Peer.peers[id]
-  if (!peer) {
-    peer = new Peer({
+  else {
+    const peer = new Peer({
       iceServers: [],
       peerIdentity: id
     })
@@ -250,9 +260,8 @@ Peer.get = function (id) {
     if (!peer.peerIdentity) {
       peer.peerIdentity = id
     }
-    Peer.peers[id] = peer
+    return Peer.peers[id] = peer
   }
-  return peer
 }
 
 window.Peer = Peer

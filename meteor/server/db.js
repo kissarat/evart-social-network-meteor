@@ -400,7 +400,7 @@ function timeId() {
   return ((start + now[0]) * 1000 * 1000 * 1000 + now[1]).toString()
 }
 
-function log(type, action, params) {
+function log(type, action, params, userId) {
   const record = {
     type,
     action,
@@ -410,8 +410,8 @@ function log(type, action, params) {
   if (ip) {
     record.ip = ip
   }
-  if (Meteor.userId()) {
-    record.actor = Meteor.userId()
+  if (Meteor.userId() || userId) {
+    record.actor = Meteor.userId() || userId
   }
   if (!_.isEmpty(params)) {
     record.data = params

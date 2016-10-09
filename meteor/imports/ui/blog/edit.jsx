@@ -6,7 +6,6 @@ import {InputGroup, Busy} from '/imports/ui/common/widget'
 
 class UserEdit extends Component {
   componentWillReceiveProps(props) {
-    this
     this.setState(props)
   }
 
@@ -108,8 +107,15 @@ class GroupEdit extends Component {
 }
 
 export class ChangePassword extends Component {
+  componentWillReceiveProps(props) {
+    this.setState({
+      errors: {},
+      sid: props.params.sid
+    })
+  }
+
   componentWillMount() {
-    this.state = {errors: {}}
+    this.componentWillReceiveProps(this.props)
   }
 
   onSave = (e) => {
@@ -168,20 +174,113 @@ export class ChangePassword extends Component {
   }
 }
 
-export class ResetPassword extends Component {
-  componentWillMount() {
+export class ResetPasswordPhone extends Component {
+  componentWillReceiveProps() {
     this.state = {errors: {}}
+  }
+
+  componentWillMount() {
+    this.componentWillReceiveProps()
+  }
+
+  onChange = (e) => {
+    this.setState({[e.target.getAttribute('name')]: e.target.value})
   }
 
   onSave = (e) => {
     e.preventDefault()
-    if (this.state.password === this.state.repeat) {
-      Meteor.call('setPassword', this.state.password, (err, res) => {
-        console.log(err, res)
-      })
+    this.setState({busy: true})
+    Meteor.call('sendSMS', {phone: this.state.phone, existing: true}, (err, res) => {
+      if (err) {
+        this.setState({errors: {phone: err.reason}})
+      }
+      else if (res.success) {
+        // this.setState({sid: res.sid})
+        browserHistory.push('/reset-password/' + res.sid)
+      }
+      else {
+        console.error(err, res)
+      }
+    })
+  }
+
+  render() {
+    if (this.state.busy) {
+      return <Busy/>
     }
     else {
-      this.setState({errors: {repeat: T('Confirm password does not match')}})
+      return <form className="reset settings" onSubmit={this.onSave}>
+        <h1>Reset Password</h1>
+        <InputGroup label="Phone" message={this.state.errors.phone}>
+          <input name="phone"
+                 value={this.state.phone || ''}
+                 onChange={this.onChange}
+                 className="form-control"/>
+        </InputGroup>
+        <button type="submit" className="btn btn-success">{T('Send SMS')}</button>
+      </form>
+    }
+  }
+}
+
+export class ResetPassword extends Component {
+  componentWillReceiveProps(props) {
+    this.setState({
+      errors: {},
+      busy: true
+    })
+    Meteor.call('verificationExists', props.params, (err, res) => {
+      if (err) {
+        console.error(err)
+      }
+      else if (res.count > 0) {
+        return this.setState({
+          exists: true,
+          busy: false
+        })
+      }
+      alert(T('Something wrong happen'))
+    })
+  }
+
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props)
+  }
+
+  onSave = (e) => {
+    e.preventDefault()
+    const code = this.state.code && this.state.code.replace(/[^\d]+/g, '')
+    if (!code) {
+      this.setState({errors: {code: 'Invalid code'}})
+    }
+    else if (this.state.password && this.state.password.trim()) {
+      if (/\s+/.test(this.state.password)) {
+        this.setState({errors: {password: 'Password cannot contain white spaces'}})
+      }
+      else if (this.state.password === this.state.repeat) {
+        const where = {
+          sid: this.props.params.sid,
+          password: this.state.password,
+          code
+        }
+        Meteor.call('verify', where, (err, res) => {
+          if (err) {
+            this.setState({errors: {code: err.reason}})
+          }
+          else if (res.success) {
+            browserHistory.push('/login')
+          }
+          else {
+            this.setState({errors: {code: 'Invalid code'}})
+          }
+        })
+      }
+      else {
+        this.setState({errors: {repeat: T('Confirm password does not match')}})
+      }
+    }
+    else {
+      this.setState({errors: {password: T('Is required')}})
     }
   }
 
@@ -190,28 +289,38 @@ export class ResetPassword extends Component {
   }
 
   render() {
-    return <form className="container settings" onSubmit={this.onSave}>
-      <h1>Change Password</h1>
-      <InputGroup label={T('Code')} message={this.state.errors.old}>
-        <input name="code"
-               value={this.state.old || ''}
-               onChange={this.onChange}
-               className="form-control"/>
-      </InputGroup>
-      <InputGroup label={T('New Password')} message={this.state.errors.password}>
-        <input name="password"
-               value={this.state.password || ''}
-               onChange={this.onChange}
-               className="form-control"/>
-      </InputGroup>
-      <InputGroup label={T('Repeat Password')} message={this.state.errors.repeat}>
-        <input name="repeat"
-               value={this.state.repeat || ''}
-               onChange={this.onChange}
-               className="form-control"/>
-      </InputGroup>
-      <button type="submit" className="btn btn-success">{T('Reset')}</button>
-    </form>
+    if (this.state.busy) {
+      return <Busy/>
+    }
+    else if (this.state.exists) {
+      return <form className="reset settings" onSubmit={this.onSave}>
+        <h1>Change Password</h1>
+        <InputGroup label={T('Code')} message={this.state.errors.code}>
+          <input name="code"
+                 value={this.state.code || ''}
+                 onChange={this.onChange}
+                 className="form-control"/>
+        </InputGroup>
+        <InputGroup label={T('New Password')} message={this.state.errors.password}>
+          <input name="password"
+                 type="password"
+                 value={this.state.password || ''}
+                 onChange={this.onChange}
+                 className="form-control"/>
+        </InputGroup>
+        <InputGroup label={T('Repeat Password')} message={this.state.errors.repeat}>
+          <input name="repeat"
+                 type="password"
+                 value={this.state.repeat || ''}
+                 onChange={this.onChange}
+                 className="form-control"/>
+        </InputGroup>
+        <button type="submit" className="btn btn-success">{T('Reset')}</button>
+      </form>
+    }
+    else {
+      return <div className="red">Password has been changed</div>
+    }
   }
 }
 

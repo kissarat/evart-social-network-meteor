@@ -315,6 +315,9 @@ CREATE OR REPLACE VIEW informer AS
 
 CREATE OR REPLACE VIEW verify AS
   SELECT
+    id,
+    ip,
+    actor,
     data ->> 'sid'  AS sid,
     data ->> 'code' AS code
   FROM log

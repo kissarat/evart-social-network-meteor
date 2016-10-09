@@ -39,43 +39,53 @@ function exists(params) {
 Meteor.methods({
   exists,
 
-  sendSMS({phone}) {
+  sendSMS({phone, existing}) {
     phone = digits(phone)
     if (phone && Meteor.settings.sms.codes.some(a => 0 === phone.indexOf(a))) {
       return table('blog').where('phone', phone).single().then(function (found) {
-        if (found) {
-          throw new Meteor.Error(403, 'Number is registered')
+        let userId = null
+        if (existing) {
+          if (found) {
+            userId = found.id
+          }
+          else {
+            throw new Meteor.Error(403, 'User does not exists')
+          }
         }
-        else {
-          const code = generate({charset: 'numeric', length: 6})
-          return new Promise(function (resolve, reject) {
-            sendSMS(phone, 'Evart Social Network. Code: ' + code, function (err, response) {
-              if (err) {
-                reject(err)
+        if (!existing && found) {
+          throw new Meteor.Error(403, 'Phone number is registered')
+        }
+        const code = generate({charset: 'numeric', length: 6})
+        return new Promise(function (resolve, reject) {
+          let message = `Evart Social Network. ${existing ? 'Password recovery' : 'Signup'}. Code: ${code}`
+          sendSMS(phone, message, function (err, {sid, status, dateUpdated}) {
+            if (err) {
+              reject(err)
+            }
+            else {
+              var result = {
+                success: !!sid,
+                status: status
+              };
+              if (result.success) {
+                result.sid = sid
+                result.time = dateUpdated
+                log('user', 'verify', {
+                    sid,
+                    existing,
+                    code,
+                    phone,
+                  },
+                  userId)
+                  .then(() => resolve(result))
+                  .catch(reject)
               }
               else {
-                var result = {
-                  success: !!response.sid,
-                  status: response.status
-                };
-                if (result.success) {
-                  result.sid = response.sid
-                  result.time = response.dateUpdated
-                  log('user', 'verify', {
-                    sid: response.sid,
-                    code: code,
-                    phone: phone
-                  })
-                    .then(() => resolve(result))
-                    .catch(reject)
-                }
-                else {
-                  reject(result);
-                }
+                reject(result);
               }
-            })
+            }
           })
-        }
+        })
       })
     }
     else {
@@ -83,26 +93,46 @@ Meteor.methods({
     }
   },
 
-  verify({sid, code, phone}) {
+  verify({sid, code, password, phone}) {
     if (code && sid) {
       if (!sid) {
         throw new Meteor.Error(400)
       }
-      return table('verify').where({sid: sid, code: digits(code)}).single().then(function (found) {
-        const data = {
-          sid: sid,
-          code: code,
-          success: !!found
+      code = digits(code)
+      const data = {sid, code}
+      return table('verify').where(data).single().then(function (found) {
+        data.success = !!found
+        if (data.success) {
+          if (phone) {
+            data.phone = phone
+          }
+          if (password) {
+            if (found.actor) {
+              Accounts.setPassword(found.actor, password)
+            }
+            else {
+              throw new Meteor.Error(500, 'Undefined user')
+            }
+          }
+          return table('log')
+            .where('id', found.id)
+            .del()
+            .promise()
+            .then(() => log('user', password ? 'reset' : 'approve', data, found.actor).then(() => data))
         }
-        if (phone) {
-          data.phone = digits(phone)
-        }
-        return log('user', 'approve', data).then(() => data)
+        return {success: false}
       })
     }
     else {
-      throw new Meteor.Error(400, 'Invalid code or session id')
+      throw new Meteor.Error(400, 'Code and session id is required')
     }
+  },
+
+  verificationExists({sid}) {
+    return table('verify')
+      .where('sid', sid)
+      .count()
+      .single()
   },
 
   'user.create'(params) {

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {AudioPlaylist} from '/imports/ui/audio'
 import {Blog, News} from '/imports/ui/blog/article'
-import {Edit, ChangePassword, ResetPassword} from '/imports/ui/blog/edit'
+import {Edit, ChangePassword, ResetPassword, ResetPasswordPhone} from '/imports/ui/blog/edit'
 import {Chat} from '/imports/ui/chat'
 import {FileRoute} from '/imports/ui/file'
 import {Gallery, Visual} from '/imports/ui/visual'
@@ -49,7 +49,8 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="signup" component={Signup}/>
       <Route path="signup/verify" component={Signup}/>
       <Route path="signup/about" component={Signup}/>
-      <Route path="reset-password" component={ResetPassword}/>
+      <Route path="reset-password/phone" component={ResetPasswordPhone}/>
+      <Route path="reset-password/:sid" component={ResetPassword}/>
       <Route path="agent" component={BrowserFeatures}/>
       <Route path="agent/:id" component={BrowserFeatures}/>
       <Route path="*" component={NotFound}/>

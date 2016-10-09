@@ -36,7 +36,6 @@ export class Login extends Component {
   }
 
   render() {
-    // <Link className="recovery" to="/recovery">Forgot password?</Link>
     return <form className="login" method="post" onSubmit={this.onSubmit}>
       <div>
         <div className="credentials">
@@ -50,6 +49,7 @@ export class Login extends Component {
             <input type="checkbox" id="checkbox"/>
             Remember me
           </div>
+          <Link className="recovery" to="/reset-password/phone">Forgot password?</Link>
         </div>
       </div>
       <div>

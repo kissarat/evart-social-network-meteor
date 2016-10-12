@@ -1,3 +1,5 @@
+/* Не все view-ки из данного файла используются */
+
 CREATE OR REPLACE VIEW member AS
   SELECT
     "from",
@@ -9,6 +11,7 @@ CREATE OR REPLACE VIEW member AS
   FROM relation r
     JOIN blog b ON r."to" = b.id;
 
+/* сообщение чата */
 CREATE OR REPLACE VIEW chat_dialog AS
   WITH mm AS (
       SELECT
@@ -33,6 +36,7 @@ CREATE OR REPLACE VIEW chat_dialog AS
   FROM mm
     JOIN blog b ON mm."from" = b.id;
 
+/* приватное сообщение */
 CREATE OR REPLACE VIEW dialog AS
   WITH mm AS (
     SELECT
@@ -99,6 +103,7 @@ CREATE OR REPLACE VIEW "last" AS
   WHERE peer <> recipient
   GROUP BY peer, recipient;
 
+/* последнее сообщения, список диалого или чатов */
 CREATE OR REPLACE VIEW messenger AS
   SELECT
     l.peer AS id,
@@ -123,6 +128,7 @@ CREATE OR REPLACE VIEW "message_attitude" AS
     RIGHT JOIN attitude a ON m.id = a.message
   GROUP BY m.id;
 
+/* сообщения с счетчиком репостов */
 CREATE OR REPLACE VIEW repost_count AS
   SELECT
     m.*,
@@ -131,6 +137,7 @@ CREATE OR REPLACE VIEW repost_count AS
      WHERE original = m.id) AS repost
   FROM message m;
 
+/* cообщения с счетчиком репостов, и отношением (attitude) пользователя (recipient) */
 CREATE OR REPLACE VIEW "message_attitude_recipient" AS
   SELECT
     m.*,
@@ -143,6 +150,7 @@ CREATE OR REPLACE VIEW "message_attitude_recipient" AS
     LEFT JOIN attitude a ON a.message = m.id AND a."from" = b.id
   WHERE b.type = 'user';
 
+/* для oembed видео NULL = mime */
 CREATE OR REPLACE VIEW file_view AS
   SELECT
     f.*,
@@ -150,6 +158,7 @@ CREATE OR REPLACE VIEW file_view AS
   FROM file f
     LEFT JOIN mime t ON f.mime = t.id;
 
+/* сообщения на стене пользователя */
 CREATE OR REPLACE VIEW "wall" AS
   SELECT
     *,
@@ -165,6 +174,7 @@ CREATE OR REPLACE VIEW "wall" AS
   FROM message_attitude_recipient m
   WHERE type = 'wall';
 
+/* новости из подписок (на основании relation) для даного пользователя (recipient) */
 CREATE OR REPLACE VIEW "news" AS
   SELECT w.*
   FROM relation r
@@ -185,6 +195,7 @@ CREATE OR REPLACE VIEW "comments_count" AS
   WHERE 'wall' = m.type
   GROUP BY m.id;
 
+/* очередь на конвертацыю файлов */
 CREATE OR REPLACE VIEW convert_file AS
   SELECT
     f.id,
@@ -197,6 +208,7 @@ CREATE OR REPLACE VIEW convert_file AS
     JOIN "convert" c ON f.id = c.file
   WHERE c.pid IS NULL;
 
+/* список добавлений в друзья */
 CREATE OR REPLACE VIEW invite AS
   WITH inv AS (
       SELECT
@@ -220,12 +232,20 @@ CREATE OR REPLACE VIEW invite AS
   FROM blog b
     JOIN inv ON b.id = inv.from;
 
+/* список подпищиков пользователя,
+т.е. тех, кто еще не был добавлен в друзья + те,
+чее приглашения в друзь было отвергнуто */
 CREATE OR REPLACE VIEW subscription AS
   SELECT *
   FROM invite
   WHERE (relation IS NULL OR relation = 'reject')
         AND type = 'user';
 
+/* соедененяет файлы и сообщение, связаное с ним, для того чтобы файл можно
+было лайкнуть и репостить. Полагалось, что с одним file может быть связан много
+message, которые могут пренадлежать (from) разным пользователям. Но на даный момент
+file связан с message по id, т.е. file.id = message.id
+ */
 CREATE OR REPLACE VIEW file_message AS
   SELECT
     f.*,
@@ -236,6 +256,7 @@ CREATE OR REPLACE VIEW file_message AS
     JOIN message m ON f.id = m.id
     LEFT JOIN mime t ON f.mime = t.id;
 
+/* файлы, которые в процессе конвертации */
 CREATE OR REPLACE VIEW convert_progress AS
   SELECT
     f.id,
@@ -282,6 +303,7 @@ CREATE OR REPLACE VIEW "blog_recipient" AS
     LEFT JOIN relation r ON j.recipient = r."from" AND j.id = r."to"
     LEFT JOIN relation rv ON j.recipient = rv."to" AND j.id = rv."from";
 
+/* профайл пользователя и группы с информерами */
 CREATE OR REPLACE VIEW informer AS
   SELECT
     b.*,
@@ -313,6 +335,7 @@ CREATE OR REPLACE VIEW informer AS
   FROM blog_recipient b
     LEFT JOIN file f ON b.playing = f.id;
 
+/* спи
 CREATE OR REPLACE VIEW verify AS
   SELECT
     id,

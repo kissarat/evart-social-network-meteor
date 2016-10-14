@@ -335,7 +335,7 @@ CREATE OR REPLACE VIEW informer AS
   FROM blog_recipient b
     LEFT JOIN file f ON b.playing = f.id;
 
-/* спи
+/* список верификации */
 CREATE OR REPLACE VIEW verify AS
   SELECT
     id,
@@ -359,3 +359,17 @@ CREATE OR REPLACE VIEW agent AS
     ("data" ->> 'Agent') AS string
   FROM log
   WHERE type = 'agent' AND action = 'features';
+
+CREATE SCHEMA meta
+  CREATE VIEW reference AS
+    SELECT
+      kcu.constraint_name AS NAME,
+      kcu.table_name      AS "from",
+      kcu.column_name     AS "from_field",
+      ccu.table_name      AS "to",
+      ccu.column_name     AS "to_field",
+      rc.update_rule,
+      rc.delete_rule
+    FROM information_schema.key_column_usage kcu
+      JOIN information_schema.constraint_column_usage ccu ON kcu.constraint_name = ccu.constraint_name
+      JOIN information_schema.referential_constraints rc ON kcu.constraint_name = rc.constraint_name;

@@ -52,7 +52,15 @@ module.exports = merge({
     }
   },
   postgresql: {
-    retry: 100
+    retry: 100,
+    client: 'pg',
+    report: true,
+    port: 54321,
+    connection: {
+      database: 'evart',
+      username: 'evart',
+      password: 'evart'
+    }
   },
   sms: {
     codes: countryCodes
@@ -66,5 +74,6 @@ _.extend(config.public, {
   // sms: _.pick(config.sms, 'phone', 'interval', 'codes'),
 })
 if (!module.parent) {
-  console.log(JSON.stringify(config, null, '\t'))
+  const cat = process.argv[process.argv.length - 1]
+  console.log(JSON.stringify(cat in config ? config[cat] : config, null, '\t'))
 }

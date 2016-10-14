@@ -32,6 +32,7 @@
     "react-dropzone": "^3.6.0",
     "react-router": "^2.8.1",
     "request": "^2.75.0",
+    "schema-db": "^1.0.2",
     "sqlite3": "^3.1.4",
     "tar.gz": "^1.0.5",
     "underscore": "^1.8.3"

@@ -64,6 +64,10 @@ class Worker {
     this.tasks[name] = {deps, run}
   }
 
+  hasTask(name) {
+    return name in this.tasks
+  }
+
   resolve(name) {
     const task = this.tasks[name]
     let deps = []

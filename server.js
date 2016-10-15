@@ -49,6 +49,19 @@ const worker = new Worker({
     })
   },
 
+  admin() {
+    const server = spawn(nodeFileName, [__dirname + '/admin'], {
+      cwd: __dirname,
+      stdio,
+      env: {
+        KNEX: JSON.stringify(config.postgresql)
+      }
+    })
+    server.title = 'admin'
+    servers.push(server)
+    return promiseStart(server)
+  },
+
   file() {
     return sequential(multiply(cpus.length, function ({number}) {
       const port = 9081 + number
@@ -126,7 +139,12 @@ const worker = new Worker({
   }
 })
 
-worker.run(process.argv[process.argv.length - 1], {log: true})
+const task = process.argv[process.argv.length - 1]
+if (!worker.hasTask(task)) {
+  console.error(`Task "${task}" not found`)
+  process.exit(1)
+}
+worker.run(task, {log: true})
   .catch(function (err) {
     console.error(err)
   })

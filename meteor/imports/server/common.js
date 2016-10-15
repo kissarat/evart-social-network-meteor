@@ -24,9 +24,11 @@ module.exports = {
         name: process.title,
         time: process.hrtime()
       }))
+      return true
     }
     else {
       console.warn('Process has no parent')
+      return false
     }
   }
 }

@@ -1,11 +1,10 @@
-const {port} = require('./config')
-const {lord, loadSchema} = require('schema-db')
-const {createServer} = require('http')
+const config = require('../config').postgresql
+const common = require('../meteor/imports/server/common')
+const db = require('elka')
 
-const server = createServer(function (req, res) {
-  lord(req, res, function () {
-    loadSchema().then(() => res.end(`<a href="/lord">Lord Entities</a>`))
+const elka = new db.Elka()
+db.loadSchema().then(function () {
+  elka.http.listen(config.port || 54321, '0.0.0.0', function () {
+    common.send({type: 'start'})
   })
 })
-
-server.listen(port)

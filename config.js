@@ -55,7 +55,6 @@ module.exports = merge({
     retry: 100,
     client: 'pg',
     report: true,
-    port: 54321,
     connection: {
       database: 'evart',
       username: 'evart',

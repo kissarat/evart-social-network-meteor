@@ -16,7 +16,7 @@ const events = {
 
   answer: function (answer) {
     if (Meteor.isDevelopment) {
-      console.log('offer', answer)
+      console.log('answer', answer)
     }
   },
 

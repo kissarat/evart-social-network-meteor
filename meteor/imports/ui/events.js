@@ -33,7 +33,7 @@ export class Channel extends Emitter {
   constructor(name, params) {
     super()
     this.subscription = new PgSubscription(name, params)
-    this.subscription.addEventListener('updated', function (changes) {
+    this.subscription.addEventListener('updated', (changes) => {
       _.each(changes.added, function (message) {
         Emitter.prototype.emit.call(this, message.type, message)
       }, this)

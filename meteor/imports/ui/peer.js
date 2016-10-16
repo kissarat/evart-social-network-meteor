@@ -9,21 +9,19 @@ function trigger(target, name, detail) {
 const events = {
   offer: function (offer) {
     if (Meteor.isDevelopment) {
-      console.log('offer', offer)
+      console.log('offer', offer.length)
     }
     this.receiveCall(offer)
   },
 
   answer: function (answer) {
     if (Meteor.isDevelopment) {
-      console.log('answer', answer)
+      console.log('answer', answer.length)
     }
   },
 
   candidate: function (candidate) {
-    if (this.isApproved()) {
-      this.addIceCandidate(candidate)
-    }
+    this.addCandidate(candidate)
   }
 }
 
@@ -150,10 +148,14 @@ _.extend(Peer.prototype, {
   },
 
   addCandidate(candidate) {
+    candidate = new RTCIceCandidate({candidate})
     if (this.isApproved()) {
       this.addIceCandidate(candidate)
     }
     else {
+      if (!this.candidates) {
+        this.candidates = []
+      }
       this.candidates.push(candidate)
     }
   },

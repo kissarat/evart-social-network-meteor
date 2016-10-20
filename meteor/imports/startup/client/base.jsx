@@ -4,6 +4,7 @@ import {Blog} from '../../ui/blog/article'
 import {Busy} from '../../ui/common/widget'
 import {AlertQueue} from '/imports/ui/common/alert'
 import '/imports/stylesheets/main.scss'
+import {map, each, sample, isObject, isEmpty} from 'underscore'
 
 Meteor.isMobile = Meteor.isCordova
   || navigator.userAgent.indexOf('iOS') > 0
@@ -78,14 +79,14 @@ export class NotFound extends Component {
 
 function purify(object) {
   const pure = {}
-  const keys = Object.keys(_.isEmpty(object) && Object !== object.constructor
+  const keys = Object.keys(isEmpty(object) && Object !== object.constructor
     ? object.constructor.prototype
     : object)
   keys.forEach(function (k) {
     if (k.indexOf('on') < 0) {
       const v = object[k]
       if ('function' !== typeof v && 0 !== v) {
-        pure[k] = _.isObject(v) ? purify(v) : v
+        pure[k] = isObject(v) ? purify(v) : v
       }
     }
   })
@@ -93,34 +94,30 @@ function purify(object) {
 }
 
 const codecs = `
-application/ogg
-application/ogg; codecs=bogus
 application/mp4
 application/mp4; codecs=bogus
 application/octet-stream
 application/octet-stream; codecs=bogus
+application/ogg
+application/ogg; codecs=bogus
 audio/3gpp
 audio/3gpp2
 audio/aac
-audio/x-aac
-audio/aiff
-audio/x-aiff
 audio/ac3
-audio/x-ac3
+audio/aiff
 audio/basic
 audio/flac
-audio/x-flac
 audio/mid
 audio/midi
-audio/x-midi
-audio/mpeg
-audio/x-mpeg
-audio/mpegurl
-audio/x-mpegurl
 audio/mp4
 audio/mp4; codecs=bogus
+audio/mpeg
+audio/mpegurl
 audio/ogg
 audio/ogg; codecs=bogus
+audio/ogg; codecs=flac
+audio/ogg; codecs=speex
+audio/ogg; codecs=vorbis
 audio/wav
 audio/wav; codecs=0
 audio/wav; codecs=1
@@ -129,47 +126,51 @@ audio/wave
 audio/wave; codecs=0
 audio/wave; codecs=1
 audio/wave; codecs=2
-audio/x-wav
-audio/x-wav; codecs=0
-audio/x-wav; codecs=1
-audio/x-wav; codecs=2
+audio/webm
+audio/webm; codecs=vorbis
+audio/x-aac
+audio/x-ac3
+audio/x-aiff
+audio/x-flac
+audio/x-midi
+audio/x-mpeg
+audio/x-mpegurl
 audio/x-pn-wav
 audio/x-pn-wav; codecs=0
 audio/x-pn-wav; codecs=1
 audio/x-pn-wav; codecs=2
+audio/x-wav
+audio/x-wav; codecs=0
+audio/x-wav; codecs=1
+audio/x-wav; codecs=2
 video/3gpp
 video/3gpp2
-video/avi
-video/mpeg
-video/x-mpeg
-video/mp4
-video/mp4; codecs=bogus
-video/msvideo
-video/x-msvideo
-video/quicktime
-video/ogg
-video/ogg; codecs=bogus
-video/mp4; codecs="avc1.42E01E, mp4a.40.2"
-video/mp4; codecs="avc1.58A01E, mp4a.40.2"
-video/mp4; codecs="avc1.4D401E, mp4a.40.2"
-video/mp4; codecs="avc1.64001E, mp4a.40.2"
-video/mp4; codecs="mp4v.20.8, mp4a.40.2"
-video/mp4; codecs="mp4v.20.240, mp4a.40.2"
 video/3gpp; codecs="mp4v.20.8, samr"
-video/ogg; codecs="theora, vorbis"
-video/ogg; codecs="theora, speex"
-audio/ogg; codecs=vorbis
-audio/ogg; codecs=speex
-audio/ogg; codecs=flac
+video/avi
+video/mp4
+video/mp4; codecs="avc1.42E01E, mp4a.40.2"
+video/mp4; codecs="avc1.4D401E, mp4a.40.2"
+video/mp4; codecs="avc1.58A01E, mp4a.40.2"
+video/mp4; codecs="avc1.64001E, mp4a.40.2"
+video/mp4; codecs="mp4v.20.240, mp4a.40.2"
+video/mp4; codecs="mp4v.20.8, mp4a.40.2"
+video/mp4; codecs=bogus
+video/mpeg
+video/msvideo
+video/ogg
 video/ogg; codecs="dirac, vorbis"
-video/x-matroska; codecs="theora, vorbis"
-audio/webm
-audio/webm; codecs=vorbis
+video/ogg; codecs="theora, speex"
+video/ogg; codecs="theora, vorbis"
+video/ogg; codecs=bogus
+video/quicktime
 video/webm
+video/webm; codecs="vp8, vorbis"
 video/webm; codecs=vorbis
 video/webm; codecs=vp8
 video/webm; codecs=vp8.0
-video/webm; codecs="vp8, vorbis"
+video/x-matroska; codecs="theora, vorbis"
+video/x-mpeg
+video/x-msvideo
 `.split('\n')
   .filter(codec => codec.trim())
   .sort()
@@ -184,7 +185,7 @@ function boolify(value) {
 }
 
 function collectFeatures() {
-  var now = new Date();
+  var now = new Date()
   const features = {
     Location: location.pathname + location.search,
     Agent: navigator.userAgent,
@@ -209,33 +210,37 @@ function collectFeatures() {
   }
 
   if (navigator.languages) {
-    features.Languages = navigator.languages.join(', ');
+    features.Languages = navigator.languages.join(', ')
   }
 
   if (features.CookieEnabled && document.cookie) {
     features.Cookies = document.cookie
   }
 
-  features.Screen = purify(screen);
+  features.Screen = purify(screen)
 
   if (navigator.plugins) {
-    var plugins = {};
-    [].forEach.call(navigator.plugins, function (plugin) {
-      var info = {};
+    var plugins = {}
+    each(navigator.plugins, function (plugin) {
+      var info = {}
       if (plugin.description) {
-        info.Description = plugin.description;
+        info.Description = plugin.description
       }
-      info.mime = [].map.call(plugin, function (mime) {
-        return mime.type;
-      });
-      info.mime = info.mime.join(', ');
-      plugins[plugin.name] = info;
-    });
-    features.Plugins = plugins;
+      info.mime = map(plugin, function (mime) {
+        return mime.type
+      })
+      info.mime = info.mime.join(', ')
+      plugins[plugin.name] = info
+    })
+    features.Plugins = plugins
   }
 
   const video = document.createElement('video')
   features.Codecs = codecs.filter(codec => video.canPlayType(codec))
+
+  if (window.MediaRecorder) {
+    features.MediaRecorder = codecs.filter(c => MediaRecorder.isTypeSupported(c))
+  }
 
   if (window.performance) {
     if (performance.memory) {
@@ -253,8 +258,8 @@ function collectFeatures() {
 }
 
 function JSON2DOM(params, inverse = {}) {
-  return _.map(params, function (v, k) {
-    if (_.isObject(v) && Object === v.constructor) {
+  return map(params, function (v, k) {
+    if (isObject(v) && Object === v.constructor) {
       v = <div className="feature-object">{JSON2DOM(v, inverse[k])}</div>
     }
     if (v instanceof Array) {
@@ -306,7 +311,7 @@ export function introduceAgent() {
       crypto.getRandomValues(cid)
       cid = btoa(String.fromCharCode.apply(null, cid))
       cid = cid.replace(/[+\/]/g, function () {
-        return _.sample('ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxy0123456789')
+        return sample('ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxy0123456789')
       })
       document.cookie = `cid=${cid}; path=/; expires=Tue, 01 Jan 2030 00:00:00 GMT`
       Meteor.call('agent.set', collectFeatures())

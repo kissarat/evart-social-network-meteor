@@ -8,11 +8,12 @@ import {Gallery, Visual} from '/imports/ui/visual'
 import {InviteList, FriendList, GroupsList, SubscriberList, User, UserList} from '/imports/ui/list'
 import {LoginPage} from '/imports/ui/auth/login'
 import {Messenger} from '/imports/ui/message'
-import {PhoneRoute} from '/imports/ui/phone'
+import {Phone} from '/imports/ui/rtc/phone'
 import {Route, IndexRoute} from 'react-router'
 import {Signup} from '/imports/ui/auth/signup'
 import {VideoList} from '/imports/ui/video'
-import {App, BrowserFeatures, NoIndex, Root, Unavailable, NotFound, rootRedirect}
+import {NotFound} from '/imports/ui/pages'
+import {App, BrowserFeatures, NoIndex, Root, Unavailable, rootRedirect}
 from '/imports/startup/client/base'
 
 export const RootRoute = <Route path='/' component={Root}>
@@ -42,6 +43,7 @@ export const RootRoute = <Route path='/' component={Root}>
       <Route path="unavailable" component={Unavailable}/>
       <Route path="chat/:id/edit" component={Chat}/>
       <Route path="users" component={UserList}/>
+      <Route path="phone/:id" component={Phone}/>
       {FileRoute}
     </Route>
     <Route component={NoIndex}>

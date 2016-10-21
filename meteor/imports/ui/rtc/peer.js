@@ -1,4 +1,4 @@
-import _ from 'underscore'
+import {each, extend} from 'underscore'
 import {isFirefox} from '/imports/constants'
 import {channel, register, listenOncePromise} from '../events'
 
@@ -35,7 +35,7 @@ if (window.webkitRTCPeerConnection) {
   }, webkitRTCPeerConnection.prototype)
 }
 
-const Peer = window.RTCPeerConnection || window.webkitRTCPeerConnection || {disabled: true}
+export const Peer = window.RTCPeerConnection || window.webkitRTCPeerConnection || {disabled: true}
 Peer.enabled = !Peer.disabled
 
 if (navigator.mediaDevices && navigator.webkitGetUserMedia && !navigator.mediaDevices.getUserMedia) {
@@ -47,7 +47,7 @@ if (navigator.mediaDevices && navigator.webkitGetUserMedia && !navigator.mediaDe
 }
 
 export function peerStartup() {
-  _.each(events, function (event, key) {
+  each(events, function (event, key) {
     channel.on(key, function (message) {
       events[key].call(Peer.get(message.from), message.text)
     })
@@ -102,7 +102,7 @@ function makeMediaConstraints(audio = true, video = true) {
   }
 }
 
-_.extend(Peer.prototype, {
+extend(Peer.prototype, {
   initialize() {
     register(this, {
       identityresult: trace,
@@ -247,7 +247,7 @@ _.extend(Peer.prototype, {
     }
     this.callOffer = offer
     this.candidates = []
-    trigger(this, 'call', offer)
+    trigger(this, 'dial', offer)
   }
 })
 
@@ -269,5 +269,6 @@ Peer.get = function (id) {
   }
 }
 
-window.Peer = Peer
-export default Peer
+if (Meteor.isDevelopment) {
+  window.Peer = Peer
+}

@@ -16,7 +16,7 @@ Meteor.startup(function () {
 
   if (window.RTCPeerConnection || window.webkitRTCPeerConnection) {
     setTimeout(function () {
-      require('/imports/ui/peer').peerStartup()
+      require('/imports/ui/rtc/peer').peerStartup()
     }, 300)
   }
 

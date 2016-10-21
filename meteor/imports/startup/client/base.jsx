@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
 import {browserHistory} from 'react-router'
-import {Blog} from '../../ui/blog/article'
-import {Busy} from '../../ui/common/widget'
 import {AlertQueue} from '/imports/ui/common/alert'
 import '/imports/stylesheets/main.scss'
 import {map, each, sample, isObject, isEmpty} from 'underscore'
@@ -36,44 +34,6 @@ export class NoIndex extends Component {
 
   render() {
     return <noindex>{this.props.children}</noindex>
-  }
-}
-
-export class NotFound extends Component {
-  resolveUrl() {
-    const route = location.pathname.slice(1)
-    if (route) {
-      Meteor.call('blog.get', {domain: route}, (err, res) => {
-        if (res) {
-          this.setState(res)
-        }
-      })
-    }
-    else {
-      if (Meteor.userId()) {
-        browserHistory.push('/profile')
-      }
-      else {
-        browserHistory.push('/login')
-      }
-    }
-  }
-
-  componentWillMount() {
-    this.resolveUrl()
-  }
-
-  componentWillReceiveProps() {
-    this.resolveUrl()
-  }
-
-  render() {
-    if (this.state) {
-      return <Blog {...this.state} />
-    }
-    else {
-      return <div>Not Found</div>
-    }
   }
 }
 

@@ -35,8 +35,8 @@ function meteorEnvironment(env) {
     METEOR_SETTINGS: JSON.stringify(config),
     MONGO_URL: config.mongo
   },
-  env,
-  process.env)
+  process.env,
+  env)
 }
 
 const stdio = ['inherit', 'inherit', 'inherit', 'ipc']
@@ -131,7 +131,7 @@ const worker = new Worker({
   },
 
   prod: {
-    deps: ['file', 'convert'],
+    deps: ['settings', 'file', 'convert'],
     run: () => sequential(multiply(cpus.length, function ({number}) {
       const port = 3001 + number
       const server = spawn(nodeFileName, [__dirname + '/../bundle/main.js'], {

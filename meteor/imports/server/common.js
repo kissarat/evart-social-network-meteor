@@ -1,4 +1,4 @@
-const _ = require('underscore')
+const {extend} = require('underscore')
 
 function lowercase(obj) {
   if (obj instanceof Array) {
@@ -20,7 +20,7 @@ module.exports = {
 
   send(object) {
     if ('function' === typeof process.send) {
-      process.send(_.extend(object, {
+      process.send(extend(object, {
         name: process.title,
         time: process.hrtime()
       }))

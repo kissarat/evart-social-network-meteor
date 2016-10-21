@@ -8,6 +8,7 @@ Meteor.startup(() => {
     process.title = 'labiak-meteor-' + process.env.PORT
     console.log(`Meteor server on port ${process.env.PORT} started`)
   }
+  // console.log(process.env)
 })
 
 WebApp.rawConnectHandlers.use(function (req, res, next) {

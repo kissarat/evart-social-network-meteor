@@ -4,7 +4,7 @@ const fse = require('fs-extra')
 const os = require('os')
 const spawn = require('child_process').spawn
 const tgz = require('tar.gz')
-const _ = require('underscore')
+const {extend} = require('underscore')
 const path = require('path')
 const {Worker, sequential, multiply, done} = require('./conveyor')
 
@@ -27,6 +27,16 @@ function promiseStart(child) {
       }
     })
   })
+}
+
+function meteorEnvironment(env) {
+  return extend({
+    ROOT_URL: 'http://evart.com',
+    METEOR_SETTINGS: JSON.stringify(config),
+    MONGO_URL: config.mongo
+  },
+  env,
+  process.env)
 }
 
 const stdio = ['inherit', 'inherit', 'inherit', 'ipc']
@@ -109,9 +119,11 @@ const worker = new Worker({
   dev: {
     deps: ['settings', 'file', 'convert'],
     run() {
-      const server = spawn(meteorFileName, ['--settings=' + settingsFileName, '--port=' + 3001], {
+      const port = 3001
+      const server = spawn(meteorFileName, ['--settings=' + settingsFileName, '--port=' + port], {
         cwd: __dirname + '/meteor',
-        stdio
+        stdio,
+        env: meteorEnvironment({PORT: port})
       })
       server.title = 'meteor'
       servers.push(server)
@@ -125,12 +137,7 @@ const worker = new Worker({
       const server = spawn(nodeFileName, [__dirname + '/../bundle/main.js'], {
         cwd: __dirname + '/../bundle',
         stdio,
-        env: {
-          ROOT_URL: 'http://evart.com',
-          PORT: port,
-          METEOR_SETTINGS: JSON.stringify(config),
-          MONGO_URL: 'mongodb://127.0.0.1:27017/evart'
-        }
+        env: meteorEnvironment()
       })
       server.title = 'meteor-' + port
       servers.push(server)

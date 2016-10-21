@@ -1,6 +1,6 @@
 import _ from 'underscore'
 import {isFirefox} from '/imports/constants'
-import {channel, register, listenOncePromise} from './events'
+import {channel, register, listenOncePromise} from '../events'
 
 function trigger(target, name, detail) {
   target.dispatchEvent(new CustomEvent(name, {detail: detail}))
@@ -225,7 +225,10 @@ _.extend(Peer.prototype, {
         this.addWaitingCandidates()
         return this.createAnswer(options)
       })
-      .then(answer => this.setLocalDescription(answer))
+      .then(answer => {
+        this.setLocalDescription(answer)
+        return answer
+      })
   },
 
   answerCall() {

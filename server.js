@@ -137,7 +137,7 @@ const worker = new Worker({
       const server = spawn(nodeFileName, [__dirname + '/../bundle/main.js'], {
         cwd: __dirname + '/../bundle',
         stdio,
-        env: meteorEnvironment()
+        env: meteorEnvironment({PORT: port})
       })
       server.title = 'meteor-' + port
       servers.push(server)

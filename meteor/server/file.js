@@ -1,6 +1,7 @@
-import {query, table, timeId, liveSQL, log, errors} from './db'
-import request from 'request'
-import {escape} from 'querystring'
+const request = require('request')
+const {escape} = require('querystring')
+const {pick} = require('underscore')
+const {query, table, timeId, liveSQL, log} = require('./db')
 
 const fileTypes = ['image', 'audio', 'video']
 
@@ -119,7 +120,7 @@ function requestOembed({url}) {
 Meteor.methods({
   'file.get': function (params) {
     return table('file_message')
-      .where(_.pick(params, 'id', 'url'))
+      .where(pick(params, 'id', 'url'))
       .single()
   },
 

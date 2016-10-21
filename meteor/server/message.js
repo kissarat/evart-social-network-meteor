@@ -1,7 +1,8 @@
-import {query, table, timeId, errors} from './db'
+const {query, table, timeId, errors} = require('./db')
+const {pick, isEmpty} = require('underscore')
 
 Meteor.publish('message', function (params = {}) {
-  if (_.isEmpty(params.order)) {
+  if (isEmpty(params.order)) {
     params.order = {id: -1}
   }
   let type = params.type
@@ -25,7 +26,7 @@ Meteor.methods({
     message.id = timeId()
     message.from = +Meteor.userId()
     return table('message')
-      .insert(_.pick(message, 'id', 'from', 'to', 'parent', 'type', 'text', 'original'))
+      .insert(pick(message, 'id', 'from', 'to', 'parent', 'type', 'text', 'original'))
       .promise()
       .then(function () {
         if (message.files instanceof Array) {

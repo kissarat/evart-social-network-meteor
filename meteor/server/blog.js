@@ -1,5 +1,5 @@
-import {query, table, errors, timeId, log, knex} from './db'
-import _ from 'underscore'
+const {pick, extend, forEach, isEmpty} = require('underscore')
+const {query, table, errors, timeId, log, knex} = require('./db')
 
 Meteor.publish('blog', function (params = {}) {
   return query('blog', params).cursor()
@@ -58,7 +58,7 @@ Meteor.methods({
   },
 
   'blog.get' (params) {
-    const where = _.pick(params, 'id', 'domain')
+    const where = pick(params, 'id', 'domain')
     where.recipient = Meteor.userId()
     return table('informer')
       .where(where)
@@ -66,7 +66,7 @@ Meteor.methods({
   },
 
   'blog.create' (params) {
-    params = _.pick(params, 'id', 'domain', 'name', 'type')
+    params = pick(params, 'id', 'domain', 'name', 'type')
     return table('blog')
       .insert(params, ['id', 'time'])
       .single()
@@ -78,24 +78,24 @@ Meteor.methods({
             }
           })
         }
-        return log('blog', 'create', _.extend(params, blog)).then(() => blog)
+        return log('blog', 'create', extend(params, blog)).then(() => blog)
       })
   },
 
   'blog.update' (where, changes) {
-    changes = _.pick(changes, 'status', 'name', 'surname', 'forename', 'birthday',
+    changes = pick(changes, 'status', 'name', 'surname', 'forename', 'birthday',
       'avatar', 't0', 't1', 't2', 't3', 't4', 't5', 't6')
     if (changes.surname || changes.forename) {
       changes.name = changes.surname + ' ' + changes.forename
     }
-    _.forEach(changes, function (value, key) {
+    forEach(changes, function (value, key) {
       if ('string' === typeof value) {
         if (!value.trim()) {
           changes[key] = null
         }
       }
     })
-    if (_.isEmpty(changes)) {
+    if (isEmpty(changes)) {
       return false
     }
     else {
@@ -117,7 +117,7 @@ Meteor.methods({
     const q = table('relation')
     if (['follow', 'manage', 'deny', 'reject'].indexOf(params.relation) >= 0) {
       const changes = {id: timeId(), type: params.relation}
-      const data = _.extend(changes, where);
+      const data = extend(changes, where);
       return q
         .insert(data)
         .promise()
@@ -207,7 +207,7 @@ Meteor.methods({
       .update(changes)
       .promise()
       .then(function () {
-        return log('member', 'update', _.extend(changes, where))
+        return log('member', 'update', extend(changes, where))
       })
   },
 

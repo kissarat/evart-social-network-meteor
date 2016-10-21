@@ -1,4 +1,4 @@
-import {query, timeId} from './db'
+const {query, timeId} = require('./db')
 
 Meteor.publish('channel', function () {
   return query('channel')

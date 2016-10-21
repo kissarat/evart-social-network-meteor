@@ -1,12 +1,13 @@
-import {timeId, log, table} from './db'
-import {generate} from 'randomstring'
+const {generate} = require('randomstring')
+const {pick, isEmpty} = require('underscore')
+const {timeId, log, table} = require('./db')
 
-const twilio = new Twilio(_.pick(Meteor.settings.sms, 'from', 'sid', 'token'));
+const twilio = new Twilio(pick(Meteor.settings.sms, 'from', 'sid', 'token'))
 function sendSMS(phone, text, cb) {
   twilio.sendSMS({
     to: '+' + phone,
     body: text
-  }, cb);
+  }, cb)
 }
 
 function digits(s) {
@@ -14,7 +15,7 @@ function digits(s) {
 }
 
 Accounts.onCreateUser(function (options, user) {
-  if (!/^[\w\._\-]{4,23}$/.test(user.username)) {
+  if (!/^[\w._\-]{4,23}$/.test(user.username)) {
     throw new Meteor.Error(403, 'User validation failed')
   }
   user._id = timeId().toString(10)
@@ -22,8 +23,8 @@ Accounts.onCreateUser(function (options, user) {
 })
 
 function exists(params) {
-  params = _.pick(params, 'phone', 'domain')
-  if (_.isEmpty()) {
+  params = pick(params, 'phone', 'domain')
+  if (isEmpty(params)) {
     throw new Meteor.Error(400)
   }
   else {
@@ -145,8 +146,8 @@ Meteor.methods({
           throw new Meteor.Error(400, 'Bad Request', JSON.stringify({[key]: 'Is required'}))
         }
       })
-    const verifyParams = _.pick(params, 'sid', 'code')
-    if (_.isEmpty(verifyParams)) {
+    const verifyParams = pick(params, 'sid', 'code')
+    if (isEmpty(verifyParams)) {
       throw new Meteor.Error(400, 'No validation parameters found')
     }
     return table('verify')
@@ -157,7 +158,7 @@ Meteor.methods({
           if (!found) {
             throw new Meteor.Error(403, 'Session is not found')
           }
-          const data = _.pick(params, ['domain', 'name', 'surname', 'forename', 'phone', 'email'])
+          const data = pick(params, ['domain', 'name', 'surname', 'forename', 'phone', 'email'])
           data.phone = digits(data.phone)
           data.id = timeId()
           Meteor.users.insert({_id: data.id.toString(), username: data.domain})

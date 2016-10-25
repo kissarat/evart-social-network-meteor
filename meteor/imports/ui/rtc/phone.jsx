@@ -11,7 +11,8 @@ export class Phone extends Subscriber {
       if (blog) {
         blog.busy = false
         blog.peer = Peer.get(id)
-        blog.peer.addEventListener('dial', this.onDial)
+        blog.peer.addEventListener('dial', this.onPeerDial)
+        blog.peer.addEventListener('addstream', this.onPeerStream)
         this.setState(blog)
       }
       else {
@@ -24,8 +25,12 @@ export class Phone extends Subscriber {
     this.componentWillReceiveParams(this.props)
   }
 
-  onDial = () => {
+  onPeerDial = () => {
     this.setState({dial: true})
+  }
+
+  onPeerStream = () => {
+    console.log('onPeerStream')
   }
 
   onCall = () => {
@@ -33,7 +38,7 @@ export class Phone extends Subscriber {
   }
 
   onAnswer = () => {
-    this.state.peer.answerCall()
+    this.state.peer.answerCall().then(() => this.setState({dial: true}))
   }
 
   render() {

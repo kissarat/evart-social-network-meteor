@@ -8,16 +8,17 @@ function trigger(target, name, detail) {
 
 const events = {
   offer: function (offer) {
-    if (Meteor.isDevelopment) {
-      console.log('offer', offer.length)
-    }
+    // if (Meteor.isDevelopment) {
+    //   console.log('offer', offer.length)
+    // }
     this.receiveCall(offer)
   },
 
   answer: function (answer) {
-    if (Meteor.isDevelopment) {
-      console.log('answer', answer.length)
-    }
+    // if (Meteor.isDevelopment) {
+    //   console.log('answer', answer.length)
+    // }
+    this.receiveRemoteAnswer(answer)
   },
 
   candidate: function (candidate) {
@@ -86,18 +87,14 @@ function error() {
 function makeMediaConstraints(audio = true, video = true) {
   audio = !!audio
   video = !!video
-  if (isFirefox) {
-    return {
-      offerToReceiveAudio: audio,
-      offerToReceiveVideo: video
-    }
+  return isFirefox ? {
+    offerToReceiveAudio: audio,
+    offerToReceiveVideo: video
   }
-  else {
-    return {
-      mandatory: {
-        OfferToReceiveAudio: audio,
-        OfferToReceiveVideo: video
-      }
+  : {
+    mandatory: {
+      OfferToReceiveAudio: audio,
+      OfferToReceiveVideo: video
     }
   }
 }
@@ -148,7 +145,10 @@ extend(Peer.prototype, {
   },
 
   addCandidate(candidate) {
-    candidate = new RTCIceCandidate({candidate})
+    if ('string' === typeof candidate) {
+      candidate = JSON.parse(candidate)
+    }
+    candidate = new RTCIceCandidate(candidate)
     if (this.isApproved()) {
       this.addIceCandidate(candidate)
     }
@@ -161,10 +161,18 @@ extend(Peer.prototype, {
   },
 
   setupCamera() {
+    const self = this
     return getUserMedia({audio: true, video: true})
-      .then(_camera => {
-        // _camera.getTracks().forEach(track => this.addTrack(track, _camera))
-        this.addStream(_camera)
+      .then(function (_camera) {
+        if ('function' === typeof self.addTrack) {
+          _camera.getTracks().forEach(function (track) {
+            self.addTrack(track, _camera
+            )
+          })
+        }
+        else {
+          self.addStream(_camera)
+        }
       })
   },
 
@@ -203,7 +211,7 @@ extend(Peer.prototype, {
 
   offerCall() {
     return this.setupCamera()
-      .then(() => listenOncePromise(this, 'negotiationneeded'))
+      // .then(() => listenOncePromise(this, 'negotiationneeded'))
       .then(() => this.offer(makeMediaConstraints()))
       .then(offer => this.emit('offer', offer.sdp))
       .catch(error)
@@ -233,7 +241,7 @@ extend(Peer.prototype, {
 
   answerCall() {
     return this.setupCamera()
-      .then(() => listenOncePromise(this, 'negotiationneeded'))
+      // .then(() => listenOncePromise(this, 'negotiationneeded'))
       .then(() => this.answer(this.callOffer, makeMediaConstraints()))
       .then(answer => this.emit('answer', answer.sdp))
   },
@@ -248,16 +256,26 @@ extend(Peer.prototype, {
     this.callOffer = offer
     this.candidates = []
     trigger(this, 'dial', offer)
+  },
+
+  receiveRemoteAnswer(offer) {
+    if ('string' === typeof offer) {
+      offer = new RTCSessionDescription({
+        type: 'offer',
+        sdp: offer
+      })
+    }
+    this.setRemoteDescription(offer)
   }
 })
 
 Peer.get = function (id) {
-  const peer = Peer.peers[id]
+  let peer = Peer.peers[id]
   if (peer) {
     return peer
   }
   else {
-    const peer = new Peer({
+    peer = new Peer({
       iceServers: [],
       peerIdentity: id
     })
